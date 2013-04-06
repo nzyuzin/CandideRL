@@ -108,9 +108,7 @@ public final class Map {
 			return;
 		}
 		else
-			throw new CellIsTaken(that.x, that.y + 1);
-
-		
+			throw new CellIsTaken(coordinates[0], coordinates[1]);		
 	}
 	
 	public static char[][] mapToCharArray() {
