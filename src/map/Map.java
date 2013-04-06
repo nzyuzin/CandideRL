@@ -16,20 +16,20 @@ class MapIsNotInitialized extends Exception {
 public final class Map {
 	private static int mapsize = 0;
 	private static Containable[][] map;
-	private static char floor = '.', wall = '#';
+	private final static char floor = '.', wall = '#';
 	
-	Map(int size) {
+	public Map(int size) {
 		//TODO make complicated map generation
 		mapsize = size;
 		map = new Containable[size][size];
 		for(int i = 1; i < size - 1; i++)
 			for(int j = 1; j < size -1; j++)
-				map[i][j].charOnMap = floor;
+				map[i][j] = new Floor(floor);
 		for(int i = 0; i < size; i++) {
-			map[0][i].charOnMap = wall;
-			map[size - 1][i].charOnMap = wall;
-			map[i][0].charOnMap = wall;
-			map[i][size - 1].charOnMap = wall;
+			map[0][i] = new Wall(wall);
+			map[size - 1][i] = new Wall(wall);
+			map[i][0] = new Wall(wall);
+			map[i][size - 1] = new Wall(wall);
 		}
 	}
 	
