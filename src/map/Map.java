@@ -52,6 +52,26 @@ public final class Map {
 	//TODO write method that will return content of maps cell
 	// to check if content is 'hitable' for creature
 	
+	public static boolean canMoveContent(Containable that, Direction there) {
+		if(there == Direction.UP) {
+			if(isEmpty(that.x,that.y + 1))return true;
+				return false;
+		}		
+		if(there == Direction.DOWN) {
+			if(isEmpty(that.x,that.y - 1)) return true;
+			return false;
+		}
+		if(there == Direction.LEFT) {
+			if(isEmpty(that.x - 1,that.y)) return true;
+			return false;
+		}
+		if(there == Direction.RIGHT) {
+			if(isEmpty(that.x + 1,that.y)) return true;
+			return false;
+		}
+		return false;
+	}
+	
 	public static void moveContent(Containable that,Direction there) {
 		if(there == Direction.UP) {
 			if(isEmpty(that.x,that.y + 1)) {

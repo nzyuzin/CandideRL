@@ -4,8 +4,8 @@ import map.Containable;
 
 public abstract class Creatures extends Containable implements Movable {
 	int id;
-	short currenthealth;
-	short maxhealth;
+	short currenthp;
+	short maxhp;
 	String name;
 	Attributes attributes;
 	char icon;
