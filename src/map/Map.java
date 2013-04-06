@@ -1,12 +1,25 @@
 package map;
 import movement.Direction;
 
+class CellIsTaken extends Exception {
+	private static final long serialVersionUID = 17L;
+
+	public CellIsTaken(int x, int y) { super("Cannot move here, the cell is taken: (" + x + ", " + y + ")"); }
+}
+
+class MapIsNotInitialized extends Exception {
+	private static final long serialVersionUID = 1L;
+	
+	public MapIsNotInitialized() { }
+}
+
 public final class Map {
-	private static int mapsize;
+	private static int mapsize = 0;
 	private static Containable[][] map;
 	private static char floor = '.', wall = '#';
 	
 	Map(int size) {
+		//TODO make complicated map generation
 		mapsize = size;
 		map = new Containable[size][size];
 		for(int i = 1; i < size - 1; i++)
@@ -20,20 +33,26 @@ public final class Map {
 		}
 	}
 	
+	private static Containable getContent(int xcoor, int ycoor) {
+		assert xcoor < mapsize && xcoor >= 0 &&
+				ycoor < mapsize && ycoor >= 0;
+		return map[xcoor][ycoor];
+	}
+	
 	private static boolean isEmpty(int xcoor,int ycoor) {
 		assert xcoor < mapsize && xcoor >= 0 &&
 				ycoor < mapsize && ycoor >= 0;
-		if(map[xcoor][ycoor].charOnMap == floor) return true;
+		if(getContent(xcoor, ycoor).charOnMap == floor) return true;
 		return false;
 	}
 	
 	private static void makeEmpty(int xcoor, int ycoor) {
 		assert xcoor < mapsize && xcoor >= 0 &&
 				ycoor < mapsize && ycoor >= 0;
-		if(map[xcoor][ycoor].charOnMap != wall) {
-			map[xcoor][ycoor].x = -1;
-			map[xcoor][ycoor].y = -1;
-			map[xcoor][ycoor].charOnMap = floor;
+		if(getContent(xcoor, ycoor).charOnMap != wall) {
+			getContent(xcoor, ycoor).x = -1;
+			getContent(xcoor, ycoor).y = -1;
+			getContent(xcoor, ycoor).charOnMap = floor;
 		}
 	}
 	
@@ -45,72 +64,60 @@ public final class Map {
 		map[xcoor][ycoor] = content;
 	}
 	
-	private static Containable getContent(int xcoor, int ycoor) {
-		return map[xcoor][ycoor];
-	}
-	
-	//TODO write method that will return content of maps cell
-	// to check if content is 'hitable' for creature
-	
-	public static boolean canMoveContent(Containable that, Direction there) {
+	private static int[] getCoordinatesFromDirection(Containable that, Direction there) {
+		int[] coordinates = new int[1];
 		if(there == Direction.UP) {
-			if(isEmpty(that.x,that.y + 1))return true;
-				return false;
+			coordinates[0] = that.x;
+			coordinates[1] = that.y + 1;
+			return coordinates;
 		}		
 		if(there == Direction.DOWN) {
-			if(isEmpty(that.x,that.y - 1)) return true;
-			return false;
+			coordinates[0] = that.x;
+			coordinates[1] = that.y - 1;
+			return coordinates;
 		}
 		if(there == Direction.LEFT) {
-			if(isEmpty(that.x - 1,that.y)) return true;
-			return false;
+			coordinates[0] = that.x - 1;
+			coordinates[1] = that.y;
+			return coordinates;
 		}
 		if(there == Direction.RIGHT) {
-			if(isEmpty(that.x + 1,that.y)) return true;
-			return false;
+			coordinates[0] = that.x + 1;
+			coordinates[1] = that.y;
+			return coordinates;
 		}
+		return null;
+	}
+	
+	public static Containable getContent(Containable that, Direction there) {
+		int[] coordinates = getCoordinatesFromDirection(that, there);
+		return getContent(coordinates[0], coordinates[1]);
+	}
+	
+	public static boolean canMoveContent(Containable that, Direction there) {
+		int[] coordinates = getCoordinatesFromDirection(that, there);
+		if(isEmpty(coordinates[0], coordinates[1])) return true;
 		return false;
 	}
 	
-	public static void moveContent(Containable that,Direction there) {
-		if(there == Direction.UP) {
-			if(isEmpty(that.x,that.y + 1)) {
-				makeEmpty(that.x, that.y++);
-				setContent(that.x, that.y, that);
-				return;
-			}
-			else
-				//TODO process this properly
-				return;
-		}		
-		if(there == Direction.DOWN) {
-			if(isEmpty(that.x,that.y - 1)) {
-				makeEmpty(that.x, that.y--);
-				setContent(that.x, that.y, that);
-				return;
-			}
-			else
-				//TODO process this properly
-				return;
+	public static void moveContent(Containable that,Direction there) throws CellIsTaken {
+		int[] coordinates = getCoordinatesFromDirection(that, there);
+		if(isEmpty(coordinates[0], coordinates[1])) {
+			makeEmpty(coordinates[0], coordinates[1]);
+			setContent(coordinates[0], coordinates[1], that);
+			return;
 		}
-		if(there == Direction.LEFT) {
-			if(isEmpty(that.x - 1,that.y)) {
-				makeEmpty(that.x--, that.y);
-				setContent(that.x, that.y, that);
-				return;
-			}
-			else
-				//TODO process this properly
-				return;
-		}
-		if(there == Direction.RIGHT) {
-			if(isEmpty(that.x + 1,that.y)) {
-				makeEmpty(that.x++, that.y);
-				setContent(that.x, that.y, that);
-			}
-			else
-				//TODO process this properly
-				return;
-		}
+		else
+			throw new CellIsTaken(that.x, that.y + 1);
+
+		
+	}
+	
+	public static char[][] mapToCharArray() {
+		char[][] chararray = new char[mapsize][mapsize];
+		for(int i = 0; i < mapsize; i++)
+			for(int j = 0; j < mapsize; j++)
+				chararray[i][j] = getContent(i, j).charOnMap;
+		return chararray;
 	}
 }
