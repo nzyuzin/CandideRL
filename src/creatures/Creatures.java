@@ -18,16 +18,16 @@ public abstract class Creatures extends Containable implements Movable {
 	Attributes attributes;
 	char icon;
 	
-	public boolean canMoveThere(Direction there) {
+	public boolean canMove(Direction there) {
 		return Map.canMoveContent(this, there);
 	}
 	
-	public void moveThere(Direction there) {
-		if(canMoveThere(there))
+	public void move(Direction there) {
+		if(canMove(there))
 			Map.moveContent(this, there);
 		else if((Map.getContent(this, there)).type == "enemy")
 			//TODO hit(there);
-			return;
+		return;
 	}
 	int hit(Direction there) {
 	/*  TODO

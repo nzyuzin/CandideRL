@@ -1,5 +1,7 @@
 package map;
 import movement.Direction;
+import java.util.Random;
+import creatures.Hero;
 
 class CellIsTaken extends Exception {
 	private static final long serialVersionUID = 17L;
@@ -33,27 +35,25 @@ public final class Map {
 		}
 	}
 	
-	private static Containable getContent(int xcoor, int ycoor) {
-		assert xcoor < mapsize && xcoor >= 0 &&
-				ycoor < mapsize && ycoor >= 0;
-		return map[xcoor][ycoor];
+	private static Containable getContent(int x, int y) {
+		assert x < mapsize && x >= 0 &&
+				y < mapsize && y >= 0;
+		return map[x][y];
 	}
 	
 	private static boolean isEmpty(int xcoor,int ycoor) {
 		assert xcoor < mapsize && xcoor >= 0 &&
 				ycoor < mapsize && ycoor >= 0;
-		if(getContent(xcoor, ycoor).charOnMap == floor) return true;
+		if(getContent(xcoor, ycoor).type == "floor") return true;
 		return false;
 	}
 	
 	private static void makeEmpty(int xcoor, int ycoor) {
 		assert xcoor < mapsize && xcoor >= 0 &&
 				ycoor < mapsize && ycoor >= 0;
-		if(getContent(xcoor, ycoor).charOnMap != wall) {
-			getContent(xcoor, ycoor).x = -1;
-			getContent(xcoor, ycoor).y = -1;
-			getContent(xcoor, ycoor).charOnMap = floor;
-		}
+		getContent(xcoor, ycoor).x = -1;
+		getContent(xcoor, ycoor).y = -1;
+		setContent(xcoor, ycoor, new Floor(floor));
 	}
 	
 	private static void setContent(int xcoor, int ycoor, Containable content) {
@@ -65,28 +65,27 @@ public final class Map {
 	}
 	
 	private static int[] getCoordinatesFromDirection(Containable that, Direction there) {
-		int[] coordinates = new int[1];
-		if(there == Direction.UP) {
+		int[] coordinates = new int[2];
+		switch (there) {
+		case UP:
 			coordinates[0] = that.x;
 			coordinates[1] = that.y + 1;
 			return coordinates;
-		}		
-		if(there == Direction.DOWN) {
+		case DOWN:
 			coordinates[0] = that.x;
 			coordinates[1] = that.y - 1;
 			return coordinates;
-		}
-		if(there == Direction.LEFT) {
+		case LEFT:
 			coordinates[0] = that.x - 1;
 			coordinates[1] = that.y;
 			return coordinates;
-		}
-		if(there == Direction.RIGHT) {
+		case RIGHT:
 			coordinates[0] = that.x + 1;
 			coordinates[1] = that.y;
 			return coordinates;
+		default:
+			return coordinates;
 		}
-		return null;
 	}
 	
 	public static Containable getContent(Containable that, Direction there) {
@@ -102,8 +101,8 @@ public final class Map {
 	
 	public static void moveContent(Containable that,Direction there) {
 		int[] coordinates = getCoordinatesFromDirection(that, there);
+		makeEmpty(that.x, that.y);
 		setContent(coordinates[0], coordinates[1], that);
-		makeEmpty(coordinates[0], coordinates[1]);
 	}
 	
 	public static char[][] mapToCharArray() {
@@ -112,5 +111,14 @@ public final class Map {
 			for(int j = 0; j < mapsize; j++)
 				chararray[i][j] = getContent(i, j).charOnMap;
 		return chararray;
+	}
+	
+	public static Hero spawnHero() {
+		Random rand = new Random();
+		Hero John = new Hero("John");
+		John.x = rand.nextInt(mapsize - 2) + 1;
+		John.y = rand.nextInt(mapsize - 2) + 1;
+		setContent(John.x, John.y, John);
+		return John;
 	}
 }

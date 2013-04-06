@@ -2,9 +2,9 @@ package map;
 
 public abstract class Containable {
 	public char charOnMap;
-	int x;
-	int y;
-	public String type;
+	protected int x;
+	protected int y;
+	public String type = "nihil";
 }
 
 class Wall extends Containable {
