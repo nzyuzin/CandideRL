@@ -100,15 +100,10 @@ public final class Map {
 		return false;
 	}
 	
-	public static void moveContent(Containable that,Direction there) throws CellIsTaken {
+	public static void moveContent(Containable that,Direction there) {
 		int[] coordinates = getCoordinatesFromDirection(that, there);
-		if(isEmpty(coordinates[0], coordinates[1])) {
-			makeEmpty(coordinates[0], coordinates[1]);
-			setContent(coordinates[0], coordinates[1], that);
-			return;
-		}
-		else
-			throw new CellIsTaken(coordinates[0], coordinates[1]);		
+		setContent(coordinates[0], coordinates[1], that);
+		makeEmpty(coordinates[0], coordinates[1]);
 	}
 	
 	public static char[][] mapToCharArray() {
