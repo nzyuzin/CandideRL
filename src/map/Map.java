@@ -4,13 +4,13 @@ import java.util.Random;
 import creatures.Hero;
 
 class CellIsTaken extends Exception {
-	private static final long serialVersionUID = 17L;
+	private static final long serialVersionUID = 8382L;
 
 	public CellIsTaken(int x, int y) { super("Cannot move here, the cell is taken: (" + x + ", " + y + ")"); }
 }
 
 class MapIsNotInitialized extends Exception {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8381L;
 	
 	public MapIsNotInitialized() { }
 }
@@ -18,7 +18,6 @@ class MapIsNotInitialized extends Exception {
 public final class Map {
 	private static int mapsize = 0;
 	private static Containable[][] map;
-	private final static char floor = '.', wall = '#';
 	
 	public Map(int size) {
 		//TODO make complicated map generation
@@ -26,12 +25,12 @@ public final class Map {
 		map = new Containable[size][size];
 		for(int i = 1; i < size - 1; i++)
 			for(int j = 1; j < size -1; j++)
-				map[i][j] = new Floor(floor);
+				map[i][j] = new Floor();
 		for(int i = 0; i < size; i++) {
-			map[0][i] = new Wall(wall);
-			map[size - 1][i] = new Wall(wall);
-			map[i][0] = new Wall(wall);
-			map[i][size - 1] = new Wall(wall);
+			map[0][i] = new Wall();
+			map[size - 1][i] = new Wall();
+			map[i][0] = new Wall();
+			map[i][size - 1] = new Wall();
 		}
 	}
 	
@@ -41,27 +40,27 @@ public final class Map {
 		return map[x][y];
 	}
 	
-	private static boolean isEmpty(int xcoor,int ycoor) {
-		assert xcoor < mapsize && xcoor >= 0 &&
-				ycoor < mapsize && ycoor >= 0;
-		if(getContent(xcoor, ycoor).type == "floor") return true;
+	private static boolean isEmpty(int x,int y) {
+		assert x < mapsize && x >= 0 &&
+				y < mapsize && y >= 0;
+		if(getContent(x, y).type == "floor") return true;
 		return false;
 	}
 	
-	private static void makeEmpty(int xcoor, int ycoor) {
-		assert xcoor < mapsize && xcoor >= 0 &&
-				ycoor < mapsize && ycoor >= 0;
-		getContent(xcoor, ycoor).x = -1;
-		getContent(xcoor, ycoor).y = -1;
-		setContent(xcoor, ycoor, new Floor(floor));
+	private static void makeEmpty(int x, int y) {
+		assert x < mapsize && x >= 0 &&
+				y < mapsize && y >= 0;
+		getContent(x, y).x = -1;
+		getContent(x, y).y = -1;
+		setContent(x, y, new Floor());
 	}
 	
-	private static void setContent(int xcoor, int ycoor, Containable content) {
-		assert xcoor < mapsize && xcoor >= 0 &&
-				ycoor < mapsize && ycoor >= 0;
-		content.x = xcoor;
-		content.y = ycoor;
-		map[xcoor][ycoor] = content;
+	private static void setContent(int x, int y, Containable content) {
+		assert x < mapsize && x >= 0 &&
+				y < mapsize && y >= 0;
+		content.x = x;
+		content.y = y;
+		map[x][y] = content;
 	}
 	
 	private static int[] getCoordinatesFromDirection(Containable that, Direction there) {
@@ -113,9 +112,9 @@ public final class Map {
 		return chararray;
 	}
 	
-	public static Hero spawnHero() {
+	public static Hero spawnHero(String name) {
 		Random rand = new Random();
-		Hero John = new Hero("John");
+		Hero John = new Hero(name);
 		John.x = rand.nextInt(mapsize - 2) + 1;
 		John.y = rand.nextInt(mapsize - 2) + 1;
 		setContent(John.x, John.y, John);
