@@ -7,21 +7,21 @@ import map.exceptions.*;
 
 public final class Map {
 	private static int mapWidth;
-	private static int mapHeigth;
+	private static int mapHeight;
 
 
 	private static MapCell[][] map;
 	
-	public Map(int height, int width) {
+	public static void init(int width, int height) {
 		//TODO make complicated map generation
+		
 		mapWidth = width;
-		mapHeigth = height;
+		mapHeight = height;
 		
 		// Wall is of no use now, so it's meaningless to create more than one wall to fill space on map
 		Wall wall = new Wall();
-
-
 		map = new MapCell[width][height];
+		
 		for(int i = 1; i < width - 1; i++)
 			for(int j = 1; j < height -1; j++)
 				map[i][j] = new Floor();
@@ -37,20 +37,20 @@ public final class Map {
 	
 	private static MapCell getCell(int x, int y) {
 		assert x < mapWidth && x >= 0 &&
-				y < mapHeigth && y >= 0;
+				y < mapHeight && y >= 0;
 		return map[x][y];
 	}
 	
 	private static boolean isEmpty(int x,int y) {
 		assert x < mapWidth && x >= 0 &&
-				y < mapHeigth && y >= 0;
+				y < mapHeight && y >= 0;
 		if(getCell(x, y).creature == null) return true;
 		return false;
 	}
 	
 	private static void removeCreature(int x, int y) {
 		assert x < mapWidth && x >= 0 &&
-				y < mapHeigth && y >= 0;
+				y < mapHeight && y >= 0;
 		MapCell cell = getCell(x, y);
 		cell.creature.posX = -1;
 		cell.creature.posY = -1;
@@ -60,7 +60,7 @@ public final class Map {
 	
 	private static void putCreature(int x, int y, Creature mob) {
 		assert x < mapWidth && x >= 0 &&
-				y < mapHeigth && y >= 0 &&
+				y < mapHeight && y >= 0 &&
 				mob.posX == -1 && mob.posY == -1;
 		MapCell cell = getCell(x, y);
 		mob.posX = x;
@@ -129,11 +129,11 @@ public final class Map {
 	}
 	
 	public static String[] toStringArray() {
-		String[] output = new String[mapHeigth];
-		for(int i = 0; i < mapHeigth; i++)
+		String[] output = new String[mapHeight];
+		for(int i = 0; i < mapHeight; i++)
 			output[i] = "";
 		for (int i = 0; i < mapWidth; i++) {
-			for (int j = 0; j < mapHeigth; j++)
+			for (int j = 0; j < mapHeight; j++)
 				output[j] += getCell(i, j).visibleChar;
 		}
 		return output;
@@ -143,7 +143,7 @@ public final class Map {
 		Random rand = new Random();
 		Hero John = new Hero(name);
 		int posX = rand.nextInt(mapWidth - 2) + 1;
-		int posY = rand.nextInt(mapHeigth - 2) + 1;
+		int posY = rand.nextInt(mapHeight - 2) + 1;
 		putCreature(posX, posY, John);
 		return John;
 	}
