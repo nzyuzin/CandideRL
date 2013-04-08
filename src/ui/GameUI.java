@@ -13,15 +13,13 @@ public class GameUI {
 		mapFontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
 		windowWidth = Toolkit.getScreenWidth();
 		windowHeight = Toolkit.getScreenHeight();
-		Toolkit.printString("Welcome in furry-robot!", windowWidth / 2, windowHeight / 2, mapFontColor);
-		
 	}
 	
 	public static void drawMap() {
 		Toolkit.clearScreen(mapFontColor);
-		int i = 0;
-		while (i < Toolkit.getScreenHeight())
-			Toolkit.printString(Map.toStringArray()[i], 0, i++, mapFontColor);
+		String[] mapInStrings = Map.toStringArray();
+		for (int i = 0; i < windowHeight; i++)
+			Toolkit.printString(mapInStrings[i], 0, i, mapFontColor);
 	}
 	
 	public static char getInputChar() {
