@@ -31,7 +31,14 @@ public class GameUI {
 		return input.getCharacter();
 	}
 	
+	public static void showMessage(String msg) {
+		Toolkit.clearScreen(mapFontColor);
+		Toolkit.printString(msg, 0, 0, mapFontColor);
+		if (Toolkit.readCharacter() != null) return;
+	}
+	
 	public static void close() {
+		Toolkit.clearScreen(mapFontColor);
 		Toolkit.shutdown();
 	}
 	
