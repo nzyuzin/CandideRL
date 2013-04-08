@@ -127,6 +127,16 @@ public final class Map {
 		}
 		else throw new CellIsTaken(getCell(coordinates[0],coordinates[1]).creature);
 	}
+
+	public static boolean canHit(Creature mob, Direction there) {
+		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
+		return getCell(coordinates[0], coordinates[1]).creature != null;
+	}
+	
+	public static Creature getCreature(Creature mob, Direction there) {
+		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
+		return getCell(coordinates[0], coordinates[1]).creature;
+	}
 	
 	public static String[] toStringArray() {
 		String[] output = new String[mapHeight];
