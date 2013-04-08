@@ -1,6 +1,6 @@
 package movement;
 
 public interface Movable {
-	public boolean canMove(Direction there);
-	public void move(Direction there);
+	boolean canMove(Direction there);
+	void move(Direction there);
 }

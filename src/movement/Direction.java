@@ -1,5 +1,5 @@
 package movement;
 
 public enum Direction {
-	UP, RIGHT, DOWN, LEFT
+	NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
 }
