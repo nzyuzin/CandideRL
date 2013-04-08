@@ -19,7 +19,7 @@ public class GameUI {
 		Toolkit.clearScreen(mapFontColor);
 		String[] mapInStrings = Map.toStringArray();
 		for (int i = 0; i < windowHeight; i++)
-			Toolkit.printString(mapInStrings[i], 0, i, mapFontColor);
+			Toolkit.printString(mapInStrings[i], 0, windowHeight - i - 1, mapFontColor);
 	}
 	
 	public static char getInputChar() {
