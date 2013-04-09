@@ -1,16 +1,16 @@
 package creatures;
 
-public final class Hero extends Creature {
-	public Hero(String name) {
+public class NPC extends Creature {
+	public NPC(String name) {
 		super();
 		this.name = name;
-		this.charOnMap = '@';
+		this.charOnMap = 'g';
 		maxHP = 100;
 		currentHP = 100;
 		attributes.strength = 8;
 		attributes.dexterity = 8;
 		attributes.intellegence = 8;
 		attributes.armor = 0;
-		attackRate = 10.0;
+		attackRate = 1.0;
 	}
 }

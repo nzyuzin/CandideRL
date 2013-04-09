@@ -66,12 +66,21 @@ public class GameEngine {
 	}
 	
 	public static void play() {
+		try {
 		init();
 		GameUI.showMessage("Prepare to play! Press any key to start.");
-		while(true) {
+		NPC goblin = Map.spawnMonster("goblin");
+		while(goblin.currentHP > 0) {
 			GameUI.drawMap();
 			handleInput();
 		}
-	}
+		
+		GameUI.showMessage("Congratulations, you have beaten the goblin and won the game!");
+		GameUI.close();
+		} catch(Exception e) {
+			GameUI.close();
+			e.printStackTrace();
+		}
+ 	}
 
 }

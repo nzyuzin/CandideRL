@@ -16,7 +16,6 @@ public class GameUI {
 	}
 	
 	public static void drawMap() {
-		Toolkit.clearScreen(mapFontColor);
 		String[] mapInStrings = Map.toStringArray();
 		for (int i = 0; i < windowHeight; i++)
 			Toolkit.printString(mapInStrings[i], 0, windowHeight - i - 1, mapFontColor);
@@ -32,7 +31,27 @@ public class GameUI {
 	public static void showMessage(String msg) {
 		Toolkit.clearScreen(mapFontColor);
 		Toolkit.printString(msg, 0, 0, mapFontColor);
-		if (Toolkit.readCharacter() != null) return;
+		waitForExitChar();
+	}
+	
+	private static void waitForExitChar() {
+		InputChar input = Toolkit.readCharacter();
+		while (true) {
+			input = Toolkit.readCharacter();
+			if (input.isSpecialCode())
+				if (isExitCode(input.getCode()))
+					break;
+			if (isExitChar(input.getCharacter()))
+				break;
+		}
+	}
+	
+	private static boolean isExitCode(int code) {
+		return true;
+	}
+	
+	private static boolean isExitChar(char c) {
+		return true;
 	}
 	
 	public static void close() {

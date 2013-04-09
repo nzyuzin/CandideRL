@@ -8,24 +8,30 @@ import java.util.Random;
 public abstract class Creature implements Movable {
 	
 	protected final class Attributes {
-		short strength;
-		short dexterity;
-		short intellegence;
-		short armor;
+		public short strength;
+		public short dexterity;
+		public short intellegence;
+		public short armor;
 	}
 	
-	static int id;
+	protected static int ID = 0; 
+	
+	protected final int id;
 	
 	public int posX = -1;
 	public int posY = -1;
 	public char charOnMap = '?';
 	
-	short currentHP;
-	short maxHP;
-	float attackRate;
-	String name;
-	Attributes attributes;
+	public short currentHP;
+	public short maxHP;
+	protected double attackRate;
+	protected String name;
+	protected Attributes attributes;
 	
+	Creature() {
+		id = ID++;
+		attributes = new Attributes();
+	}
 	
 	public boolean canMove(Direction there) {
 		return Map.canMoveCreature(this, there);
@@ -41,7 +47,7 @@ public abstract class Creature implements Movable {
 		}
 	}
 	
-	void hit(Direction there) {
+	protected void hit(Direction there) {
 	/*  TODO
 	 *  Hit should generate integer which is calculated,
 	 *  depending on attackers attributes and random number.
@@ -53,7 +59,7 @@ public abstract class Creature implements Movable {
 		Map.getCreature(this, there).takeAHit(damage);
 	}
 	
-	void takeAHit(int damage) {
+	protected void takeAHit(int damage) {
 	/* TODO
 	 * if takes 0 as arguments - attacker missed,
 	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.	

@@ -157,4 +157,18 @@ public final class Map {
 		putCreature(posX, posY, John);
 		return John;
 	}
+	
+	public static NPC spawnMonster(String name) {
+		Random rand = new Random();
+		NPC monster = new NPC(name);
+		
+		int posX = rand.nextInt(mapWidth - 2) + 1;
+		int posY = rand.nextInt(mapHeight - 2) + 1;
+		while (!isEmpty(posX, posY)) {
+			posX = rand.nextInt(mapWidth - 2) + 1;
+			posY = rand.nextInt(mapHeight - 2) + 1;
+		}
+		putCreature(posX, posY, monster);
+		return monster;
+	}
 }
