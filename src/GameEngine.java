@@ -1,16 +1,21 @@
 import map.Map;
-import movement.Direction;
 import ui.GameUI;
+import utility.Direction;
 import creatures.*;
 
 public class GameEngine {
 	private static Hero hero = null;
 	private final static String HERO_NAME = "NONAME";
+	private final char[] DIRECTION_KEYS = {'j', 'k', 'h','l' , 'b', 'n', 'y', 'u'};
 	
 	private static void init() {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		hero = Map.spawnHero(HERO_NAME);
+	}
+	
+	private static Direction processDirectionKey(char key) {
+		return Direction.SOUTH;
 	}
 	
 	private static void handleInput() {
@@ -55,7 +60,7 @@ public class GameEngine {
 		default:
 			handleInput();
 			return;
-		
+			
 		}
 	}
 	
@@ -65,13 +70,15 @@ public class GameEngine {
 		System.exit(0);
 	}
 	
+	// This method is a subject of constant changes.
+	
 	public static void play() {
 		try {
 		init();
-		GameUI.showMessage("Prepare to play! Press any key to start.");
+		GameUI.showMessage("Prepare to play! Press space to start.");
 		NPC goblin = Map.spawnMonster("goblin");
 		while(goblin.currentHP > 0) {
-			GameUI.drawMap();
+			GameUI.drawMap(Map.toStringArray());
 			handleInput();
 		}
 		

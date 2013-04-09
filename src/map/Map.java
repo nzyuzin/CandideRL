@@ -1,9 +1,10 @@
 package map;
 
-import movement.Direction;
+
 import java.util.Random;
+
+import utility.Direction;
 import creatures.*;
-import map.exceptions.*;
 
 public final class Map {
 	private static int mapWidth;
@@ -119,13 +120,10 @@ public final class Map {
 		return getCell(coordinates[0], coordinates[1]).canBePassed;
 	}
 	
-	public static void moveCreature(Creature mob, Direction there) throws CellIsTaken {
+	public static void moveCreature(Creature mob, Direction there) {
 		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
-		if(isEmpty(coordinates[0], coordinates[1])) {
-			removeCreature(mob.posX, mob.posY);
-			putCreature(coordinates[0], coordinates[1], mob);
-		}
-		else throw new CellIsTaken(getCell(coordinates[0],coordinates[1]).creature);
+		removeCreature(mob.posX, mob.posY);
+		putCreature(coordinates[0], coordinates[1], mob);
 	}
 
 	public static boolean canHit(Creature mob, Direction there) {

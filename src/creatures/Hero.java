@@ -12,5 +12,6 @@ public final class Hero extends Creature {
 		attributes.intellegence = 8;
 		attributes.armor = 0;
 		attackRate = 10.0;
+		canTakeDamage = true;
 	}
 }

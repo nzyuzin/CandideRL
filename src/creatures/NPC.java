@@ -12,5 +12,6 @@ public class NPC extends Creature {
 		attributes.intellegence = 8;
 		attributes.armor = 0;
 		attackRate = 1.0;
+		canTakeDamage = true;
 	}
 }

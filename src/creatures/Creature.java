@@ -1,11 +1,12 @@
 package creatures;
 
-import movement.*;
 import map.Map;
-import map.exceptions.*;
 import java.util.Random;
+import utility.Direction;
+import utility.interfaces.Damagable;
+import utility.interfaces.Movable;
 
-public abstract class Creature implements Movable {
+public abstract class Creature implements Movable, Damagable  {
 	
 	protected final class Attributes {
 		public short strength;
@@ -27,6 +28,7 @@ public abstract class Creature implements Movable {
 	protected double attackRate;
 	protected String name;
 	protected Attributes attributes;
+	protected boolean canTakeDamage;
 	
 	Creature() {
 		id = ID++;
@@ -38,13 +40,11 @@ public abstract class Creature implements Movable {
 	}
 	
 	public void move(Direction there) {
-		try {
 			Map.moveCreature(this, there);
-				
-		} catch (CellIsTaken e) {
-			if (Map.canHit(this, there))
-				hit(there);
-		}
+	}
+	
+	public boolean canHit(Direction there) {
+		return Map.canHit(this, there);
 	}
 	
 	protected void hit(Direction there) {
@@ -56,10 +56,14 @@ public abstract class Creature implements Movable {
 	 */
 		Random rand = new Random();
 		int damage = rand.nextInt((int) (attributes.strength * attackRate));
-		Map.getCreature(this, there).takeAHit(damage);
+		Map.getCreature(this, there).takeDamage(damage);
 	}
 	
-	protected void takeAHit(int damage) {
+	public boolean canTakeDamage() {
+		return canTakeDamage;
+	}
+	
+	public void takeDamage(int damage) {
 	/* TODO
 	 * if takes 0 as arguments - attacker missed,
 	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.	

@@ -1,22 +1,26 @@
 package ui;
 
 import jcurses.system.*;
-import map.Map;
 
 public class GameUI {
 	private static CharColor mapFontColor;
 	private static int windowWidth;
 	private static int windowHeight;
+	private final static char[] EXIT_CHARS = {' '};
+	private final static int[] EXIT_CODES = {};
+	private static int mapWidth;
+	private static int mapHeight;
 	
 	public static void init() {
 		Toolkit.init();
 		mapFontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
 		windowWidth = Toolkit.getScreenWidth();
 		windowHeight = Toolkit.getScreenHeight();
+		mapWidth = windowWidth;
+		mapHeight = windowHeight;
 	}
 	
-	public static void drawMap() {
-		String[] mapInStrings = Map.toStringArray();
+	public static void drawMap(String[] mapInStrings) {
 		for (int i = 0; i < windowHeight; i++)
 			Toolkit.printString(mapInStrings[i], 0, windowHeight - i - 1, mapFontColor);
 	}
@@ -47,11 +51,15 @@ public class GameUI {
 	}
 	
 	private static boolean isExitCode(int code) {
-		return true;
+		for (int s : EXIT_CODES)
+			if (code == s) return true;
+		return false;
 	}
 	
 	private static boolean isExitChar(char c) {
-		return true;
+		for (char s : EXIT_CHARS)
+			if (c == s) return true;
+		return false;
 	}
 	
 	public static void close() {
@@ -60,11 +68,11 @@ public class GameUI {
 	}
 	
 	public static int getMapWidth() {
-		return windowWidth;
+		return mapWidth;
 	}
 	
 	public static int getMapHeight() {
-		return windowHeight;
+		return mapHeight;
 	}
 
 }
