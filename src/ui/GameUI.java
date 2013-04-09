@@ -6,10 +6,10 @@ public class GameUI {
 	private static CharColor mapFontColor;
 	private static int windowWidth;
 	private static int windowHeight;
-	private final static char[] EXIT_CHARS = {' '};
-	private final static int[] EXIT_CODES = {};
 	private static int mapWidth;
 	private static int mapHeight;
+	
+	private GameUI() { }
 	
 	public static void init() {
 		Toolkit.init();
@@ -34,32 +34,15 @@ public class GameUI {
 	
 	public static void showMessage(String msg) {
 		Toolkit.clearScreen(mapFontColor);
-		Toolkit.printString(msg, 0, 0, mapFontColor);
-		waitForExitChar();
+		Toolkit.printString(msg + "\nPress spacebar to continue", 0, 0, mapFontColor);
+		waitForChar(' ');
 	}
 	
-	private static void waitForExitChar() {
-		InputChar input = Toolkit.readCharacter();
+	private static void waitForChar(char c) {
 		while (true) {
-			input = Toolkit.readCharacter();
-			if (input.isSpecialCode())
-				if (isExitCode(input.getCode()))
-					break;
-			if (isExitChar(input.getCharacter()))
+			if (getInputChar() == c)
 				break;
 		}
-	}
-	
-	private static boolean isExitCode(int code) {
-		for (int s : EXIT_CODES)
-			if (code == s) return true;
-		return false;
-	}
-	
-	private static boolean isExitChar(char c) {
-		for (char s : EXIT_CHARS)
-			if (c == s) return true;
-		return false;
 	}
 	
 	public static void close() {

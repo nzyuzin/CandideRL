@@ -1,10 +1,6 @@
 package map;
 
-
-import java.util.Random;
-
-import utility.Direction;
-import creatures.*;
+import creatures.Creature;
 
 public final class Map {
 	private static int mapWidth;
@@ -12,6 +8,8 @@ public final class Map {
 
 
 	private static MapCell[][] map;
+	
+	private Map() { }
 	
 	public static void init(int width, int height) {
 		//TODO make complicated map generation
@@ -42,98 +40,45 @@ public final class Map {
 		return map[x][y];
 	}
 	
-	private static boolean isEmpty(int x,int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		if(getCell(x, y).creature == null) return true;
-		return false;
-	}
-	
 	private static void removeCreature(int x, int y) {
 		assert x < mapWidth && x >= 0 &&
 				y < mapHeight && y >= 0;
 		MapCell cell = getCell(x, y);
-		cell.creature.posX = -1;
-		cell.creature.posY = -1;
 		cell.creature = null;
 		cell.chooseCharOnMap();
 	}
 	
 	private static void putCreature(int x, int y, Creature mob) {
 		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0 &&
-				mob.posX == -1 && mob.posY == -1;
+				y < mapHeight && y >= 0;
 		MapCell cell = getCell(x, y);
-		mob.posX = x;
-		mob.posY = y;
 		cell.creature = mob;
 		cell.chooseCharOnMap();
 	}
 	
-	private static int[] applyDirectionToCoordinats(int x, int y, Direction there) {
-		int[] coordinates = new int[2];
-		switch (there) {
-		case NORTH:
-			coordinates[0] = x;
-			coordinates[1] = y + 1;
-			return coordinates;
-		case SOUTH:
-			coordinates[0] = x;
-			coordinates[1] = y - 1;
-			return coordinates;
-		case WEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y;
-			return coordinates;
-		case EAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y;
-			return coordinates;
-		case NORTHEAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y + 1;
-			return coordinates;
-		case SOUTHEAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y - 1;
-			return coordinates;
-		case SOUTHWEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y - 1;
-			return coordinates;
-		case NORTHWEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y + 1;
-			return coordinates;
-		default:
-			return coordinates;
-		}
+	public static boolean isCellPassable(int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
+		return getCell(x, y).canBePassed;
 	}
 	
-//	public static MapCell getCell(Creature mob, Direction there) {
-//		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
-//		return getCell(coordinates[0], coordinates[1]);
-//	}
-	
-	public static boolean canMoveCreature(Creature mob, Direction there) {
-		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
-		return getCell(coordinates[0], coordinates[1]).canBePassed;
-	}
-	
-	public static void moveCreature(Creature mob, Direction there) {
-		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
+	public static void moveCreature(Creature mob, int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
 		removeCreature(mob.posX, mob.posY);
-		putCreature(coordinates[0], coordinates[1], mob);
+		putCreature(x, y, mob);
 	}
 
-	public static boolean canHit(Creature mob, Direction there) {
-		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
-		return getCell(coordinates[0], coordinates[1]).creature != null;
+	public static boolean creatureHere(int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
+		return getCell(x, y).creature != null;
 	}
 	
-	public static Creature getCreature(Creature mob, Direction there) {
-		int[] coordinates = applyDirectionToCoordinats(mob.posX, mob.posY, there);
-		return getCell(coordinates[0], coordinates[1]).creature;
+	public static Creature getCreature(int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
+		return getCell(x, y).creature;
 	}
 	
 	public static String[] toStringArray() {
@@ -145,28 +90,5 @@ public final class Map {
 				output[j] += getCell(i, j).visibleChar;
 		}
 		return output;
-	}
-	
-	public static Hero spawnHero(String name) {
-		Random rand = new Random();
-		Hero John = new Hero(name);
-		int posX = rand.nextInt(mapWidth - 2) + 1;
-		int posY = rand.nextInt(mapHeight - 2) + 1;
-		putCreature(posX, posY, John);
-		return John;
-	}
-	
-	public static NPC spawnMonster(String name) {
-		Random rand = new Random();
-		NPC monster = new NPC(name);
-		
-		int posX = rand.nextInt(mapWidth - 2) + 1;
-		int posY = rand.nextInt(mapHeight - 2) + 1;
-		while (!isEmpty(posX, posY)) {
-			posX = rand.nextInt(mapWidth - 2) + 1;
-			posY = rand.nextInt(mapHeight - 2) + 1;
-		}
-		putCreature(posX, posY, monster);
-		return monster;
 	}
 }
