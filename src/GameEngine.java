@@ -36,6 +36,7 @@ public final class GameEngine {
 			
 			input = GameUI.getInputChar();
 		}
+		
 		exit();
 	}
 	
@@ -50,8 +51,9 @@ public final class GameEngine {
 	public static void play() {
 		try {
 		init();
-		GameUI.showMessage("Prepare to play! Press space to start.");
-
+		GameUI.showMessage("Prepare to play!");
+		GameUI.drawMap(Map.toStringArray());
+		GameUI.getInputChar();
 		GameUI.close();
 		} catch(Exception e) {
 			GameUI.close();

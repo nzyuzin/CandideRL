@@ -1,8 +1,13 @@
 package creatures;
 
 public class NPC extends Creature {
+	
+	protected static int ID = 0; 
+	protected final int id;
+	
 	public NPC(String name) {
 		super();
+		id = ID++;
 		this.name = name;
 		this.charOnMap = 'g';
 		maxHP = 100;

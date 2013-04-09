@@ -34,7 +34,7 @@ public class GameUI {
 	
 	public static void showMessage(String msg) {
 		Toolkit.clearScreen(mapFontColor);
-		Toolkit.printString(msg + "\nPress spacebar to continue", 0, 0, mapFontColor);
+		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, mapFontColor);
 		waitForChar(' ');
 	}
 	

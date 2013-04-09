@@ -13,23 +13,19 @@ public abstract class Creature implements Movable, Damageable  {
 		public short armor;
 	}
 	
-	protected static int ID = 0; 
-	
-	protected final int id;
-	
 	public int posX = -1;
 	public int posY = -1;
 	public char charOnMap = '?';
 	
 	public short currentHP;
 	public short maxHP;
-	protected double attackRate;
+	
 	protected String name;
+	protected double attackRate;
 	protected Attributes attributes;
 	protected boolean canTakeDamage;
 	
 	Creature() {
-		id = ID++;
 		attributes = new Attributes();
 	}
 	
