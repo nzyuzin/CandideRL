@@ -4,44 +4,26 @@ public final class DirectionProcessor {
 	
 	private DirectionProcessor() { }
 	
-	public static int[] applyDirectionToCoordinats(int x, int y, Direction there) {
-		
-		int[] coordinates = new int[2];
+	public static Position applyDirectionToPosition(Position pos, Direction there) {
 		
 		switch (there) {
 		
 		case NORTH:
-			coordinates[0] = x;
-			coordinates[1] = y + 1;
-			return coordinates;
+			return new Position(pos.x, pos.y + 1);
 		case SOUTH:
-			coordinates[0] = x;
-			coordinates[1] = y - 1;
-			return coordinates;
+			return new Position(pos.x, pos.y - 1);
 		case WEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y;
-			return coordinates;
+			return new Position(pos.x - 1, pos.y);
 		case EAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y;
-			return coordinates;
+			return new Position(pos.x + 1, pos.y);
 		case NORTHEAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y + 1;
-			return coordinates;
+			return new Position(pos.x + 1, pos.y + 1);
 		case SOUTHEAST:
-			coordinates[0] = x + 1;
-			coordinates[1] = y - 1;
-			return coordinates;
+			return new Position(pos.x + 1, pos.y - 1);
 		case SOUTHWEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y - 1;
-			return coordinates;
+			return new Position(pos.x - 1, pos.y - 1);
 		case NORTHWEST:
-			coordinates[0] = x - 1;
-			coordinates[1] = y + 1;
-			return coordinates;
+			return new Position(pos.x - 1, pos.y + 1);
 			
 		default:
 			return null;

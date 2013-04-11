@@ -1,43 +1,27 @@
+import characters.*;
 import map.Map;
 import ui.GameUI;
-import utility.KeyDefinitions;
-import utility.DirectionProcessor;
-import creatures.*;
+import utility.*;
 
 public final class GameEngine {
-	private static Hero hero = null;
+	private static Player player = null;
 	
 	private GameEngine() { }
 	
 	private static void init() {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
+		player = new Player("Nikita", new Position(1, 1));
+		Map.moveGameCharacter(player, new Position(1, 1));
 	}
 	
-	private static void handleInput() {
-		char input = GameUI.getInputChar();
-		int[] coordinates = null;
-		
-		while (!KeyDefinitions.isExitChar(input) ) {
-			
-			if ( KeyDefinitions.isDirectionKey(input) ) {
-				
-				coordinates = DirectionProcessor.applyDirectionToCoordinats( hero.posX, hero. posY, 
-						DirectionProcessor.getDirectionFromChar(input) );
-				
-				if ( Map.isCellPassable(coordinates[0], coordinates[1]) ) {
-					hero.move(coordinates[0], coordinates[1]);
-					Map.moveCreature(hero, coordinates[0], coordinates[1]);
-				}
-				
-				else if ( Map.creatureHere(coordinates[0], coordinates[1]) )
-					hero.hit(Map.getCreature(coordinates[0], coordinates[1]));
-			}
-			
-			input = GameUI.getInputChar();
-		}
-		
-		exit();
+	private static boolean handleInput() {
+		char input = GameUI.getInputChar();		
+		if (KeyDefinitions.isExitChar(input))
+			return false;
+		if (KeyDefinitions.isDirectionKey(input))
+			player.move(DirectionProcessor.getDirectionFromChar(input));
+		return true;
 	}
 	
 	private static void exit() {
@@ -52,9 +36,15 @@ public final class GameEngine {
 		try {
 		init();
 		GameUI.showMessage("Prepare to play!");
+		player.move(Direction.NORTH);
+		player.performAction();
 		GameUI.drawMap(Map.toStringArray());
-		GameUI.getInputChar();
-		GameUI.close();
+		while (handleInput()) {
+		if(player.hasAction())
+			player.performAction();
+		GameUI.drawMap(Map.toStringArray());
+		}
+		exit();
 		} catch(Exception e) {
 			GameUI.close();
 			e.printStackTrace();

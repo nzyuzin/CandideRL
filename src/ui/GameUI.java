@@ -21,8 +21,8 @@ public class GameUI {
 	}
 	
 	public static void drawMap(String[] mapInStrings) {
-		for (int i = 0; i < windowHeight; i++)
-			Toolkit.printString(mapInStrings[i], 0, windowHeight - i - 1, mapFontColor);
+		for (int i = 0; i < mapHeight; i++)
+			Toolkit.printString(mapInStrings[i], 0, mapHeight - i - 1, mapFontColor);
 	}
 	
 	public static char getInputChar() {

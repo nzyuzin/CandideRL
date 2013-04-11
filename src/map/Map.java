@@ -1,6 +1,8 @@
 package map;
 
-import creatures.Creature;
+import characters.GameCharacter;
+import utility.Position;
+import java.lang.StringBuffer;
 
 public final class Map {
 	private static int mapWidth;
@@ -34,61 +36,72 @@ public final class Map {
 		}
 	}
 	
-	private static MapCell getCell(int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		return map[x][y];
+	private static MapCell getCell(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return map[pos.x][pos.y];
 	}
 	
-	private static void removeCreature(int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		MapCell cell = getCell(x, y);
-		cell.creature = null;
+	private static void removeGameCharacter(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		MapCell cell = getCell(pos);
+		cell.gameCharacter.position = null;
+		cell.gameCharacter = null;
 		cell.chooseCharOnMap();
 	}
 	
-	private static void putCreature(int x, int y, Creature mob) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		MapCell cell = getCell(x, y);
-		cell.creature = mob;
+	private static void putGameCharacter(GameCharacter mob, Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		MapCell cell = getCell(pos);
+		cell.gameCharacter = mob;
 		cell.chooseCharOnMap();
 	}
 	
-	public static boolean isCellPassable(int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		return getCell(x, y).canBePassed;
+	public static boolean isCellPassable(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return getCell(pos).canBePassed;
 	}
 	
-	public static void moveCreature(Creature mob, int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		removeCreature(mob.posX, mob.posY);
-		putCreature(x, y, mob);
+	public static void moveGameCharacter(GameCharacter mob, Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		removeGameCharacter(mob.position);
+		mob.position = pos;
+		putGameCharacter(mob, pos);
 	}
 
-	public static boolean creatureHere(int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		return getCell(x, y).creature != null;
+	public static boolean someoneHere(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return getCell(pos).gameCharacter != null;
 	}
 	
-	public static Creature getCreature(int x, int y) {
-		assert x < mapWidth && x >= 0 &&
-				y < mapHeight && y >= 0;
-		return getCell(x, y).creature;
+	public static GameCharacter getGameCharacter(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return getCell(pos).gameCharacter;
+	}
+	
+	public static int getPassageCost(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return getCell(pos).passageCost;
 	}
 	
 	public static String[] toStringArray() {
 		String[] output = new String[mapHeight];
-		for(int i = 0; i < mapHeight; i++)
-			output[i] = "";
-		for (int i = 0; i < mapWidth; i++) {
-			for (int j = 0; j < mapHeight; j++)
-				output[j] += getCell(i, j).visibleChar;
+		StringBuffer buffer = null;
+		
+		for (int i = 0; i < mapHeight; i++) {
+			buffer = new StringBuffer();
+			for (int j = 0; j < mapWidth; j++)
+				buffer.append(getCell(new Position(j, i)).visibleChar);
+			output[i] = buffer.toString();
 		}
+
 		return output;
 	}
 }

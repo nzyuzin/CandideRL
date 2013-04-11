@@ -1,32 +1,39 @@
 package map;
 
-import creatures.Creature;
+import characters.GameCharacter;
+import utility.VisibleCharacters;
 
 public abstract class MapCell {
-	protected char charOnMap;
+	protected final char charOnMap;
 	protected char visibleChar;
 	protected boolean canBePassed = false;
-	protected Creature creature = null;
+	protected GameCharacter gameCharacter = null;
+	protected int passageCost = 0;
+	
+	protected MapCell(char onMap) {
+		charOnMap = onMap;
+	}
 	
 	protected void chooseCharOnMap() {
-		if (creature != null)
-			visibleChar = creature.charOnMap;
+		if (gameCharacter != null)
+			visibleChar = gameCharacter.charOnMap;
 		else visibleChar = charOnMap;
 	}
 }
 
 class Wall extends MapCell {
 	Wall() {
-		charOnMap = '#';
-		visibleChar = '#';
+		super(VisibleCharacters.WALL);
+		visibleChar = VisibleCharacters.WALL;
 		canBePassed = false;
 	}
 }
 
 class Floor extends MapCell {	
 	Floor() {
+		super(VisibleCharacters.FLOOR);
 		canBePassed = true;
-		visibleChar = '.';
-		charOnMap = '.';
+		visibleChar = VisibleCharacters.FLOOR;
+		passageCost = 100;
 	}
 }
