@@ -60,6 +60,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 //		else {
 //			current.setActionPointsLeft(current.actionPointsLeft() - currentActionPoints);
 //		}
+		if (gameActions.isEmpty()) return;
 		gameActions.poll().execute();
 	}
 	
