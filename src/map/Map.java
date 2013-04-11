@@ -46,8 +46,10 @@ public final class Map {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
 		MapCell cell = getCell(pos);
-		cell.gameCharacter.position = null;
-		cell.gameCharacter = null;
+		if (cell.gameCharacter != null) {
+			cell.gameCharacter.position = null;
+			cell.gameCharacter = null;
+		}
 		cell.chooseCharOnMap();
 	}
 	
@@ -91,6 +93,14 @@ public final class Map {
 		return getCell(pos).passageCost;
 	}
 	
+	public static boolean[][] toBooleanArray() {
+		boolean[][] array = new boolean[mapHeight][mapWidth];
+		for (int i = 0; i < mapHeight; i++) 
+			for (int j = 0; j < mapWidth; j++)
+				array[i][j] = map[j][i].canBePassed;
+		return array;
+	}
+	
 	public static String[] toStringArray() {
 		String[] output = new String[mapHeight];
 		StringBuffer buffer = null;
@@ -98,7 +108,7 @@ public final class Map {
 		for (int i = 0; i < mapHeight; i++) {
 			buffer = new StringBuffer();
 			for (int j = 0; j < mapWidth; j++)
-				buffer.append(getCell(new Position(j, i)).visibleChar);
+				buffer.append(map[j][i].visibleChar);
 			output[i] = buffer.toString();
 		}
 
