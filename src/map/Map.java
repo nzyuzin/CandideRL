@@ -68,7 +68,7 @@ public final class Map {
 	public static boolean isCellPassable(Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
-		return getCell(pos).canBePassed;
+		return getCell(pos).canBePassed && !someoneHere(pos);
 	}
 	
 	public static void moveGameCharacter(GameCharacter mob, Position pos) {
@@ -98,10 +98,10 @@ public final class Map {
 	}
 	
 	public static boolean[][] toBooleanArray() {
-		boolean[][] array = new boolean[mapHeight][mapWidth];
+		boolean[][] array = new boolean[mapWidth][mapHeight];
 		for (int i = 0; i < mapHeight; i++) 
 			for (int j = 0; j < mapWidth; j++)
-				array[i][j] = map[j][i].canBePassed;
+				array[j][i] = map[j][i].canBePassed && map[j][i].gameCharacter == null;
 		return array;
 	}
 	

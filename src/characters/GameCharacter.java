@@ -66,7 +66,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	
 	public void breakActionQueue() {
 		gameActions = new ArrayDeque<GameAction>();
-	}
+	} 
 	
 	public void hit(GameCharacter mob) {
 	/*  TODO
