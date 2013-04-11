@@ -29,7 +29,11 @@ public final class Map {
 		for(int i = 0; i < height; i++) {
 			map[0][i] = wall;
 			map[width - 1][i] = wall;
+			map[width / 2][i] = wall;
 		}
+		
+		map[width / 2][height / 2] = new Floor();
+		
 		for (int i = 0; i < width; i++) {
 			map[i][0] = wall;
 			map[i][height - 1] = wall;

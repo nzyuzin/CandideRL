@@ -15,7 +15,8 @@ public final class MovementGameAction extends AbstractGameAction {
 	}
 	
 	public void execute() {
-		Map.moveGameCharacter(subject, position);
+		if (Map.isCellPassable(position))
+			Map.moveGameCharacter(subject, position);
 	}
 
 }
