@@ -46,36 +46,34 @@ public final class Map {
 		return map[pos.x][pos.y];
 	}
 	
-	private static void removeGameCharacter(Position pos) {
-		assert pos.x < mapWidth && pos.x >= 0 &&
-				pos.y < mapHeight && pos.y >= 0;
-		MapCell cell = getCell(pos);
-		if (cell.gameCharacter != null) {
-			cell.gameCharacter.position = null;
-			cell.gameCharacter = null;
-		}
+	public static void removeGameCharacter(GameCharacter mob) {
+		assert mob.position.x < mapWidth && mob.position.x >= 0 &&
+				mob.position.y < mapHeight && mob.position.y >= 0;
+		MapCell cell = getCell(mob.position);
+		mob.position = null;
+		cell.gameCharacter = null;
 		cell.chooseCharOnMap();
 	}
 	
-	private static void putGameCharacter(GameCharacter mob, Position pos) {
+	public static void putGameCharacter(GameCharacter mob, Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
 		MapCell cell = getCell(pos);
 		cell.gameCharacter = mob;
+		mob.position = pos;
 		cell.chooseCharOnMap();
 	}
 	
 	public static boolean isCellPassable(Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
-		return getCell(pos).canBePassed && !someoneHere(pos);
+		return getCell(pos).canBePassed;
 	}
 	
 	public static void moveGameCharacter(GameCharacter mob, Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
-		removeGameCharacter(mob.position);
-		mob.position = pos;
+		removeGameCharacter(mob);
 		putGameCharacter(mob, pos);
 	}
 

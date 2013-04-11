@@ -11,7 +11,7 @@ public class NPC extends GameCharacter {
 		super(pos);
 		id = ID++;
 		this.name = name;
-		this.charOnMap = 'g';
+		this.charOnMap = 'N';
 		maxHP = 100;
 		currentHP = 100;
 		attributes.strength = 8;

@@ -14,9 +14,16 @@ public final class MovementGameAction extends AbstractGameAction {
 		actionPointsLeft = Map.getPassageCost(position);
 	}
 	
+	@Override
 	public void execute() {
-		if (Map.isCellPassable(position))
-			Map.moveGameCharacter(subject, position);
+		if (!Map.someoneHere(position)) {
+			if (Map.isCellPassable(position))
+				Map.moveGameCharacter(performer, position);
+		}
+		else {
+			performer.removeCurrentAction();
+			performer.addAction(new HitGameAction(performer, position));
+			performer.performAction();
+		}
 	}
-
 }

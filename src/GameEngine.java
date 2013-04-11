@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public final class GameEngine {
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
+	static NPC  goblin = null;
 	
 	private GameEngine() { }
 	
@@ -15,7 +16,10 @@ public final class GameEngine {
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		player = new Player("Nikita", new Position(1, 1));
-		Map.moveGameCharacter(player, new Position(1, 1));
+		goblin = new NPC("goblin", new Position(15, 15));
+		npcs.add(goblin);
+		Map.putGameCharacter(goblin, new Position(15, 15));
+		Map.putGameCharacter(player, new Position(1, 1));
 	}
 	
 	private static void handleInput() {
@@ -47,7 +51,15 @@ public final class GameEngine {
 		player.move(Direction.NORTH);
 		player.performAction();
 		GameUI.drawMap(Map.toStringArray());
-		while (player.currentHP > 0) {
+		while (goblin.currentHP > 0) {
+			handleInput();
+			processActions();
+			GameUI.drawMap(Map.toStringArray());
+		}
+		GameUI.showMessage("Goblin is killed!");
+		Map.removeGameCharacter(goblin);
+		player.breakActionQueue();
+		while(player.currentHP > 0) {
 			handleInput();
 			processActions();
 			GameUI.drawMap(Map.toStringArray());

@@ -53,6 +53,10 @@ public abstract class GameCharacter implements Movable, Damageable  {
 		gameActions.add(action);
 	}
 	
+	public void removeCurrentAction() {
+		gameActions.poll();
+	}
+	
 	public void performAction() {
 //		GameAction current = gameActions.peek();
 //		if (current.actionPointsLeft() < 0)
@@ -68,7 +72,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 		gameActions = new ArrayDeque<GameAction>();
 	} 
 	
-	public void hit(GameCharacter mob) {
+	public int hit() {
 	/*  TODO
 	 *  Hit should generate integer which is calculated,
 	 *  depending on attackers attributes and random number.
@@ -77,7 +81,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	 */
 		Random rand = new Random();
 		int damage = rand.nextInt((int) (attributes.strength * attackRate));
-		mob.takeDamage(damage);
+		return damage;
 	}
 	
 	public boolean canTakeDamage() {
