@@ -8,6 +8,10 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 import utility.Position;
 
+// GameCharacter shouldn't know about existence of Map neither of GameUI nor of GameEngine.
+// Every actions that is performed on Map is supposed to be expressed through GameAction classes
+// and added to queue, which is field of this class.
+
 public abstract class GameCharacter implements Movable, Damageable  {
 	
 	protected final class Attributes {
@@ -20,7 +24,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	protected Queue<GameAction> gameActions = null;
 	
 	public Position position= null;
-	public char charOnMap = '?';
+	public char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
 	
 	public short currentHP;
 	public short maxHP;
@@ -30,9 +34,9 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	protected double attackRate;
 	protected Attributes attributes;
 	protected boolean canTakeDamage;
-	protected int actionPointsOnCon;
-	protected int currentActionPoints;
-	protected int maximumActionPoints;
+	protected int actionPointsOnCon;    //
+	protected int currentActionPoints;  // Those three fields are of no use for now.
+	protected int maximumActionPoints;  //
 
 	
 	GameCharacter(Position pos) {
@@ -58,6 +62,8 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	}
 	
 	public void performAction() {
+		// TODO make use of action points
+		
 //		GameAction current = gameActions.peek();
 //		if (current.actionPointsLeft() < 0)
 //			gameActions.poll().execute();

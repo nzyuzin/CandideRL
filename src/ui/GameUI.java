@@ -2,6 +2,8 @@ package ui;
 
 import jcurses.system.*;
 
+// This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
+
 public class GameUI {
 	private static CharColor mapFontColor;
 	private static int windowWidth;

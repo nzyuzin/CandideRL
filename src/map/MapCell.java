@@ -3,7 +3,7 @@ package map;
 import characters.GameCharacter;
 import utility.VisibleCharacters;
 
-public abstract class MapCell {
+abstract class MapCell {
 	protected final char charOnMap;
 	protected char visibleChar;
 	protected boolean canBePassed = false;

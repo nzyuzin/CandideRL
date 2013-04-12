@@ -5,9 +5,9 @@ import utility.Position;
 import java.lang.StringBuffer;
 
 public final class Map {
+	
 	private static int mapWidth;
 	private static int mapHeight;
-
 
 	private static MapCell[][] map;
 	

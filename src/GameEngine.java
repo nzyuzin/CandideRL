@@ -4,6 +4,8 @@ import ui.GameUI;
 import utility.*;
 import java.util.ArrayList;
 
+// Should know about all classes without restrictions, but no class should know about existence of GameEngine.
+
 public final class GameEngine {
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
