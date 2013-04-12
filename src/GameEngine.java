@@ -57,8 +57,6 @@ public final class GameEngine {
 			GameUI.drawMap(Map.toStringArray());
 		}
 		GameUI.showMessage("Goblin is killed!");
-		Map.removeGameCharacter(goblin);
-		player.breakActionQueue();
 		while(player.currentHP > 0) {
 			handleInput();
 			processActions();

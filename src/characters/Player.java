@@ -3,6 +3,9 @@ package characters;
 import utility.Position;
 
 public final class Player extends GameCharacter {
+	
+	public static int[][] distanceToHero;
+	
 	public Player(String name, Position pos) {
 		super(pos);
 		this.name = name;
