@@ -4,7 +4,7 @@ import utility.Position;
 
 public final class Player extends GameCharacter {
 	
-	public static int[][] distanceToHero;
+	public static int[][] distanceToPlayer;
 	
 	public Player(String name, Position pos) {
 		super(pos);
