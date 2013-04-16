@@ -15,8 +15,8 @@ public final class HitGameAction extends AbstractGameAction {
 	
 	@Override
 	public void execute() {
-		target.takeDamage(performer.hit());
-		if (target.currentHP <= 0)
+		target.takeDamage(performer.roleDamageDice());
+		if ( target.isDead())
 			Map.removeGameCharacter(target);
 	}
 

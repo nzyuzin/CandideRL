@@ -44,10 +44,7 @@ public abstract class GameCharacter implements Movable, Damageable  {
 		attributes = new Attributes();
 		gameActions = new ArrayDeque<GameAction>();
 	}
-	
-	public void move(Direction there) {
-			addAction(new MovementGameAction(this, there));
-	}
+
 	
 	public boolean hasAction() {
 		return !gameActions.isEmpty();
@@ -59,6 +56,10 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	
 	public void removeCurrentAction() {
 		gameActions.poll();
+	}
+	
+	public boolean isDead() {
+		return currentHP <= 0;
 	}
 	
 	public void performAction() {
@@ -78,16 +79,22 @@ public abstract class GameCharacter implements Movable, Damageable  {
 		gameActions = new ArrayDeque<GameAction>();
 	} 
 	
-	public int hit() {
+	public void hit(Position pos) {
 	/*  TODO
 	 *  Hit should generate integer which is calculated,
 	 *  depending on attackers attributes and random number.
 	 *  This integer is passed to takeAHit method later on,
 	 *  separately from this method.
 	 */
-		Random rand = new Random();
-		int damage = rand.nextInt((int) (attributes.strength * attackRate));
-		return damage;
+		addAction(new HitGameAction(this, pos));
+	}
+	
+	public int roleDamageDice() {
+		return 42;
+	}
+	
+	public void move(Direction there) {
+			addAction(new MovementGameAction(this, there));
 	}
 	
 	public boolean canTakeDamage() {

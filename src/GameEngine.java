@@ -1,6 +1,7 @@
 import characters.*;
 import map.Map;
 import ui.GameUI;
+import ai.AI;
 import utility.*;
 import java.util.ArrayList;
 
@@ -10,6 +11,8 @@ public final class GameEngine {
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
 	static NPC  goblin = null;
+	private static int currentTurn;
+	private static AI artificialIntellegence = null;
 	
 	private GameEngine() { }
 	
@@ -17,11 +20,21 @@ public final class GameEngine {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
-		player = new Player("Nikita", new Position(1, 1));
+		player = new Player("DWARF", new Position(47, 1));
 		goblin = new NPC("goblin", new Position(15, 15));
+		artificialIntellegence = new AI(player);
 		npcs.add(goblin);
 		Map.putGameCharacter(goblin, new Position(15, 15));
-		Map.putGameCharacter(player, new Position(1, 1));
+		Map.putGameCharacter(player, new Position(47, 1));
+		currentTurn = 0;
+	}
+	
+	private static void advanceTime() {
+		for (NPC mob : npcs)
+			artificialIntellegence.chooseAction(mob);
+		currentTurn++;
+		processActions();
+		GameUI.drawMap(Map.toStringArray());
 	}
 	
 	private static void handleInput() {
@@ -30,6 +43,8 @@ public final class GameEngine {
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
 			player.move(DirectionProcessor.getDirectionFromChar(input));
+		if (input == 's')
+			advanceTime();
 	}
 	
 	private static void exit() {
@@ -53,17 +68,12 @@ public final class GameEngine {
 		player.move(Direction.NORTH);
 		player.performAction();
 		GameUI.drawMap(Map.toStringArray());
-		while (goblin.currentHP > 0) {
+		while ( !goblin.isDead() && !player.isDead() ) {
 			handleInput();
-			processActions();
-			GameUI.drawMap(Map.toStringArray());
+			advanceTime();
 		}
-		GameUI.showMessage("Goblin is killed!");
-		while(player.currentHP > 0) {
-			handleInput();
-			processActions();
-			GameUI.drawMap(Map.toStringArray());
-		}
+		if ( goblin.isDead()) GameUI.showMessage("Goblin is killed!");
+		if ( player.isDead()) GameUI.showMessage("You're dead! Congratulations.");
 		exit();
 		} catch(Exception e) {
 			GameUI.close();
