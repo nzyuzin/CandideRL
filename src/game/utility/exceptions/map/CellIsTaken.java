@@ -1,6 +1,6 @@
-package utility.exceptions.map;
+package game.utility.exceptions.map;
 
-import characters.GameCharacter;
+import game.characters.GameCharacter;
 
 public final class CellIsTaken extends Exception {
 	private static final long serialVersionUID = 8382L;

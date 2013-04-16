@@ -1,8 +1,8 @@
-package characters.actions;
+package game.characters.actions;
 
-import characters.GameCharacter;
-import map.Map;
-import utility.*;
+import game.characters.GameCharacter;
+import game.map.Map;
+import game.utility.*;
 
 public final class MovementGameAction extends AbstractGameAction {
 	

@@ -1,4 +1,4 @@
-package utility.interfaces;
+package game.utility.interfaces;
 
 public interface Damageable {
 	boolean canTakeDamage();

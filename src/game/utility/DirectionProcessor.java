@@ -1,4 +1,4 @@
-package utility;
+package game.utility;
 
 public final class DirectionProcessor {
 	
@@ -29,6 +29,27 @@ public final class DirectionProcessor {
 			return null;
 			
 		}
+	}
+	
+	public static Direction getDirectionFromPositions(Position from, Position to) {
+		if( from.x == to.x && from.y > to.y  )
+			return Direction.SOUTH;
+		if( from.x == to.x && from.y < to.y )
+			return Direction.NORTH;
+		if( from.x > to.x && from.y == to.y )
+			return Direction.WEST;
+		if( from.x < to.x && from.y == to.y )
+			return Direction.EAST;
+		if( from.x > to.x && from.y < to.y )
+			return Direction.NORTHWEST;
+		if( from.x < to.x && from.y < to.y )
+			return Direction.NORTHEAST;
+		if( from.x > to.x && from.y > to.y )
+			return Direction.SOUTHWEST;
+		if( from.x < to.x && from.y > to.y )
+			return Direction.SOUTHEAST;
+		
+		return null;
 	}
 	
 	public static Direction getDirectionFromChar(char key) {
