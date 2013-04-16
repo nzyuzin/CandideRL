@@ -104,7 +104,6 @@ class CostArray {
 		for(int i=0;i<initRigid.length;i++)
 			for(int j=0;j<initRigid[0].length;j++)
 				initRigid[i][j] = toRigid[i][j];
-		rigid[2][0] = true;
 		//TODO: too small?
 		generationOffspring = new int[toRigid.length * toRigid[0].length];
 	}
