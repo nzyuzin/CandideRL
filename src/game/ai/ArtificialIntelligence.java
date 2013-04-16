@@ -2,12 +2,12 @@ package game.ai;
 import game.characters.*;
 import game.utility.DirectionProcessor;
 
-public class AI {
+public class ArtificialIntelligence {
 	
 	private Player player = null;
 	private int[][] distanceToPlayer = null;
 	
-	public AI(Player player){
+	public ArtificialIntelligence(Player player){
 		this.player = player;
 	}
 	

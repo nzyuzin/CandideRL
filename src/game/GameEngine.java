@@ -1,5 +1,5 @@
 package game;
-import game.ai.AI;
+import game.ai.ArtificialIntelligence;
 import game.characters.*;
 import game.map.Map;
 import game.ui.GameUI;
@@ -14,7 +14,7 @@ public final class GameEngine {
 	private static ArrayList<NPC> npcs = null;
 	static NPC  goblin = null;
 	private static int currentTurn;
-	private static AI artificialIntellegence = null;
+	private static ArtificialIntelligence artificialIntelligence = null;
 	
 	private GameEngine() { }
 	
@@ -24,7 +24,7 @@ public final class GameEngine {
 		npcs = new ArrayList<NPC>();
 		player = new Player("DWARF", new Position(47, 1));
 		goblin = new NPC("goblin", new Position(15, 15));
-		artificialIntellegence = new AI(player);
+		artificialIntelligence = new ArtificialIntelligence(player);
 		npcs.add(goblin);
 		Map.putGameCharacter(goblin, new Position(15, 15));
 		Map.putGameCharacter(player, new Position(47, 1));
@@ -33,7 +33,7 @@ public final class GameEngine {
 	
 	private static void advanceTime() {
 		for (NPC mob : npcs)
-			artificialIntellegence.chooseAction(mob);
+			artificialIntelligence.chooseAction(mob);
 		currentTurn++;
 		processActions();
 		GameUI.drawMap(Map.toStringArray());
