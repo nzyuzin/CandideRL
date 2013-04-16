@@ -13,15 +13,15 @@ public class ArtificialIntelligence {
 	
 	public void chooseAction(NPC mob) {
 		if ( player.isDead()) return;
-		if ( player.position.distanceTo(mob.position) == 1 )
-			mob.hit(player.position);
+		if ( player.getPosition().distanceTo(mob.getPosition()) == 1 )
+			mob.hit(player.getPosition());
 		else {
 			moveToPlayer(mob);
 		}
 	}
 	
 	private void moveToPlayer(NPC mob) {
-		mob.move(DirectionProcessor.getDirectionFromPositions(mob.position, player.position));
+		mob.move(DirectionProcessor.getDirectionFromPositions(mob.getPosition(), player.getPosition()));
 	}
 	
 }

@@ -22,12 +22,12 @@ public final class GameEngine {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
-		player = new Player("DWARF", new Position(47, 1));
+		player = new Player("DWARF", new Position(1, 1));
 		goblin = new NPC("goblin", new Position(15, 15));
 		artificialIntelligence = new ArtificialIntelligence(player);
 		npcs.add(goblin);
 		Map.putGameCharacter(goblin, new Position(15, 15));
-		Map.putGameCharacter(player, new Position(47, 1));
+		Map.putGameCharacter(player, new Position(1, 1));
 		currentTurn = 0;
 	}
 	

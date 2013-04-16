@@ -14,5 +14,9 @@ public final class Position {
 	public int distanceTo(Position target) {
 		return (int) Math.sqrt((this.x - target.x) * (this.x - target.x) + (this.y - target.y) * (this.y - target.y));
 	}
+
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 	
 }

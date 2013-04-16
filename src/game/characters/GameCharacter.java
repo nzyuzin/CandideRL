@@ -4,6 +4,7 @@ import game.characters.actions.*;
 import game.utility.Direction;
 import game.utility.Position;
 import game.utility.interfaces.*;
+import game.items.MiscItem;
 
 import java.util.Random;
 import java.util.ArrayDeque;
@@ -13,7 +14,7 @@ import java.util.Queue;
 // Every actions that is performed on Map is supposed to be expressed through GameAction classes
 // and added to queue, which is field of this class.
 
-public abstract class GameCharacter implements Movable, Damageable  {
+public abstract class GameCharacter implements Movable, Damageable, Visible  {
 	
 	protected final class Attributes {
 		public short strength;
@@ -24,13 +25,13 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	
 	protected Queue<GameAction> gameActions = null;
 	
-	public Position position= null;
-	public char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
+	protected Position position= null;
+	protected char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
 	
-	public short currentHP;
-	public short maxHP;
-	public double speed = 1;
-	public String name;
+	protected short currentHP;
+	protected short maxHP;
+	protected double speed = 1;
+	protected String name;
 	
 	protected double attackRate;
 	protected Attributes attributes;
@@ -61,6 +62,14 @@ public abstract class GameCharacter implements Movable, Damageable  {
 	
 	public boolean isDead() {
 		return currentHP <= 0;
+	}
+	
+	public Position getPosition() {
+		return position;
+	}
+	
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 	
 	public void performAction() {
@@ -111,5 +120,17 @@ public abstract class GameCharacter implements Movable, Damageable  {
 		int chancetoevade = rand.nextInt(50) + attributes.dexterity;
 		if (chancetoevade < 50)
 			currentHP -= (damage - attributes.armor);
+	}
+	
+	public MiscItem getCorpse() {
+		return new MiscItem('c', 50, 50);
+	}
+	
+	public char getCharOnMap() {
+		return charOnMap;
+	}
+	
+	public void setCharOnMap(char onMap) {
+		charOnMap = onMap;
 	}
 }

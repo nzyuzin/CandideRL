@@ -2,6 +2,7 @@ package game.map;
 
 import game.characters.GameCharacter;
 import game.utility.Position;
+import game.utility.interfaces.GameItem;
 
 import java.lang.StringBuffer;
 
@@ -48,21 +49,24 @@ public final class Map {
 	}
 	
 	public static void removeGameCharacter(GameCharacter mob) {
-		assert mob.position.x < mapWidth && mob.position.x >= 0 &&
-				mob.position.y < mapHeight && mob.position.y >= 0;
-		MapCell cell = getCell(mob.position);
-		mob.position = null;
-		cell.gameCharacter = null;
-		cell.chooseCharOnMap();
+		assert mob.getPosition().x < mapWidth && mob.getPosition().x >= 0 &&
+				mob.getPosition().y < mapHeight && mob.getPosition().y >= 0;
+		MapCell cell = getCell(mob.getPosition());
+		mob.setPosition(null);
+		cell.setGameCharacter(null);
 	}
 	
 	public static void putGameCharacter(GameCharacter mob, Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
-		MapCell cell = getCell(pos);
-		cell.gameCharacter = mob;
-		mob.position = pos;
-		cell.chooseCharOnMap();
+		getCell(pos).setGameCharacter(mob);
+		mob.setPosition(pos);
+	}
+	
+	public static void putItem(GameItem item, Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		getCell(pos).putItem(item);
 	}
 	
 	public static boolean isCellPassable(Position pos) {
