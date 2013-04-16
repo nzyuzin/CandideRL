@@ -1,4 +1,4 @@
-package utility;
+package game.utility;
 
 import java.lang.Math;
 

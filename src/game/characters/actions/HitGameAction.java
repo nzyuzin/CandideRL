@@ -1,8 +1,8 @@
-package characters.actions;
+package game.characters.actions;
 
-import characters.GameCharacter;
-import map.Map;
-import utility.*;
+import game.characters.GameCharacter;
+import game.map.Map;
+import game.utility.*;
 
 public final class HitGameAction extends AbstractGameAction {
 
@@ -15,8 +15,8 @@ public final class HitGameAction extends AbstractGameAction {
 	
 	@Override
 	public void execute() {
-		target.takeDamage(performer.hit());
-		if (target.currentHP <= 0)
+		target.takeDamage(performer.roleDamageDice());
+		if ( target.isDead())
 			Map.removeGameCharacter(target);
 	}
 

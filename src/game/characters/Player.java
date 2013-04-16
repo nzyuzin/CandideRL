@@ -1,12 +1,13 @@
-package characters;
+package game.characters;
 
-import utility.Position;
+import game.utility.Position;
 
 public final class Player extends GameCharacter {
+	
 	public Player(String name, Position pos) {
 		super(pos);
 		this.name = name;
-		this.charOnMap = utility.VisibleCharacters.PLAYER;
+		this.charOnMap = game.utility.VisibleCharacters.PLAYER;
 		maxHP = 100;
 		currentHP = 100;
 		attributes.strength = 8;

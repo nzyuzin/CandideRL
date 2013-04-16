@@ -1,9 +1,9 @@
-package map;
+package game.map;
 
-import characters.GameCharacter;
-import utility.VisibleCharacters;
+import game.characters.GameCharacter;
+import game.utility.VisibleCharacters;
 
-public abstract class MapCell {
+abstract class MapCell {
 	protected final char charOnMap;
 	protected char visibleChar;
 	protected boolean canBePassed = false;

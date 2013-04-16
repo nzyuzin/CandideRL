@@ -1,4 +1,4 @@
-package utility;
+package game.utility;
 
 public final class VisibleCharacters {
 	public final static char FLOOR = '.';

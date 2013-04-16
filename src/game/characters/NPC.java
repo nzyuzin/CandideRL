@@ -1,6 +1,6 @@
-package characters;
+package game.characters;
 
-import utility.Position;
+import game.utility.Position;
 
 public class NPC extends GameCharacter {
 	
