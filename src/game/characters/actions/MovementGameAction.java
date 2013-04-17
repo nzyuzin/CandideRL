@@ -14,7 +14,10 @@ public final class MovementGameAction extends AbstractGameAction {
 		actionPointsLeft = Map.getPassageCost(position);
 	}
 	
-	@Override
+	public boolean canBeExecuted() {
+		return Map.isCellPassable(position) && performer.getPosition().distanceTo(position) == 1;
+	}
+	
 	public void execute() {
 		if (!Map.someoneHere(position)) {
 			if (Map.isCellPassable(position))

@@ -72,6 +72,10 @@ public abstract class GameCharacter implements Movable, Damageable, Visible  {
 		this.position = position;
 	}
 	
+	public boolean canPerformAction() {
+		return gameActions.peek().canBeExecuted();
+	}
+	
 	public void performAction() {
 		// TODO make use of action points
 		

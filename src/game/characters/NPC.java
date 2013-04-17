@@ -7,11 +7,11 @@ public class NPC extends GameCharacter {
 	protected static int ID = 0; 
 	protected final int id;
 	
-	public NPC(String name, Position pos) {
+	public NPC(String name, char onMap, Position pos) {
 		super(pos);
 		id = ID++;
 		this.name = name;
-		this.charOnMap = 'N';
+		this.setCharOnMap(onMap);
 		maxHP = 100;
 		currentHP = 100;
 		attributes.strength = 8;
