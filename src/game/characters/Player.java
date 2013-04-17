@@ -19,4 +19,5 @@ public final class Player extends GameCharacter {
 		currentActionPoints = 50;
 		speed = 1;
 	}
+	
 }

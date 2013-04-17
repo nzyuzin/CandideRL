@@ -14,7 +14,7 @@ public final class HitGameAction extends AbstractGameAction {
 	}
 	
 	public boolean canBeExecuted() {
-		return !target.isDead() && !performer.isDead() && target.getPosition().distanceTo(performer.getPosition()) == 1;
+		return target != null && !target.isDead() && !performer.isDead() && target.getPosition().distanceTo(performer.getPosition()) == 1;
 	}
 	
 	public void execute() {

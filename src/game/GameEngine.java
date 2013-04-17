@@ -56,7 +56,7 @@ public final class GameEngine {
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
-			player.move(DirectionProcessor.getDirectionFromChar(input));
+			artificialIntelligence.chooseActionInDirection(player, DirectionProcessor.getDirectionFromChar(input));
 		if (input == 's')
 			advanceTime();
 	}
@@ -82,9 +82,8 @@ public final class GameEngine {
 		drawMap();
 		while ( !npcs.isEmpty() && !player.isDead() ) {
 			handleInput();
-			if ( player.canPerformAction() )
+			if (player.hasAction())
 				advanceTime();
-			else player.removeCurrentAction();
 		}
 		if ( npcs.isEmpty() ) GameUI.showMessage("All mobs are dead!");
 		if ( player.isDead()) GameUI.showMessage("You're dead! Congratulations.");

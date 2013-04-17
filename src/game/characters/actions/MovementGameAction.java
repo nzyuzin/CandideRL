@@ -15,18 +15,10 @@ public final class MovementGameAction extends AbstractGameAction {
 	}
 	
 	public boolean canBeExecuted() {
-		return Map.isCellPassable(position) && performer.getPosition().distanceTo(position) == 1;
+		return !performer.isDead() && performer.getPosition().distanceTo(position) == 1 && Map.isCellPassable(position) && !Map.someoneHere(position);
 	}
 	
 	public void execute() {
-		if (!Map.someoneHere(position)) {
-			if (Map.isCellPassable(position))
-				Map.moveGameCharacter(performer, position);
-		}
-		else {
-			performer.removeCurrentAction();
-			performer.addAction(new HitGameAction(performer, position));
-			performer.performAction();
-		}
+		Map.moveGameCharacter(performer, position);
 	}
 }
