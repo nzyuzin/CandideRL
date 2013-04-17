@@ -90,17 +90,12 @@ public abstract class GameCharacter implements Movable, Damageable, Visible  {
 	} 
 	
 	public void hit(Position pos) {
-	/*  TODO
-	 *  Hit should generate integer which is calculated,
-	 *  depending on attackers attributes and random number.
-	 *  This integer is passed to takeAHit method later on,
-	 *  separately from this method.
-	 */
 		addAction(new HitGameAction(this, pos));
 	}
 	
 	public int roleDamageDice() {
-		return 42;
+		Random dice = new Random();
+		return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
 	}
 	
 	public void move(Direction there) {

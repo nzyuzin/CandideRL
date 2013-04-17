@@ -36,7 +36,7 @@ public final class GameEngine {
 			artificialIntelligence.chooseAction(mob);
 		currentTurn++;
 		processActions();
-		GameUI.drawMap(Map.toStringArray());
+		drawMap();
 	}
 	
 	private static void handleInput() {
@@ -61,6 +61,10 @@ public final class GameEngine {
 			npc.performAction();
 	}
 	
+	private static void drawMap() {
+		GameUI.drawMap(Map.toStringArray());
+	}
+	
 	// This method is a subject of constant changes.
 	
 	public static void play() {
@@ -69,7 +73,7 @@ public final class GameEngine {
 		GameUI.showMessage("Prepare to play!");
 		player.move(Direction.NORTH);
 		player.performAction();
-		GameUI.drawMap(Map.toStringArray());
+		drawMap();
 		while ( !goblin.isDead() && !player.isDead() ) {
 			handleInput();
 			advanceTime();
