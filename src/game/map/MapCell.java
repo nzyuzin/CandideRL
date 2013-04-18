@@ -22,10 +22,12 @@ abstract class MapCell implements Visible {
 	}
 	
 	public char getCharOnMap() {
-		return charOnMap;
+		return visibleChar;
 	}
 	
-	public void setCharOnMap(char onMap) { }
+	public void setCharOnMap(char onMap) { 
+		visibleChar = onMap;
+	}
 	
 	protected void chooseCharOnMap() {
 		if ( gameCharacter != null )

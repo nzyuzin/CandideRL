@@ -22,9 +22,9 @@ public final class GameEngine {
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		player = new Player("DWARF", new Position(1, 1));
-		npcs.add(new NPC("troll", 't', new Position(16,16)));
+		npcs.add(new NPC("troll", 't', new Position(11,1)));
 		artificialIntelligence = new ArtificialIntelligence(player);
-		npcs.add(new NPC("goblin", 'g', new Position(15, 15)));
+		npcs.add(new NPC("goblin", 'g', new Position(10, 1)));
 		Map.putGameCharacter(player, new Position(1, 1));
 		for ( NPC mob : npcs ) 
 			Map.putGameCharacter(mob, mob.getPosition());
@@ -49,6 +49,7 @@ public final class GameEngine {
 		currentTurn++;
 		processActions();
 		drawMap();
+		showStats();
 	}
 	
 	private static void handleInput() {
@@ -62,13 +63,17 @@ public final class GameEngine {
 	}
 	
 	private static void exit() {
-		GameUI.showMessage("You're leaving the game.");
-		GameUI.close();
+		GameUI.showAnnouncement("You're leaving the game.");
+		GameUI.exit();
 		System.exit(0);
 	}
 	
 	private static void drawMap() {
-		GameUI.drawMap(Map.toStringArray());
+		GameUI.drawMap(Map.toOneString());
+	}
+	
+	private static void showStats() {
+		GameUI.showStats(player.getStats());
 	}
 	
 	// This method is a subject of constant changes.
@@ -76,20 +81,21 @@ public final class GameEngine {
 	public static void play() {
 		try {
 		init();
-		GameUI.showMessage("Prepare to play!");
+		//GameUI.showMessage("Prepare to play!");
 		player.move(Direction.NORTH);
 		player.performAction();
 		drawMap();
+		showStats();
 		while ( !npcs.isEmpty() && !player.isDead() ) {
 			handleInput();
 			if (player.hasAction())
 				advanceTime();
 		}
-		if ( npcs.isEmpty() ) GameUI.showMessage("All mobs are dead!");
-		if ( player.isDead()) GameUI.showMessage("You're dead! Congratulations.");
+		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
+		if ( player.isDead()) GameUI.showAnnouncement("You're dead! Congratulations.");
 		exit();
 		} catch(Exception e) {
-			GameUI.close();
+			GameUI.exit();
 			e.printStackTrace();
 		}
  	}

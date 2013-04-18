@@ -48,6 +48,12 @@ public final class Map {
 		return map[pos.x][pos.y];
 	}
 	
+	private static char getVisibleChar(int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
+		return map[x][y].getCharOnMap();
+	}
+	
 	public static void removeGameCharacter(GameCharacter mob) {
 		assert mob.getPosition().x < mapWidth && mob.getPosition().x >= 0 &&
 				mob.getPosition().y < mapHeight && mob.getPosition().y >= 0;
@@ -108,17 +114,14 @@ public final class Map {
 		return array;
 	}
 	
-	public static String[] toStringArray() {
-		String[] output = new String[mapHeight];
-		StringBuffer buffer = null;
+	public static String toOneString() {
 		
-		for (int i = 0; i < mapHeight; i++) {
-			buffer = new StringBuffer();
-			for (int j = 0; j < mapWidth; j++)
-				buffer.append(map[j][i].visibleChar);
-			output[i] = buffer.toString();
-		}
+		StringBuffer buffer = new StringBuffer();
+		
+		for (int y = mapHeight - 1; y >= 0; y--)
+			for (int x = 0; x < mapWidth; x++)
+				buffer.append(getVisibleChar(x, y));
 
-		return output;
+		return buffer.toString();
 	}
 }

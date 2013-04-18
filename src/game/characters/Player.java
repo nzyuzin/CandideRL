@@ -20,4 +20,9 @@ public final class Player extends GameCharacter {
 		speed = 1;
 	}
 	
+	public String getStats() {
+		return "Name:\n" + name +
+				"\nHP: " + currentHP + "/" + maxHP;
+	}
+	
 }
