@@ -6,14 +6,12 @@ import jcurses.util.Rectangle;
 // This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
 
 public class GameUI {
-	private static CharColor mapFontColor;
+	private static CharColor fontColor;
 	
 	private static int windowWidth;
 	private static int windowHeight;
 	
-	private static int mapWidth;
-	private static int mapHeight;
-	private static Rectangle mapRectangle = null;
+	private static MapWindow mapWindow = null;
 	
 	private static int messageWindowWidth;
 	private static int messageWindowHeight;
@@ -28,13 +26,13 @@ public class GameUI {
 	
 	public static void init() {
 		Toolkit.init();
-		mapFontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
+		fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
 		windowWidth = Toolkit.getScreenWidth();
 		windowHeight = Toolkit.getScreenHeight();
 		
-		mapWidth = windowWidth / 5 * 4 - 2;
-		mapHeight = windowHeight / 4 * 3 - 2;
-		mapRectangle = new Rectangle(1, 1, mapWidth, mapHeight);
+		int mapWidth = windowWidth / 5 * 4 - 2;
+		int mapHeight = windowHeight / 4 * 3 - 2;
+		mapWindow = new MapWindow(0, 0, mapWidth, mapHeight, fontColor);
 		
 		messageWindowWidth = windowWidth - 2;
 		messageWindowHeight = windowHeight - mapHeight - 4;
@@ -49,13 +47,13 @@ public class GameUI {
 	}
 	
 	private static void drawBorders() {
-		Toolkit.drawBorder(new Rectangle(0, 0, mapWidth + 2, mapHeight + 2), mapFontColor);
-		Toolkit.drawBorder(new Rectangle(0, messageWindowPosition - 1, messageWindowWidth + 2, messageWindowHeight + 2), mapFontColor);
-		Toolkit.drawBorder(new Rectangle(mapWidth + 2, 0, statsWindowWidth + 2, statsWindowHeight + 2), mapFontColor);
+		mapWindow.drawBorders();
+		Toolkit.drawBorder(new Rectangle(0, messageWindowPosition - 1, messageWindowWidth + 2, messageWindowHeight + 2), fontColor);
+		Toolkit.drawBorder(new Rectangle(windowWidth + statsWindowWidth, 0, statsWindowWidth + 2, statsWindowHeight + 2), fontColor);
 	}
 	
 	public static void drawMap(String map) {
-		Toolkit.printString(map.toString(), mapRectangle, mapFontColor);
+		
 	}
 	
 	public static char getInputChar() {
@@ -65,18 +63,36 @@ public class GameUI {
 		return input.getCharacter();
 	}
 	
+	public static String fitStringIntoRectangle(String str, Rectangle rect) {
+		StringBuffer result = new StringBuffer();
+		if ( str.contains("\n")) {
+			int nCount = 0;
+			for (int i = 0; i < str.length(); i++)
+				if (str.charAt(i) == '\n') nCount++;
+			String[] splittedString = new String[nCount];
+			splittedString = str.split("\n");
+			for (int i = 0; i < nCount; i++)
+				result.append(fitStringIntoRectangle(splittedString[i], rect));
+			return result.toString();		
+		}
+		result.append(str);
+		for (int rectWidth = rect.getWidth(), i = str.length() % rectWidth; i < rectWidth; i++)
+			result.append(" ");
+		return result.toString();
+	}
+	
 	public static void showAnnouncement(String msg) {
-		Toolkit.clearScreen(mapFontColor);
-		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, mapFontColor);
+		Toolkit.clearScreen(fontColor);
+		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, fontColor);
 		waitForChar(' ');
 	}
 	
 	public static void showMessage(String msg) {
-		Toolkit.printString(msg, messageWindowRectangle, mapFontColor);
+		Toolkit.printString(msg, messageWindowRectangle, fontColor);
 	}
 	
 	public static void showStats(String stats) {
-		Toolkit.printString(stats, statsRectangle, mapFontColor);
+		Toolkit.printString(stats, statsRectangle, fontColor);
 	}
 	
 	private static void waitForChar(char c) {
@@ -84,16 +100,16 @@ public class GameUI {
 	}
 	
 	public static void exit() {
-		Toolkit.clearScreen(mapFontColor);
+		Toolkit.clearScreen(fontColor);
 		Toolkit.shutdown();
 	}
 	
 	public static int getMapWidth() {
-		return mapWidth;
+		return mapWindow.getWidth() - 2;
 	}
 	
 	public static int getMapHeight() {
-		return mapHeight;
+		return mapWindow.getHeight() - 2;
 	}
 
 }
