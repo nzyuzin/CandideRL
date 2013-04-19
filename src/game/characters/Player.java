@@ -22,7 +22,7 @@ public final class Player extends GameCharacter {
 	
 	public String getStats() {
 		return "Name:\n" + name +
-				"\nHP: " + currentHP + "/" + maxHP;
+				"\nHP: " + currentHP + "/" + maxHP + "\n";
 	}
 	
 }

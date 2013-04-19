@@ -70,6 +70,7 @@ public final class GameEngine {
 	
 	private static void drawMap() {
 		GameUI.drawMap(Map.toOneString());
+		GameUI.showMessage("Map is drawn");
 	}
 	
 	private static void showStats() {

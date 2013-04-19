@@ -8,6 +8,7 @@ public final class StatsWindow extends Rectangle {
 	
 	private CharColor fontColor = null;
 	private Rectangle statsRectangle = null;
+	private String stats = null;
 	
 	StatsWindow(int posX, int posY, int width, int height, CharColor fontColor) {
 		super(posX, posY, width, height);
@@ -38,6 +39,11 @@ public final class StatsWindow extends Rectangle {
 	}
 	
 	void showStats(String stats) {
-		Toolkit.printString(fitString(stats), statsRectangle, fontColor);
+		this.stats = fitString(stats);
+		Toolkit.printString(this.stats, statsRectangle, fontColor);
+	}
+	
+	void redraw() {
+		Toolkit.printString(this.stats, statsRectangle, fontColor);
 	}
 }

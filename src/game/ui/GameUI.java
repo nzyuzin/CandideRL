@@ -1,7 +1,6 @@
 package game.ui;
 
 import jcurses.system.*;
-import jcurses.util.Rectangle;
 
 // This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
 
@@ -76,7 +75,9 @@ public class GameUI {
 	
 	private static void redrawUI() {
 		drawBorders();
-		mapWindow.redrawMap();
+		mapWindow.redraw();
+		messagesWindow.redraw();
+		statsWindow.redraw();
 	}
 	
 	public static void exit() {

@@ -7,6 +7,7 @@ import jcurses.util.Rectangle;
 public final class MessagesWindow extends Rectangle {
 	private CharColor fontColor = null;
 	private Rectangle messagesRectangle = null;
+	private String message = null;
 	
 	MessagesWindow(int posX, int posY, int width, int height, CharColor fontColor) {
 		super(posX, posY, width, height);
@@ -19,7 +20,12 @@ public final class MessagesWindow extends Rectangle {
 	}
 
 	void showMessage(String msg) {
-		Toolkit.printString(fitString(msg), messagesRectangle, fontColor);
+		message = fitString(msg);
+		Toolkit.printString(this.message, messagesRectangle, fontColor);
+	}
+	
+	void redraw() {
+		Toolkit.printString(message, messagesRectangle, fontColor);
 	}
 	
 	private String fitString(String str) {

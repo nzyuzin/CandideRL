@@ -20,7 +20,7 @@ public final class MapWindow extends Rectangle {
 		Toolkit.printString(map, mapRectangle, mapFontColor);
 	}
 	
-	void redrawMap() {
+	void redraw() {
 		Toolkit.printString(map, mapRectangle, mapFontColor);
 	}
 	
