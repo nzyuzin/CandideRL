@@ -127,10 +127,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	 * if takes 0 as arguments - attacker missed,
 	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.	
 	 */
-		Random rand = new Random();
-		int chancetoevade = rand.nextInt(50) + attributes.dexterity;
-		if (chancetoevade < 50)
-			currentHP -= (damage - attributes.armor);
+		currentHP -= damage;
 	}
 	
 	public MiscItem getCorpse() {

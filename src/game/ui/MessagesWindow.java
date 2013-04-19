@@ -23,7 +23,14 @@ public final class MessagesWindow extends Rectangle {
 	}
 
 	void showMessage(String msg) {
-		addToLog(fitString(msg));
+		int len = msg.length(), width = messagesRectangle.getWidth();
+		if (len > width) {
+			int i;
+			for (i = 0; i + width < len; i += width)
+				addToLog(msg.substring(i, i + width));
+			addToLog(msg.substring(i));
+		}
+		else addToLog(msg);
 		showMessages();
 	}
 	
@@ -34,13 +41,10 @@ public final class MessagesWindow extends Rectangle {
 	}
 	
 	private void showMessages() {
-		StringBuffer log = new StringBuffer();
-		for (String msg : lastMessages) {
-			log.append(msg);
-			log.append("\n");
-		}
-		
-		Toolkit.printString(log.toString(), messagesRectangle, fontColor);
+		StringBuffer messages = new StringBuffer();
+		for (String msg : lastMessages)
+			messages.append(fitString(msg));
+		Toolkit.printString(messages.toString(), messagesRectangle, fontColor);
 	}
 	
 	void redraw() {
@@ -48,20 +52,12 @@ public final class MessagesWindow extends Rectangle {
 	}
 	
 	private String fitString(String str) {
+		assert str.length() <= messagesRectangle.getWidth();
 		StringBuffer result = new StringBuffer();
-		if ( str.contains("\n")) {
-			int nCount = 0;
-			for (int i = 0; i < str.length(); i++)
-				if (str.charAt(i) == '\n') nCount++;
-			String[] splittedString = new String[nCount];
-			splittedString = str.split("\n");
-			for (int i = 0; i < nCount; i++)
-				result.append(fitString(splittedString[i]));
-			return result.toString();
-		}
 		result.append(str);
-		for (int rectWidth = messagesRectangle.getWidth(), i = str.length() % rectWidth; i < rectWidth; i++)
+		for (int i = str.length(); i < messagesRectangle.getWidth(); i++)
 			result.append(" ");
+
 		return result.toString();
 	}
 }

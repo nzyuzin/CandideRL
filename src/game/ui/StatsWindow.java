@@ -44,6 +44,7 @@ public final class StatsWindow extends Rectangle {
 	}
 	
 	void redraw() {
-		Toolkit.printString(this.stats, statsRectangle, fontColor);
+		if (stats != null)
+			Toolkit.printString(this.stats, statsRectangle, fontColor);
 	}
 }

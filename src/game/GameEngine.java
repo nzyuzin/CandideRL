@@ -88,7 +88,7 @@ public final class GameEngine {
 	public static void play() {
 		try {
 		init();
-		//GameUI.showMessage("Prepare to play!");
+		GameUI.showMessage("Prepare to play!");
 		player.move(Direction.NORTH);
 		player.performAction();
 		drawMap();
