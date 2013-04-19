@@ -5,6 +5,7 @@ import game.utility.Direction;
 import game.utility.Position;
 import game.utility.interfaces.*;
 import game.items.MiscItem;
+import game.GameObject;
 
 import java.util.Random;
 import java.util.ArrayDeque;
@@ -14,7 +15,7 @@ import java.util.Queue;
 // Every actions that is performed on Map is supposed to be expressed through GameAction classes
 // and added to queue, which is field of this class.
 
-public abstract class GameCharacter implements Movable, Damageable, Visible  {
+public abstract class GameCharacter extends GameObject implements Movable, Damageable, Visible  {
 	
 	protected final class Attributes {
 		public short strength;
@@ -41,7 +42,8 @@ public abstract class GameCharacter implements Movable, Damageable, Visible  {
 	protected int maximumActionPoints;  //
 
 	
-	GameCharacter(Position pos) {
+	GameCharacter(String name, String description, Position pos) {
+		super(name, description);
 		position = pos;
 		attributes = new Attributes();
 		gameActions = new ArrayDeque<GameAction>();
@@ -66,6 +68,14 @@ public abstract class GameCharacter implements Movable, Damageable, Visible  {
 	
 	public Position getPosition() {
 		return position;
+	}
+	
+	public int getCurrentHP() {
+		return currentHP;
+	}
+	
+	public int getMaxHP() {
+		return maxHP;
 	}
 	
 	public void setPosition(Position position) {
@@ -124,7 +134,7 @@ public abstract class GameCharacter implements Movable, Damageable, Visible  {
 	}
 	
 	public MiscItem getCorpse() {
-		return new MiscItem('c', 50, 50);
+		return new MiscItem("Corpse of " + this.getName(),'*', 50, 50);
 	}
 	
 	public char getCharOnMap() {

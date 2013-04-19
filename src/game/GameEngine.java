@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public final class GameEngine {
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
+	private static MessageLog messageLog = null;
 	private static int currentTurn;
 	private static ArtificialIntelligence artificialIntelligence = null;
 	
@@ -21,14 +22,20 @@ public final class GameEngine {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
+		messageLog = new MessageLog(500);
 		player = new Player("DWARF", new Position(1, 1));
-		npcs.add(new NPC("troll", 't', new Position(11,1)));
+		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
 		artificialIntelligence = new ArtificialIntelligence(player);
-		npcs.add(new NPC("goblin", 'g', new Position(10, 1)));
+		npcs.add(new NPC("goblin", "A regular goblin.", 'g', new Position(10, 1)));
 		Map.putGameCharacter(player, new Position(1, 1));
 		for ( NPC mob : npcs ) 
 			Map.putGameCharacter(mob, mob.getPosition());
 		currentTurn = 0;
+	}
+	
+	public static void showMessage(String msg) {
+		messageLog.add(msg);
+		GameUI.showMessage(msg);
 	}
 	
 	private static void processActions() {
@@ -70,7 +77,6 @@ public final class GameEngine {
 	
 	private static void drawMap() {
 		GameUI.drawMap(Map.toOneString());
-		GameUI.showMessage("Map is drawn");
 	}
 	
 	private static void showStats() {

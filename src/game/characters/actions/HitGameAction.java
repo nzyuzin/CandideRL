@@ -20,10 +20,14 @@ public final class HitGameAction extends AbstractGameAction {
 	public void execute() {
 		int damage = performer.roleDamageDice();
 		target.takeDamage(damage);
+		String message = performer.getName() + " dealt " + damage + " points of damage to " + target.getName();
 		if ( target.isDead()) {
+			message += " and " + target.getName() + " died.";
 			Map.putItem(target.getCorpse(), target.getPosition());
 			Map.removeGameCharacter(target);
 		}
+		else message += ". Current " + target.getName() + "'s hp is: " + target.getCurrentHP() + "/" + target.getMaxHP();
+		game.GameEngine.showMessage(message);
 
 	}
 }

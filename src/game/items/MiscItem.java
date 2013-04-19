@@ -2,8 +2,8 @@ package game.items;
 
 public class MiscItem extends AbstractItem {
 	
-	public MiscItem(char onMap, int weight, int size) {
-		super(onMap, weight, size, 1);
+	public MiscItem(String description, char onMap, int weight, int size) {
+		super("corpse", description,onMap, weight, size, 1);
 	}
 	
 }
