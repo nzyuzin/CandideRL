@@ -2,10 +2,12 @@ package game.utility.interfaces;
 
 public interface GameAction {
 	  
-	  public void execute();
+	  void execute();
 
-	  public int actionPointsLeft();
+	  boolean canBeExecuted();
+	  
+	  int actionPointsLeft();
 
-	  public void setActionPointsLeft(int points);
+	  void setActionPointsLeft(int points);
 
 }

@@ -13,11 +13,17 @@ public final class HitGameAction extends AbstractGameAction {
 		target = Map.getGameCharacter(pos);
 	}
 	
-	@Override
-	public void execute() {
-		target.takeDamage(performer.roleDamageDice());
-		if ( target.isDead())
-			Map.removeGameCharacter(target);
+	public boolean canBeExecuted() {
+		return target != null && !target.isDead() && !performer.isDead() && target.getPosition().distanceTo(performer.getPosition()) == 1;
 	}
+	
+	public void execute() {
+		int damage = performer.roleDamageDice();
+		target.takeDamage(damage);
+		if ( target.isDead()) {
+			Map.putItem(target.getCorpse(), target.getPosition());
+			Map.removeGameCharacter(target);
+		}
 
+	}
 }

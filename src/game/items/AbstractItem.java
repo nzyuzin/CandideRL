@@ -1,10 +1,38 @@
 package game.items;
 
-public abstract class AbstractItem {
+import game.utility.interfaces.GameItem;
+
+public abstract class AbstractItem implements GameItem {
 	
-	private char charOnMap = '?';
-	private int quantity;
-	private int weight;
-	private int size;
+	protected char charOnMap = '?';
+	protected int quantity;
+	protected int weight;
+	protected int size;
 	
+	AbstractItem(char onMap, int weight, int size, int quantity) {
+		this.charOnMap = onMap;
+		this.weight = weight;
+		this.size = size;
+		this.quantity = quantity;
+	}
+	
+	public int getQuantity() {
+		return quantity;
+	}
+	
+	public int getWeight() {
+		return weight;
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public char getCharOnMap() {
+		return charOnMap;
+	}
+	
+	public void setCharOnMap(char onMap) {
+		charOnMap = onMap;
+	}
 }

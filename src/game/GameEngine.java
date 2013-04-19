@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public final class GameEngine {
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
-	static NPC  goblin = null;
 	private static int currentTurn;
 	private static ArtificialIntelligence artificialIntelligence = null;
 	
@@ -22,43 +21,60 @@ public final class GameEngine {
 		GameUI.init();
 		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
-		player = new Player("DWARF", new Position(47, 1));
-		goblin = new NPC("goblin", new Position(15, 15));
+		player = new Player("DWARF", new Position(1, 1));
+		npcs.add(new NPC("troll", 't', new Position(11,1)));
 		artificialIntelligence = new ArtificialIntelligence(player);
-		npcs.add(goblin);
-		Map.putGameCharacter(goblin, new Position(15, 15));
-		Map.putGameCharacter(player, new Position(47, 1));
+		npcs.add(new NPC("goblin", 'g', new Position(10, 1)));
+		Map.putGameCharacter(player, new Position(1, 1));
+		for ( NPC mob : npcs ) 
+			Map.putGameCharacter(mob, mob.getPosition());
 		currentTurn = 0;
 	}
 	
+	private static void processActions() {
+		player.performAction();
+		for (NPC npc : npcs) {
+			if ( npc.canPerformAction() )
+				npc.performAction();
+			else npc.removeCurrentAction();
+		}
+	}
+	
 	private static void advanceTime() {
-		for (NPC mob : npcs)
-			artificialIntelligence.chooseAction(mob);
+		for (NPC mob : npcs.toArray(new NPC[npcs.size()])) {
+			if (mob.isDead())
+				npcs.remove(mob);
+			else artificialIntelligence.chooseAction(mob);
+		}
 		currentTurn++;
 		processActions();
-		GameUI.drawMap(Map.toStringArray());
+		drawMap();
+		showStats();
 	}
 	
 	private static void handleInput() {
-		char input = GameUI.getInputChar();		
+		char input = GameUI.getInputChar();
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
-			player.move(DirectionProcessor.getDirectionFromChar(input));
+			artificialIntelligence.chooseActionInDirection(player, DirectionProcessor.getDirectionFromChar(input));
 		if (input == 's')
 			advanceTime();
 	}
 	
 	private static void exit() {
-		GameUI.showMessage("You're leaving the game.");
-		GameUI.close();
+		GameUI.showAnnouncement("You're leaving the game.");
+		GameUI.exit();
 		System.exit(0);
 	}
 	
-	private static void processActions() {
-		player.performAction();
-		for (NPC npc : npcs)
-			npc.performAction();
+	private static void drawMap() {
+		GameUI.drawMap(Map.toOneString());
+		GameUI.showMessage("Map is drawn");
+	}
+	
+	private static void showStats() {
+		GameUI.showStats(player.getStats());
 	}
 	
 	// This method is a subject of constant changes.
@@ -66,19 +82,21 @@ public final class GameEngine {
 	public static void play() {
 		try {
 		init();
-		GameUI.showMessage("Prepare to play!");
+		//GameUI.showMessage("Prepare to play!");
 		player.move(Direction.NORTH);
 		player.performAction();
-		GameUI.drawMap(Map.toStringArray());
-		while ( !goblin.isDead() && !player.isDead() ) {
+		drawMap();
+		showStats();
+		while ( !npcs.isEmpty() && !player.isDead() ) {
 			handleInput();
-			advanceTime();
+			if (player.hasAction())
+				advanceTime();
 		}
-		if ( goblin.isDead()) GameUI.showMessage("Goblin is killed!");
-		if ( player.isDead()) GameUI.showMessage("You're dead! Congratulations.");
+		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
+		if ( player.isDead()) GameUI.showAnnouncement("You're dead! Congratulations.");
 		exit();
 		} catch(Exception e) {
-			GameUI.close();
+			GameUI.exit();
 			e.printStackTrace();
 		}
  	}

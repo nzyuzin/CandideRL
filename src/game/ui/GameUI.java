@@ -5,26 +5,46 @@ import jcurses.system.*;
 // This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
 
 public class GameUI {
-	private static CharColor mapFontColor;
-	private static int windowWidth;
-	private static int windowHeight;
-	private static int mapWidth;
-	private static int mapHeight;
+	private static CharColor fontColor;
 	
-	private GameUI() { }
+	private static MapWindow mapWindow = null;
+	
+	private static MessagesWindow messagesWindow = null;
+	
+	private static StatsWindow statsWindow = null;
+	
+	private GameUI() {	}
 	
 	public static void init() {
 		Toolkit.init();
-		mapFontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
-		windowWidth = Toolkit.getScreenWidth();
-		windowHeight = Toolkit.getScreenHeight();
-		mapWidth = windowWidth;
-		mapHeight = windowHeight;
+		fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
+		int windowWidth = Toolkit.getScreenWidth();
+		int windowHeight = Toolkit.getScreenHeight();
+		
+		int mapWidth = windowWidth / 5 * 4;
+		int mapHeight = windowHeight / 4 * 3;
+		mapWindow = new MapWindow(0, 0, mapWidth, mapHeight, fontColor);
+		
+		int messageWindowWidth = windowWidth;
+		int messageWindowHeight = windowHeight - mapHeight;
+		int messageWindowPosition = mapHeight;
+		messagesWindow = new MessagesWindow(0, messageWindowPosition, messageWindowWidth, messageWindowHeight, fontColor);
+		
+		int statsWindowWidth = windowWidth - mapWidth;
+		int statsWindowHeight = mapHeight;
+		statsWindow = new StatsWindow(mapWidth, 0, statsWindowWidth, statsWindowHeight, fontColor);
+		
+		drawBorders();
 	}
 	
-	public static void drawMap(String[] mapInStrings) {
-		for (int i = 0; i < mapHeight; i++)
-			Toolkit.printString(mapInStrings[i], 0, mapHeight - i - 1, mapFontColor);
+	private static void drawBorders() {
+		mapWindow.drawBorders();
+		messagesWindow.drawBorders();
+		statsWindow.drawBorders();
+	}
+	
+	public static void drawMap(String map) {
+		mapWindow.drawMap(map);
 	}
 	
 	public static char getInputChar() {
@@ -34,30 +54,43 @@ public class GameUI {
 		return input.getCharacter();
 	}
 	
-	public static void showMessage(String msg) {
-		Toolkit.clearScreen(mapFontColor);
-		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, mapFontColor);
+	public static void showAnnouncement(String msg) {
+		Toolkit.clearScreen(fontColor);
+		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, fontColor);
 		waitForChar(' ');
+		redrawUI();
+	}
+	
+	public static void showMessage(String msg) {
+		messagesWindow.showMessage(msg);
+	}
+	
+	public static void showStats(String stats) {
+		statsWindow.showStats(stats);
 	}
 	
 	private static void waitForChar(char c) {
-		while (true) {
-			if (getInputChar() == c)
-				break;
-		}
+		while ( getInputChar() != c );
 	}
 	
-	public static void close() {
-		Toolkit.clearScreen(mapFontColor);
+	private static void redrawUI() {
+		drawBorders();
+		mapWindow.redraw();
+		messagesWindow.redraw();
+		statsWindow.redraw();
+	}
+	
+	public static void exit() {
+		Toolkit.clearScreen(fontColor);
 		Toolkit.shutdown();
 	}
 	
 	public static int getMapWidth() {
-		return mapWidth;
+		return mapWindow.getMapWidth();
 	}
 	
 	public static int getMapHeight() {
-		return mapHeight;
+		return mapWindow.getMapHeight();
 	}
 
 }

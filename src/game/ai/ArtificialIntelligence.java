@@ -1,5 +1,9 @@
 package game.ai;
+
 import game.characters.*;
+import game.characters.actions.HitGameAction;
+import game.characters.actions.MovementGameAction;
+import game.utility.Direction;
 import game.utility.DirectionProcessor;
 
 public class ArtificialIntelligence {
@@ -13,15 +17,25 @@ public class ArtificialIntelligence {
 	
 	public void chooseAction(NPC mob) {
 		if ( player.isDead()) return;
-		if ( player.position.distanceTo(mob.position) == 1 )
-			mob.hit(player.position);
+		if ( player.getPosition().distanceTo(mob.getPosition()) == 1 )
+			mob.hit(player.getPosition());
 		else {
 			moveToPlayer(mob);
 		}
 	}
 	
+	public void chooseActionInDirection(GameCharacter mob, Direction there) {
+		MovementGameAction move = new MovementGameAction(mob, there);
+		if (move.canBeExecuted()) {
+			mob.addAction(move);
+			return;
+		}
+		HitGameAction hit = new HitGameAction(mob, DirectionProcessor.applyDirectionToPosition(mob.getPosition(), there));
+		if (hit.canBeExecuted()) mob.addAction(hit);
+	}
+	
 	private void moveToPlayer(NPC mob) {
-		mob.move(DirectionProcessor.getDirectionFromPositions(mob.position, player.position));
+		mob.move(DirectionProcessor.getDirectionFromPositions(mob.getPosition(), player.getPosition()));
 	}
 	
 }

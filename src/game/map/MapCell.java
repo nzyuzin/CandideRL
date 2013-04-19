@@ -2,23 +2,65 @@ package game.map;
 
 import game.characters.GameCharacter;
 import game.utility.VisibleCharacters;
+import game.utility.interfaces.GameItem;
+import game.utility.interfaces.Visible;
+import java.util.ArrayList;
 
-abstract class MapCell {
+abstract class MapCell implements Visible {
 	protected final char charOnMap;
 	protected char visibleChar;
+	
 	protected boolean canBePassed = false;
-	protected GameCharacter gameCharacter = null;
 	protected int passageCost = 0;
+	
+	protected GameCharacter gameCharacter = null;
+	protected ArrayList<GameItem> gameItems = null;
 	
 	protected MapCell(char onMap) {
 		charOnMap = onMap;
+		gameItems = new ArrayList<GameItem>();
+	}
+	
+	public char getCharOnMap() {
+		return visibleChar;
+	}
+	
+	public void setCharOnMap(char onMap) { 
+		visibleChar = onMap;
 	}
 	
 	protected void chooseCharOnMap() {
-		if (gameCharacter != null)
-			visibleChar = gameCharacter.charOnMap;
-		else visibleChar = charOnMap;
+		if ( gameCharacter != null )
+			visibleChar = gameCharacter.getCharOnMap();
+		else
+			if ( !gameItems.isEmpty() )
+				visibleChar = gameItems.get(0).getCharOnMap();
+			else 
+				visibleChar = charOnMap;
 	}
+	
+	protected void setGameCharacter(GameCharacter mob) {
+		this.gameCharacter = mob;
+		chooseCharOnMap();
+	}
+	
+	protected GameCharacter getGameCharacter() {
+		return gameCharacter;
+	}
+	
+	protected void putItem(GameItem item) {
+		gameItems.add(item);
+	}
+	
+	protected void removeItem(GameItem item) {
+		gameItems.remove(item);
+	}
+	
+	protected GameItem[] getListOfItems() {
+		return (GameItem[]) gameItems.toArray();
+		
+	}
+	
 }
 
 class Wall extends MapCell {

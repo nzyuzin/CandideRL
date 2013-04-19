@@ -2,6 +2,7 @@ package game.map;
 
 import game.characters.GameCharacter;
 import game.utility.Position;
+import game.utility.interfaces.GameItem;
 
 import java.lang.StringBuffer;
 
@@ -47,22 +48,31 @@ public final class Map {
 		return map[pos.x][pos.y];
 	}
 	
+	private static char getVisibleChar(int x, int y) {
+		assert x < mapWidth && x >= 0 &&
+				y < mapHeight && y >= 0;
+		return map[x][y].getCharOnMap();
+	}
+	
 	public static void removeGameCharacter(GameCharacter mob) {
-		assert mob.position.x < mapWidth && mob.position.x >= 0 &&
-				mob.position.y < mapHeight && mob.position.y >= 0;
-		MapCell cell = getCell(mob.position);
-		mob.position = null;
-		cell.gameCharacter = null;
-		cell.chooseCharOnMap();
+		assert mob.getPosition().x < mapWidth && mob.getPosition().x >= 0 &&
+				mob.getPosition().y < mapHeight && mob.getPosition().y >= 0;
+		MapCell cell = getCell(mob.getPosition());
+		mob.setPosition(null);
+		cell.setGameCharacter(null);
 	}
 	
 	public static void putGameCharacter(GameCharacter mob, Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
-		MapCell cell = getCell(pos);
-		cell.gameCharacter = mob;
-		mob.position = pos;
-		cell.chooseCharOnMap();
+		getCell(pos).setGameCharacter(mob);
+		mob.setPosition(pos);
+	}
+	
+	public static void putItem(GameItem item, Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		getCell(pos).putItem(item);
 	}
 	
 	public static boolean isCellPassable(Position pos) {
@@ -104,17 +114,14 @@ public final class Map {
 		return array;
 	}
 	
-	public static String[] toStringArray() {
-		String[] output = new String[mapHeight];
-		StringBuffer buffer = null;
+	public static String toOneString() {
 		
-		for (int i = 0; i < mapHeight; i++) {
-			buffer = new StringBuffer();
-			for (int j = 0; j < mapWidth; j++)
-				buffer.append(map[j][i].visibleChar);
-			output[i] = buffer.toString();
-		}
+		StringBuffer buffer = new StringBuffer();
+		
+		for (int y = mapHeight - 1; y >= 0; y--)
+			for (int x = 0; x < mapWidth; x++)
+				buffer.append(getVisibleChar(x, y));
 
-		return output;
+		return buffer.toString();
 	}
 }
