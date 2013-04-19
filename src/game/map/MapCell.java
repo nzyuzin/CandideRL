@@ -4,9 +4,11 @@ import game.characters.GameCharacter;
 import game.utility.VisibleCharacters;
 import game.utility.interfaces.GameItem;
 import game.utility.interfaces.Visible;
+import game.GameObject;
+
 import java.util.ArrayList;
 
-abstract class MapCell implements Visible {
+abstract class MapCell extends GameObject implements Visible {
 	protected final char charOnMap;
 	protected char visibleChar;
 	
@@ -16,7 +18,8 @@ abstract class MapCell implements Visible {
 	protected GameCharacter gameCharacter = null;
 	protected ArrayList<GameItem> gameItems = null;
 	
-	protected MapCell(char onMap) {
+	protected MapCell(String name, String desc, char onMap) {
+		super(name, desc);
 		charOnMap = onMap;
 		gameItems = new ArrayList<GameItem>();
 	}
@@ -65,7 +68,7 @@ abstract class MapCell implements Visible {
 
 class Wall extends MapCell {
 	Wall() {
-		super(VisibleCharacters.WALL);
+		super("Wall", "A regular rock wall.", VisibleCharacters.WALL);
 		visibleChar = VisibleCharacters.WALL;
 		canBePassed = false;
 	}
@@ -73,7 +76,7 @@ class Wall extends MapCell {
 
 class Floor extends MapCell {	
 	Floor() {
-		super(VisibleCharacters.FLOOR);
+		super("Floor", "Rough rock floor.", VisibleCharacters.FLOOR);
 		canBePassed = true;
 		visibleChar = VisibleCharacters.FLOOR;
 		passageCost = 100;

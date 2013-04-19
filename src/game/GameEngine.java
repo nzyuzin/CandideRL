@@ -80,7 +80,7 @@ public final class GameEngine {
 	}
 	
 	private static void showStats() {
-		GameUI.showStats(player.getStats());
+		GameUI.showStats(player.getStats() + "Current turn: " + currentTurn + "\n");
 	}
 	
 	// This method is a subject of constant changes.
