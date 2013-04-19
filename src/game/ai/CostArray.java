@@ -1,4 +1,7 @@
 //TODO FIX THIS WHOLE MESS
+/**
+ * @version 1.0
+ */
 package game.ai;
 import java.awt.Point;
 import java.util.LinkedList;
