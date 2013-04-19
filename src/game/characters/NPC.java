@@ -7,8 +7,8 @@ public class NPC extends GameCharacter {
 	protected static int ID = 0; 
 	protected final int id;
 	
-	public NPC(String name, char onMap, Position pos) {
-		super(pos);
+	public NPC(String name, String description, char onMap, Position pos) {
+		super(name, description, pos);
 		id = ID++;
 		this.name = name;
 		this.setCharOnMap(onMap);

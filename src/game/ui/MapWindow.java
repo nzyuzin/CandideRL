@@ -21,7 +21,8 @@ public final class MapWindow extends Rectangle {
 	}
 	
 	void redraw() {
-		Toolkit.printString(map, mapRectangle, mapFontColor);
+		if (map != null)
+			Toolkit.printString(map, mapRectangle, mapFontColor);
 	}
 	
 	void drawBorders() {
