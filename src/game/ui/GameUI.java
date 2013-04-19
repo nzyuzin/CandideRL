@@ -10,14 +10,9 @@ public class GameUI {
 	
 	private static MapWindow mapWindow = null;
 	
-	private static int messageWindowWidth;
-	private static int messageWindowHeight;
-	private static int messageWindowPosition;
-	private static Rectangle messageWindowRectangle = null;
+	private static MessagesWindow messagesWindow = null;
 	
-	private static int statsWindowWidth;
-	private static int statsWindowHeight;
-	private static Rectangle statsRectangle = null;
+	private static StatsWindow statsWindow = null;
 	
 	private GameUI() {	}
 	
@@ -27,26 +22,26 @@ public class GameUI {
 		int windowWidth = Toolkit.getScreenWidth();
 		int windowHeight = Toolkit.getScreenHeight();
 		
-		int mapWidth = windowWidth / 5 * 4 - 2;
-		int mapHeight = windowHeight / 4 * 3 - 2;
+		int mapWidth = windowWidth / 5 * 4;
+		int mapHeight = windowHeight / 4 * 3;
 		mapWindow = new MapWindow(0, 0, mapWidth, mapHeight, fontColor);
 		
-		messageWindowWidth = windowWidth - 2;
-		messageWindowHeight = windowHeight - mapHeight - 4;
-		messageWindowPosition = mapHeight + 3;
-		messageWindowRectangle = new Rectangle(1, messageWindowPosition, messageWindowWidth, messageWindowHeight);
+		int messageWindowWidth = windowWidth;
+		int messageWindowHeight = windowHeight - mapHeight;
+		int messageWindowPosition = mapHeight;
+		messagesWindow = new MessagesWindow(0, messageWindowPosition, messageWindowWidth, messageWindowHeight, fontColor);
 		
-		statsWindowWidth = windowWidth - mapWidth - 4;
-		statsWindowHeight = mapHeight;
-		statsRectangle = new Rectangle(mapWidth + 3, 1, statsWindowWidth, statsWindowHeight);
+		int statsWindowWidth = windowWidth - mapWidth;
+		int statsWindowHeight = mapHeight;
+		statsWindow = new StatsWindow(mapWidth, 0, statsWindowWidth, statsWindowHeight, fontColor);
 		
 		drawBorders();
 	}
 	
 	private static void drawBorders() {
 		mapWindow.drawBorders();
-		Toolkit.drawBorder(new Rectangle(0, messageWindowPosition - 1, messageWindowWidth + 2, messageWindowHeight + 2), fontColor);
-		Toolkit.drawBorder(new Rectangle(Toolkit.getScreenWidth() + statsWindowWidth, 0, statsWindowWidth + 2, statsWindowHeight + 2), fontColor);
+		messagesWindow.drawBorders();
+		statsWindow.drawBorders();
 	}
 	
 	public static void drawMap(String map) {
@@ -60,24 +55,6 @@ public class GameUI {
 		return input.getCharacter();
 	}
 	
-	private static String fitStringIntoRectangle(String str, Rectangle rect) {
-		StringBuffer result = new StringBuffer();
-		if ( str.contains("\n")) {
-			int nCount = 0;
-			for (int i = 0; i < str.length(); i++)
-				if (str.charAt(i) == '\n') nCount++;
-			String[] splittedString = new String[nCount];
-			splittedString = str.split("\n");
-			for (int i = 0; i < nCount; i++)
-				result.append(fitStringIntoRectangle(splittedString[i], rect));
-			return result.toString();		
-		}
-		result.append(str);
-		for (int rectWidth = rect.getWidth(), i = str.length() % rectWidth; i < rectWidth; i++)
-			result.append(" ");
-		return result.toString();
-	}
-	
 	public static void showAnnouncement(String msg) {
 		Toolkit.clearScreen(fontColor);
 		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, fontColor);
@@ -86,11 +63,11 @@ public class GameUI {
 	}
 	
 	public static void showMessage(String msg) {
-		Toolkit.printString(msg, messageWindowRectangle, fontColor);
+		messagesWindow.showMessage(msg);
 	}
 	
 	public static void showStats(String stats) {
-		Toolkit.printString(stats, statsRectangle, fontColor);
+		statsWindow.showStats(stats);
 	}
 	
 	private static void waitForChar(char c) {
