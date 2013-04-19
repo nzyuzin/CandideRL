@@ -8,9 +8,6 @@ import jcurses.util.Rectangle;
 public class GameUI {
 	private static CharColor fontColor;
 	
-	private static int windowWidth;
-	private static int windowHeight;
-	
 	private static MapWindow mapWindow = null;
 	
 	private static int messageWindowWidth;
@@ -27,8 +24,8 @@ public class GameUI {
 	public static void init() {
 		Toolkit.init();
 		fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
-		windowWidth = Toolkit.getScreenWidth();
-		windowHeight = Toolkit.getScreenHeight();
+		int windowWidth = Toolkit.getScreenWidth();
+		int windowHeight = Toolkit.getScreenHeight();
 		
 		int mapWidth = windowWidth / 5 * 4 - 2;
 		int mapHeight = windowHeight / 4 * 3 - 2;
@@ -49,11 +46,11 @@ public class GameUI {
 	private static void drawBorders() {
 		mapWindow.drawBorders();
 		Toolkit.drawBorder(new Rectangle(0, messageWindowPosition - 1, messageWindowWidth + 2, messageWindowHeight + 2), fontColor);
-		Toolkit.drawBorder(new Rectangle(windowWidth + statsWindowWidth, 0, statsWindowWidth + 2, statsWindowHeight + 2), fontColor);
+		Toolkit.drawBorder(new Rectangle(Toolkit.getScreenWidth() + statsWindowWidth, 0, statsWindowWidth + 2, statsWindowHeight + 2), fontColor);
 	}
 	
 	public static void drawMap(String map) {
-		
+		mapWindow.drawMap(map);
 	}
 	
 	public static char getInputChar() {
@@ -63,7 +60,7 @@ public class GameUI {
 		return input.getCharacter();
 	}
 	
-	public static String fitStringIntoRectangle(String str, Rectangle rect) {
+	private static String fitStringIntoRectangle(String str, Rectangle rect) {
 		StringBuffer result = new StringBuffer();
 		if ( str.contains("\n")) {
 			int nCount = 0;
@@ -85,6 +82,7 @@ public class GameUI {
 		Toolkit.clearScreen(fontColor);
 		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, fontColor);
 		waitForChar(' ');
+		redrawUI();
 	}
 	
 	public static void showMessage(String msg) {
@@ -99,17 +97,22 @@ public class GameUI {
 		while ( getInputChar() != c );
 	}
 	
+	private static void redrawUI() {
+		drawBorders();
+		mapWindow.redrawMap();
+	}
+	
 	public static void exit() {
 		Toolkit.clearScreen(fontColor);
 		Toolkit.shutdown();
 	}
 	
 	public static int getMapWidth() {
-		return mapWindow.getWidth() - 2;
+		return mapWindow.getMapWidth();
 	}
 	
 	public static int getMapHeight() {
-		return mapWindow.getHeight() - 2;
+		return mapWindow.getMapHeight();
 	}
 
 }
