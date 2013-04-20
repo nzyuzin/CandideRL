@@ -115,6 +115,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	}
 	
 	public void move(Direction there) {
+		if (there != null)
 			addAction(new MovementGameAction(this, there));
 	}
 	

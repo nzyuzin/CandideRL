@@ -9,7 +9,6 @@ import game.utility.DirectionProcessor;
 public class ArtificialIntelligence {
 	
 	private Player player = null;
-	private int[][] distanceToPlayer = null;
 	
 	public ArtificialIntelligence(Player player){
 		this.player = player;
@@ -35,7 +34,10 @@ public class ArtificialIntelligence {
 	}
 	
 	private void moveToPlayer(NPC mob) {
-		mob.move(DirectionProcessor.getDirectionFromPositions(mob.getPosition(), player.getPosition()));
+		PathFinder.init(player.getPosition());
+		mob.move(PathFinder.chooseQuickestWay(mob.getPosition()));
+		
+		//mob.move(DirectionProcessor.getDirectionFromPositions(mob.getPosition(), player.getPosition()));
 	}
 	
 }
