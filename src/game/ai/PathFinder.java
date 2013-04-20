@@ -13,19 +13,13 @@ public class PathFinder {
 	private static boolean[][] checked;
 	private static int[][] cost;
 	private static Queue<Position> nodes = new ArrayDeque<Position>();
+	private static int distanceLimit;
 	
-	public static void init(Position target) {
+	public static void init(Position target, int distLimit) {
+		distanceLimit = distLimit;
 		makeMap(Map.toBooleanArray());
 		checked[target.x][target.y] = true;
 		bfs(target.x, target.y, 0);
-	}
-	
-	public static String costToString() {
-		String result = "";
-		for (int i = cost.length - 1; i >= 0; i--)
-			for (int j = 0; j < cost[0].length; j++)
-				result += cost[i][j] + "";
-		return result;
 	}
 	
 	public static Direction chooseQuickestWay(Position from) {
@@ -45,7 +39,6 @@ public class PathFinder {
 	
 	private static void bfs(int x, int y, int distance) {
 		cost[x][y] = distance;
-//		game.ui.GameUI.showMessage("( " + x + ", " + y + ")" );
 		
 		for (int i = x - 1; i <= x + 1; i++)
 			for (int j = y - 1; j <= y + 1; j++)
@@ -61,35 +54,26 @@ public class PathFinder {
 	}
 	
 	private static int findLeastCost(int x, int y) {
-		int leastCost = cost[x][y];
+		int leastCost = distanceLimit;
 		
 		for (int i = x - 1; i <= x + 1; i++)
 			for (int j = y - 1; j <= y + 1; j++)
-				if ( insideArray(i, j) &&  leastCost > cost[i][j])
+				if ( insideArray(i, j) && checked[i][j] &&  leastCost > cost[i][j])
 					leastCost = cost[i][j];
 		return leastCost;
 	}
 	
 	private static boolean insideArray(int x, int y) {
-		try {
-			if (passable[x][y])
-				return true;
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
+		return x < cost.length && x >= 0 && y < cost[0].length && y >= 0;
 	}
 	
 	private static void makeMap(boolean[][] map) {
 		cost = new int[map.length][map[0].length];
 		for (int i = 0; i < cost.length; i++)
 			for (int j = 0; j < cost[0].length; j++)
-				cost[i][j] = 9;
+				cost[i][j] = distanceLimit;
 		passable = map;
 		checked = new boolean[map.length][map[0].length];
-		for (int i = 0; i < checked.length; i++)
-			for (int j = 0; j < checked[0].length; j++)
-				checked[i][j] = false;
 	}
 	
 }

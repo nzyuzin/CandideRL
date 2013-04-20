@@ -34,10 +34,8 @@ public class ArtificialIntelligence {
 	}
 	
 	private void moveToPlayer(NPC mob) {
-		PathFinder.init(player.getPosition());
+		PathFinder.init(player.getPosition(), 100);
 		mob.move(PathFinder.chooseQuickestWay(mob.getPosition()));
-		
-		//mob.move(DirectionProcessor.getDirectionFromPositions(mob.getPosition(), player.getPosition()));
 	}
 	
 }
