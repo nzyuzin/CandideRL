@@ -77,6 +77,7 @@ public final class GameEngine {
 	
 	private static void drawMap() {
 		GameUI.drawMap(Map.toOneString());
+//		GameUI.drawMap(game.ai.PathFinder.costToString());
 	}
 	
 	private static void showStats() {
@@ -91,12 +92,13 @@ public final class GameEngine {
 		GameUI.showMessage("Prepare to play!");
 		player.move(Direction.NORTH);
 		player.performAction();
-		drawMap();
+//		drawMap();
 		showStats();
 		while ( !npcs.isEmpty() && !player.isDead() ) {
 			handleInput();
 			if (player.hasAction())
 				advanceTime();
+			drawMap();
 		}
 		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
 		if ( player.isDead()) GameUI.showAnnouncement("You're dead! Congratulations.");
