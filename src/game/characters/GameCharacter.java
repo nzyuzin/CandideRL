@@ -22,6 +22,13 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 		public short dexterity;
 		public short intellegence;
 		public short armor;
+		
+		public Attributes() {
+			this.strength = 8;
+			this.armor = 0;
+			this.dexterity = 8;
+			this.intellegence = 8;
+		}
 	}
 	
 	protected Queue<GameAction> gameActions = null;
@@ -29,8 +36,8 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected Position position= null;
 	protected char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
 	
-	protected short currentHP;
-	protected short maxHP;
+	protected int currentHP;
+	protected int maxHP;
 	protected double speed = 1;
 	protected String name;
 	
@@ -42,9 +49,13 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected int maximumActionPoints;  //
 
 	
-	GameCharacter(String name, String description, Position pos) {
+	GameCharacter(String name, String description, int HP, Position pos) {
 		super(name, description);
 		position = pos;
+		maxHP = HP;
+		currentHP = HP;
+		this.canTakeDamage = true;
+		this.attackRate = 1.0;
 		attributes = new Attributes();
 		gameActions = new ArrayDeque<GameAction>();
 	}
