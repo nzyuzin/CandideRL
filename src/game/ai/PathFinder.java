@@ -11,25 +11,36 @@ import java.util.Queue;
 public class PathFinder {
 	private static boolean[][] passable;
 	private static boolean[][] checked;
-	private static int[][] cost;
+	private static int[][] distance;
 	private static Queue<Position> nodes = new ArrayDeque<Position>();
 	private static int distanceLimit;
+	private static Position target;
 	
-	public static void init(Position target, int distLimit) {
+	public static void init(Position targetPos, int distLimit) {
 		distanceLimit = distLimit;
-		makeMap(Map.toBooleanArray());
+		target = targetPos;
+		updatePassable();
+		makeMap();
 		checked[target.x][target.y] = true;
 		bfs(target.x, target.y, 0);
 	}
 	
 	public static Direction chooseQuickestWay(Position from) {
+		
+		if ( from.distanceTo(target) > distanceLimit ) {
+			return null;
+		}
+		
+		updatePassable();
+		
 		int bestX = from.x;
 		int bestY = from.y;
 		
 		for (int x = from.x - 1; x <= from.x + 1; x++)
 			for (int y = from.y - 1; y <= from.y + 1; y++)
 				if (	insideArray(x, y) &&
-						cost[x][y] < cost[bestX][bestY]) {
+						passable[x][y] &&
+						distance[x][y] < distance[bestX][bestY] ) {
 					bestX = x;
 					bestY = y;
 				}
@@ -37,43 +48,60 @@ public class PathFinder {
 		return DirectionProcessor.getDirectionFromPositions(from, new Position(bestX, bestY));
 	}
 	
-	private static void bfs(int x, int y, int distance) {
-		cost[x][y] = distance;
+	private static void bfs(int x, int y, int dist) {
+		
+		if ( dist > distanceLimit ) {
+			
+			Position next = nodes.poll();
+			
+			if ( next != null )
+				bfs( next.x, next.y, findLeastDistance(next.x, next.y) + 1 );
+			
+			return;
+		}
+		
+		distance[x][y] = dist;
 		
 		for (int i = x - 1; i <= x + 1; i++)
 			for (int j = y - 1; j <= y + 1; j++)
-				if ( insideArray(i, j) && !checked[i][j] && passable[i][j]) {
+				if ( insideArray(i, j) &&
+						!checked[i][j] &&
+						passable[i][j] ) {
 					nodes.add(new Position(i, j));
 					checked[i][j] = true;
 				}
 		
 		Position next = nodes.poll();
-
-		if (!nodes.isEmpty())
-			bfs( next.x, next.y, findLeastCost(next.x, next.y) + 1 );
+		
+		if ( next != null )
+			bfs( next.x, next.y, findLeastDistance(next.x, next.y) + 1 );
 	}
 	
-	private static int findLeastCost(int x, int y) {
-		int leastCost = distanceLimit;
+	private static int findLeastDistance(int x, int y) {
+		int leastDistance = distanceLimit;
 		
 		for (int i = x - 1; i <= x + 1; i++)
 			for (int j = y - 1; j <= y + 1; j++)
-				if ( insideArray(i, j) && checked[i][j] &&  leastCost > cost[i][j])
-					leastCost = cost[i][j];
-		return leastCost;
+				if ( insideArray(i, j) && checked[i][j] &&  leastDistance > distance[i][j])
+					leastDistance = distance[i][j];
+		
+		return leastDistance;
 	}
 	
 	private static boolean insideArray(int x, int y) {
-		return x < cost.length && x >= 0 && y < cost[0].length && y >= 0;
+		return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
 	}
 	
-	private static void makeMap(boolean[][] map) {
-		cost = new int[map.length][map[0].length];
-		for (int i = 0; i < cost.length; i++)
-			for (int j = 0; j < cost[0].length; j++)
-				cost[i][j] = distanceLimit;
-		passable = map;
-		checked = new boolean[map.length][map[0].length];
+	private static void updatePassable() {
+		passable = Map.toBooleanArray();
+	}
+	
+	private static void makeMap() {
+		distance = new int[passable.length][passable[0].length];
+		for (int i = 0; i < distance.length; i++)
+			for (int j = 0; j < distance[0].length; j++)
+				distance[i][j] = distanceLimit;
+		checked = new boolean[passable.length][passable[0].length];
 	}
 	
 }

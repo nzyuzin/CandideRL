@@ -14,7 +14,6 @@ public final class GameEngine {
 	private static ArrayList<NPC> npcs = null;
 	private static MessageLog messageLog = null;
 	private static int currentTurn;
-	private static ArtificialIntelligence artificialIntelligence = null;
 	
 	private GameEngine() { }
 	
@@ -24,9 +23,11 @@ public final class GameEngine {
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
 		player = new Player("DWARF", new Position(43, 1));
+		ArtificialIntelligence.init(player, 100);
+		
 		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-		artificialIntelligence = new ArtificialIntelligence(player);
 		npcs.add(new NPC("goblin", "A regular goblin.", 'g', new Position(10, 1)));
+		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
 			Map.putGameCharacter(mob, mob.getPosition());
@@ -40,7 +41,12 @@ public final class GameEngine {
 	
 	private static void processActions() {
 		player.performAction();
-		for (NPC npc : npcs) {
+		for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
+			if (npc.isDead()) {
+				npcs.remove(npc);
+				continue;
+			}
+			else ArtificialIntelligence.chooseAction(npc);
 			if ( npc.canPerformAction() )
 				npc.performAction();
 			else npc.removeCurrentAction();
@@ -48,11 +54,6 @@ public final class GameEngine {
 	}
 	
 	private static void advanceTime() {
-		for (NPC mob : npcs.toArray(new NPC[npcs.size()])) {
-			if (mob.isDead())
-				npcs.remove(mob);
-			else artificialIntelligence.chooseAction(mob);
-		}
 		currentTurn++;
 		processActions();
 		drawMap();
@@ -64,7 +65,7 @@ public final class GameEngine {
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
-			artificialIntelligence.chooseActionInDirection(player, DirectionProcessor.getDirectionFromChar(input));
+			ArtificialIntelligence.chooseActionInDirection(player, DirectionProcessor.getDirectionFromChar(input));
 		if (input == 's')
 			advanceTime();
 	}

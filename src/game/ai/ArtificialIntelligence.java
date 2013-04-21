@@ -3,27 +3,34 @@ package game.ai;
 import game.characters.*;
 import game.characters.actions.HitGameAction;
 import game.characters.actions.MovementGameAction;
+
 import game.utility.Direction;
 import game.utility.DirectionProcessor;
+import game.utility.Position;
 
 public class ArtificialIntelligence {
 	
-	private Player player = null;
+	private static GameCharacter target = null;
+	private static Position oldTargetPosition = null;
+	private static int distanceLimit;
 	
-	public ArtificialIntelligence(Player player){
-		this.player = player;
+	public ArtificialIntelligence(){ }
+	
+	public static void init(GameCharacter t, int distance) {
+		distanceLimit = distance;
+		target = t;
 	}
 	
-	public void chooseAction(NPC mob) {
-		if ( player.isDead()) return;
-		if ( player.getPosition().distanceTo(mob.getPosition()) == 1 )
-			mob.hit(player.getPosition());
+	public static void chooseAction(GameCharacter mob) {
+		if ( target.isDead()) return;
+		if ( target.getPosition().distanceTo(mob.getPosition()) == 1 )
+			mob.hit(target.getPosition());
 		else {
-			moveToPlayer(mob);
+			moveToTarget(mob);
 		}
 	}
 	
-	public void chooseActionInDirection(GameCharacter mob, Direction there) {
+	public static void chooseActionInDirection(GameCharacter mob, Direction there) {
 		MovementGameAction move = new MovementGameAction(mob, there);
 		if (move.canBeExecuted()) {
 			mob.addAction(move);
@@ -33,8 +40,11 @@ public class ArtificialIntelligence {
 		if (hit.canBeExecuted()) mob.addAction(hit);
 	}
 	
-	private void moveToPlayer(NPC mob) {
-		PathFinder.init(player.getPosition(), 100);
+	private static void moveToTarget(GameCharacter mob) {
+		if (oldTargetPosition != target.getPosition()) {
+			PathFinder.init(target.getPosition(), distanceLimit);
+			oldTargetPosition = target.getPosition();
+		}
 		mob.move(PathFinder.chooseQuickestWay(mob.getPosition()));
 	}
 	
