@@ -14,38 +14,48 @@ public class PathFinder {
 	private static int[][] distance;
 	private static Queue<Position> nodes = new ArrayDeque<Position>();
 	private static int distanceLimit;
-	private static Position target;
 	
-	public static void init(Position targetPos, int distLimit) {
+	public static void init(Position target, int distLimit) {
+		
 		distanceLimit = distLimit;
-		target = targetPos;
 		updatePassable();
 		makeMap();
+		
 		checked[target.x][target.y] = true;
 		bfs(target.x, target.y, 0);
+		
 	}
 	
 	public static Direction chooseQuickestWay(Position from) {
-		
-		if ( from.distanceTo(target) > distanceLimit ) {
-			return null;
-		}
 		
 		updatePassable();
 		
 		int bestX = from.x;
 		int bestY = from.y;
+		int okX = from.x;
+		int okY = from.y;
 		
 		for (int x = from.x - 1; x <= from.x + 1; x++)
-			for (int y = from.y - 1; y <= from.y + 1; y++)
-				if (	insideArray(x, y) &&
-						passable[x][y] &&
-						distance[x][y] < distance[bestX][bestY] ) {
+			for (int y = from.y - 1; y <= from.y + 1; y++) {
+				
+				if ( !insideArray(x, y) || !passable[x][y])
+					continue;
+				
+				if ( distance[x][y] < distance[bestX][bestY] ) {
 					bestX = x;
 					bestY = y;
+					continue;
 				}
-		
-		return DirectionProcessor.getDirectionFromPositions(from, new Position(bestX, bestY));
+				
+				if ( distance[x][y] == distance[bestX][bestY] ) {
+					okX = x;
+					okY = y;
+				}
+					
+			}
+		if (bestX != from.x || bestY != from.y)
+			return DirectionProcessor.getDirectionFromPositions(from, new Position(bestX, bestY));
+		return DirectionProcessor.getDirectionFromPositions(from, new Position(okX, okY));
 	}
 	
 	private static void bfs(int x, int y, int dist) {

@@ -32,16 +32,21 @@ public class ArtificialIntelligence {
 	
 	public static void chooseActionInDirection(GameCharacter mob, Direction there) {
 		MovementGameAction move = new MovementGameAction(mob, there);
-		if (move.canBeExecuted()) {
+		
+		if ( move.canBeExecuted() ) {
 			mob.addAction(move);
 			return;
 		}
+		
 		HitGameAction hit = new HitGameAction(mob, DirectionProcessor.applyDirectionToPosition(mob.getPosition(), there));
-		if (hit.canBeExecuted()) mob.addAction(hit);
+		
+		if ( hit.canBeExecuted() ) mob.addAction(hit);
 	}
 	
 	private static void moveToTarget(GameCharacter mob) {
-		if (oldTargetPosition != target.getPosition()) {
+		if ( mob.getPosition().distanceTo(target.getPosition()) > distanceLimit ) return;
+		
+		if ( oldTargetPosition != target.getPosition() ) {
 			PathFinder.init(target.getPosition(), distanceLimit);
 			oldTargetPosition = target.getPosition();
 		}
