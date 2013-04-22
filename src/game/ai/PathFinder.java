@@ -61,22 +61,9 @@ public class PathFinder {
 				distance[i][j] = distanceLimit;
 		
 		checked[next.x][next.y] = true;
-		distance[next.x][next.y] = 0;
+		positionDistances.add(0);
 		
 		Position p;  // Only to simplify work with Positions inside the loops
-		
-		for (int i = next.x - 1; i <= next.x + 1; i++)
-			for (int j = next.y - 1; j <= next.y + 1; j++)
-				if ( insideArray(i, j) && !checked[i][j] ) {
-					p = new Position(i, j);
-					if ( Map.isCellPassable(p) && !Map.someoneHere(p) ) {
-						positionsToProcess.add(p);
-						positionDistances.add(distance[next.x][next.y] + 1);
-						checked[i][j] = true;
-					}
-				}
-		
-		next = positionsToProcess.poll();
 		
 		while (next != null) {
 
