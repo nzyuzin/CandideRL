@@ -6,12 +6,10 @@ import game.characters.actions.MovementGameAction;
 
 import game.utility.Direction;
 import game.utility.DirectionProcessor;
-import game.utility.Position;
 
 public class ArtificialIntelligence {
 	
 	private static GameCharacter target = null;
-	private static Position oldTargetPosition = null;
 	private static int distanceLimit;
 	
 	public ArtificialIntelligence(){ }
@@ -46,10 +44,8 @@ public class ArtificialIntelligence {
 	private static void moveToTarget(GameCharacter mob) {
 		if ( mob.getPosition().distanceTo(target.getPosition()) > distanceLimit ) return;
 		
-		if ( oldTargetPosition != target.getPosition() ) {
+		if ( target.getLastPosition() != target.getPosition() )
 			PathFinder.init(target.getPosition(), distanceLimit);
-			oldTargetPosition = target.getPosition();
-		}
 		mob.move(PathFinder.chooseQuickestWay(mob.getPosition()));
 	}
 	

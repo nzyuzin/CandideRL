@@ -53,17 +53,17 @@ public class PathFinder {
 		
 		Queue<Position> positionsToProcess = new ArrayDeque<Position>();
 		Queue<Integer> positionDistances = new ArrayDeque<Integer>();
+		distance = new int[Map.getWidth()][Map.getHeight()];
 		boolean[][] checked = new boolean[distance.length][distance[0].length];
 		
-		distance = new int[Map.getWidth()][Map.getHeight()];
 		for (int i = 0; i < distance.length; i++)
 			for (int j = 0; j < distance[0].length; j++)
 				distance[i][j] = distanceLimit;
-		
+	
 		checked[next.x][next.y] = true;
 		positionDistances.add(0);
 		
-		Position p;  // Only to simplify work with Positions inside the loops
+		Position p;  // Only to simplify work with Positions inside the loop
 		
 		while (next != null) {
 
