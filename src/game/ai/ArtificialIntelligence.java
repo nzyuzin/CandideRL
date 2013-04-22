@@ -11,6 +11,7 @@ public class ArtificialIntelligence {
 	
 	private static GameCharacter target = null;
 	private static int distanceLimit;
+	private static PathFinder path;
 	
 	public ArtificialIntelligence(){ }
 	
@@ -45,8 +46,8 @@ public class ArtificialIntelligence {
 		if ( mob.getPosition().distanceTo(target.getPosition()) > distanceLimit ) return;
 		
 		if ( target.getLastPosition() != target.getPosition() )
-			PathFinder.init(target.getPosition(), distanceLimit);
-		mob.move(PathFinder.chooseQuickestWay(mob.getPosition()));
+			path = new PathFinder(target.getPosition(), distanceLimit);
+		mob.move(path.chooseQuickestWay(mob.getPosition()));
 	}
 	
 }
