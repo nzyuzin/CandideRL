@@ -14,15 +14,27 @@ public class PathFinder {
 	// BFS won't go on further distance than this limit
 	private int distanceLimit;
 	
-	public PathFinder(Position target, int distLimit) {
+	Position target = null;
+	
+	public PathFinder(Position targetPos, int distLimit) {
 		distanceLimit = distLimit;
-		bfs(target);
+		target = targetPos;
+		calculateDistances(target);
 	}
 	
-	private void bfs(Position current) {
+	/* 
+	 * Fills distance array up using breadth-first-search 
+	 * Takes initial position as argument
+	 */
+	
+	private void calculateDistances(Position current) {
 		
-		Queue<Position> positionsToProcess = new ArrayDeque<Position>();  // First element is closest to initial point
-		Queue<Integer> positionDistances = new ArrayDeque<Integer>();     // First element holds distance from initial point of positionsToProcess queue
+		// First element is point closest to initial
+		Queue<Position> positionsToProcess = new ArrayDeque<Position>();
+		
+		// First element holds distance from initial point correspondingly to positionsToProcess queue
+		Queue<Integer> positionDistances = new ArrayDeque<Integer>();
+		
 		distance = new int[Map.getWidth()][Map.getHeight()];
 		boolean[][] checked = new boolean[distance.length][distance[0].length];
 		
@@ -37,7 +49,8 @@ public class PathFinder {
 		
 		while (current != null) {
 
-			if ( positionDistances.peek() >= distanceLimit ) { // No need to do something if it's too far
+			if ( positionDistances.peek() >= distanceLimit ) {
+				// No need to do something if it's too far
 				current = positionsToProcess.poll();
 				positionDistances.poll();
 				continue;
@@ -65,37 +78,27 @@ public class PathFinder {
 	}
 	
 	public Direction chooseQuickestWay(Position from) {
+
+		Position best = new Position(from.x, from.y);
 		
-		// bestX and bestY marks point with least distance, and okX, okY mark last point which has same cost as best.
-		// okX and okY are needed to avoid situation in which no point has less distance than initial and so no movement is possible.
-		// In other words, movement will be made unless all surrounding points have greater distance. 
-		int bestX = from.x, bestY = from.y, okX = from.x, okY = from.y; 
+		Position p;
 		
 		for (int x = from.x - 1; x <= from.x + 1; x++)
 			for (int y = from.y - 1; y <= from.y + 1; y++) {
 				
-				if ( !insideArray(x, y) && Map.someoneHere(new Position(x, y)) )
+				if ( !insideArray(x, y) )
 					continue;
 				
-				if ( distance[x][y] < distance[bestX][bestY] ) {
-					bestX = x;
-					bestY = y;
-					continue;
-				}
+				p = new Position(x, y);
 				
-				// Check for equality to initial point is vital in case when okPoint is found in first half of loop
-				if ( distance[x][y] == distance[bestX][bestY] && (x != from.x || y != from.y) ) {
-					okX = x;
-					okY = y;
-				}
-					
+				if ( !Map.someoneHere(p) && (
+						distance[x][y] < distance[best.x][best.y] || 
+						( distance[x][y] == distance[best.x][best.y] && p == target.chooseClosest(p, best) ) ) )
+					best = p;
 			}
 		
-		// if bestPoint isn't initial use it. Otherwise okPoint (which can stay initial)
-		if ( bestX != from.x || bestY != from.y )
-			return DirectionProcessor.getDirectionFromPositions(from, new Position(bestX, bestY));
-		else
-			return DirectionProcessor.getDirectionFromPositions(from, new Position(okX, okY));
+		return DirectionProcessor.getDirectionFromPositions(from, best);
+		
 	}
 	
 }
