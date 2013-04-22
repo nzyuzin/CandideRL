@@ -10,16 +10,13 @@ import java.util.Queue;
 
 public class PathFinder {
 	private static boolean[][] passable;
-	private static boolean[][] checked;
 	private static int[][] distance;
-	private static Queue<Position> nodes = new ArrayDeque<Position>();
+	private static Queue<Position> positionsToProcess = new ArrayDeque<Position>();
 	private static int distanceLimit;
-	private static Position target;
 	
-	public static void init(Position targetPos, int distLimit) {
+	public static void init(Position target, int distLimit) {
 		
 		distanceLimit = distLimit;
-		target = targetPos;
 		updatePassable();
 		makeMap();
 		
@@ -61,6 +58,8 @@ public class PathFinder {
 	
 	private static void bfs(Position next, int dist) {
 		
+		boolean[][] checked = new boolean[passable.length][passable[0].length];
+		
 		checked[next.x][next.y] = true;
 
 		distance[next.x][next.y] = dist;
@@ -70,18 +69,18 @@ public class PathFinder {
 				if ( insideArray(i, j) &&
 						!checked[i][j] &&
 						passable[i][j] ) {
-					nodes.add(new Position(i, j));
+					positionsToProcess.add(new Position(i, j));
 					checked[i][j] = true;
 				}
 		
-		next = nodes.poll();
+		next = positionsToProcess.poll();
 		
 		while (next != null) {
 			
-			dist = findLeastDistance(next.x, next.y) + 1;
+			dist = findLeastDistance(next, checked) + 1;
 
 			if ( dist >= distanceLimit ) {
-				next = nodes.poll();
+				next = positionsToProcess.poll();
 				continue;
 			}
 
@@ -92,19 +91,19 @@ public class PathFinder {
 					if ( insideArray(i, j) &&
 							!checked[i][j] &&
 							passable[i][j] ) {
-						nodes.add(new Position(i, j));
+						positionsToProcess.add(new Position(i, j));
 						checked[i][j] = true;
 					}
 
-			next = nodes.poll();
+			next = positionsToProcess.poll();
 		}
 	}
 	
-	private static int findLeastDistance(int x, int y) {
+	private static int findLeastDistance(Position pos, boolean[][] checked) {
 		int leastDistance = distanceLimit;
 		
-		for (int i = x - 1; i <= x + 1; i++)
-			for (int j = y - 1; j <= y + 1; j++)
+		for (int i = pos.x - 1; i <= pos.x + 1; i++)
+			for (int j = pos.y - 1; j <= pos.y + 1; j++)
 				if ( insideArray(i, j) && checked[i][j] &&  leastDistance > distance[i][j])
 					leastDistance = distance[i][j];
 		
@@ -116,7 +115,7 @@ public class PathFinder {
 	}
 	
 	private static void updatePassable() {
-		passable = Map.toBooleanArray(target);
+		passable = Map.toBooleanArray();
 	}
 	
 	private static void makeMap() {
@@ -124,7 +123,6 @@ public class PathFinder {
 		for (int i = 0; i < distance.length; i++)
 			for (int j = 0; j < distance[0].length; j++)
 				distance[i][j] = distanceLimit;
-		checked = new boolean[passable.length][passable[0].length];
 	}
 	
 }

@@ -1,11 +1,9 @@
 package game.characters;
 
-import game.utility.Position;
-
 public final class Player extends GameCharacter {
 	
-	public Player(String name, Position pos) {
-		super(name, "It's you.", 100, pos);
+	public Player(String name) {
+		super(name, "It's you.", 100);
 		this.name = name;
 		this.charOnMap = game.utility.VisibleCharacters.PLAYER;
 		currentActionPoints = 50;

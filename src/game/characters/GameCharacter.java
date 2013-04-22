@@ -50,9 +50,8 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected int maximumActionPoints;  //
 
 	
-	GameCharacter(String name, String description, int HP, Position pos) {
+	GameCharacter(String name, String description, int HP) {
 		super(name, description);
-		position = pos;
 		maxHP = HP;
 		currentHP = HP;
 		this.canTakeDamage = true;

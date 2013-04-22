@@ -22,15 +22,15 @@ public final class GameEngine {
 		Map.init(GameUI.getMapWidth() * 4, GameUI.getMapHeight() * 4, GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
-		player = new Player("DWARF", new Position(43, 1));
+		player = new Player("DWARF");
 		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2);
 		
-		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-		npcs.add(new NPC("goblin", "A regular goblin.", 'g', new Position(10, 1)));
+//		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
+		npcs.add(new NPC("goblin", "A regular goblin.", 'g'));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
-			Map.putGameCharacter(mob, mob.getPosition());
+			Map.putGameCharacter(mob, new Position(1, 1));
 		currentTurn = 0;
 	}
 	

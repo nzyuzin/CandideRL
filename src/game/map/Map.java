@@ -112,7 +112,7 @@ public final class Map {
 		return getCell(pos).passageCost;
 	}
 	
-	public static boolean[][] toBooleanArray(Position pos) {
+	public static boolean[][] toBooleanArray() {
 		
 		boolean[][] array = new boolean[mapWidth][mapHeight];
 		
