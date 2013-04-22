@@ -19,11 +19,11 @@ public final class GameEngine {
 	
 	private static void init() {
 		GameUI.init();
-		Map.init(GameUI.getMapWidth(), GameUI.getMapHeight());
+		Map.init(GameUI.getMapWidth() * 4, GameUI.getMapHeight() * 4, GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
 		player = new Player("DWARF", new Position(43, 1));
-		ArtificialIntelligence.init(player, 100);
+		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2);
 		
 		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
 		npcs.add(new NPC("goblin", "A regular goblin.", 'g', new Position(10, 1)));
@@ -77,7 +77,11 @@ public final class GameEngine {
 	}
 	
 	private static void drawMap() {
-		GameUI.drawMap(Map.toOneString());
+		if (!player.isDead()) {
+			GameUI.drawMap(Map.toOneString(player.getPosition()));
+			return;
+		}
+		GameUI.drawMap(Map.toOneString(player.getLastPosition()));
 	}
 	
 	private static void showStats() {
@@ -90,8 +94,6 @@ public final class GameEngine {
 		try {
 		init();
 		GameUI.showMessage("Prepare to play!");
-		player.move(Direction.NORTH);
-		player.performAction();
 		drawMap();
 		showStats();
 		while ( !npcs.isEmpty() && !player.isDead() ) {

@@ -14,15 +14,16 @@ public class PathFinder {
 	private static int[][] distance;
 	private static Queue<Position> nodes = new ArrayDeque<Position>();
 	private static int distanceLimit;
+	private static Position target;
 	
-	public static void init(Position target, int distLimit) {
+	public static void init(Position targetPos, int distLimit) {
 		
 		distanceLimit = distLimit;
+		target = targetPos;
 		updatePassable();
 		makeMap();
 		
-		checked[target.x][target.y] = true;
-		bfs(target.x, target.y, 0);
+		bfs(target, 0);
 		
 	}
 	
@@ -58,22 +59,14 @@ public class PathFinder {
 		return DirectionProcessor.getDirectionFromPositions(from, new Position(okX, okY));
 	}
 	
-	private static void bfs(int x, int y, int dist) {
+	private static void bfs(Position next, int dist) {
 		
-		if ( dist > distanceLimit ) {
-			
-			Position next = nodes.poll();
-			
-			if ( next != null )
-				bfs( next.x, next.y, findLeastDistance(next.x, next.y) + 1 );
-			
-			return;
-		}
+		checked[next.x][next.y] = true;
+
+		distance[next.x][next.y] = dist;
 		
-		distance[x][y] = dist;
-		
-		for (int i = x - 1; i <= x + 1; i++)
-			for (int j = y - 1; j <= y + 1; j++)
+		for (int i = next.x - 1; i <= next.x + 1; i++)
+			for (int j = next.y - 1; j <= next.y + 1; j++)
 				if ( insideArray(i, j) &&
 						!checked[i][j] &&
 						passable[i][j] ) {
@@ -81,10 +74,30 @@ public class PathFinder {
 					checked[i][j] = true;
 				}
 		
-		Position next = nodes.poll();
+		next = nodes.poll();
 		
-		if ( next != null )
-			bfs( next.x, next.y, findLeastDistance(next.x, next.y) + 1 );
+		while (next != null) {
+			
+			dist = findLeastDistance(next.x, next.y) + 1;
+
+			if ( dist >= distanceLimit ) {
+				next = nodes.poll();
+				continue;
+			}
+
+			distance[next.x][next.y] = dist;
+
+			for (int i = next.x - 1; i <= next.x + 1; i++)
+				for (int j = next.y - 1; j <= next.y + 1; j++)
+					if ( insideArray(i, j) &&
+							!checked[i][j] &&
+							passable[i][j] ) {
+						nodes.add(new Position(i, j));
+						checked[i][j] = true;
+					}
+
+			next = nodes.poll();
+		}
 	}
 	
 	private static int findLeastDistance(int x, int y) {
@@ -103,7 +116,7 @@ public class PathFinder {
 	}
 	
 	private static void updatePassable() {
-		passable = Map.toBooleanArray();
+		passable = Map.toBooleanArray(target);
 	}
 	
 	private static void makeMap() {

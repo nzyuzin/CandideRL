@@ -10,16 +10,22 @@ public final class Map {
 	
 	private static int mapWidth;
 	private static int mapHeight;
+	
+	private static int mapScreenHeight;
+	private static int mapScreenWidth;
 
 	private static MapCell[][] map;
 	
 	private Map() { }
 	
-	public static void init(int width, int height) {
+	public static void init(int width, int height, int screenWidth, int screenHeight) {
 		//TODO make complicated map generation
 		
 		mapWidth = width;
 		mapHeight = height;
+		
+		mapScreenWidth = screenWidth;
+		mapScreenHeight = screenHeight;
 		
 		// Wall is of no use now, so it's meaningless to create more than one wall to fill space on map
 		Wall wall = new Wall();
@@ -106,21 +112,42 @@ public final class Map {
 		return getCell(pos).passageCost;
 	}
 	
-	public static boolean[][] toBooleanArray() {
+	public static boolean[][] toBooleanArray(Position pos) {
+		
 		boolean[][] array = new boolean[mapWidth][mapHeight];
-		for (int i = 0; i < mapHeight; i++) 
-			for (int j = 0; j < mapWidth; j++)
-				array[j][i] = map[j][i].canBePassed && map[j][i].gameCharacter == null;
+		
+		for (int y = 0; y < mapHeight; y++)
+			for (int x = 0; x < mapWidth; x++) {
+				array[x][y] = map[x][y].canBePassed && map[x][y].gameCharacter == null;
+			}
+		
 		return array;
 	}
 	
-	public static String toOneString() {
+	public static String wholeMapAsString() {
 		
 		StringBuffer buffer = new StringBuffer();
 		
 		for (int y = mapHeight - 1; y >= 0; y--)
 			for (int x = 0; x < mapWidth; x++)
 				buffer.append(getVisibleChar(x, y));
+
+		return buffer.toString();
+	}
+	
+	public static String toOneString(Position pos) {
+		
+		StringBuffer buffer = new StringBuffer();
+		
+		int drawPosX = pos.x - (int) (mapScreenWidth / 2.0);
+		int drawPosY = pos.y + (int) (mapScreenHeight / 2.0);
+
+		for (int y = drawPosY - 1; y >= drawPosY - mapScreenHeight; y--)
+			for (int x = drawPosX; x < drawPosX + mapScreenWidth; x++) {
+				if ( x < mapWidth && x >= 0 && y < mapHeight && y >= 0)
+					buffer.append(getVisibleChar(x, y));
+				else buffer.append(" ");
+			}
 
 		return buffer.toString();
 	}

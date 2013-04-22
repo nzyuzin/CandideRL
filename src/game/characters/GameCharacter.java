@@ -34,6 +34,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected Queue<GameAction> gameActions = null;
 	
 	protected Position position= null;
+	protected Position lastPosition = null;
 	protected char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
 	
 	protected int currentHP;
@@ -90,7 +91,12 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	}
 	
 	public void setPosition(Position position) {
+		this.lastPosition = this.position;
 		this.position = position;
+	}
+	
+	public Position getLastPosition() {
+		return this.lastPosition;
 	}
 	
 	public boolean canPerformAction() {
