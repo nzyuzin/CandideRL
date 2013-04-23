@@ -36,15 +36,27 @@ public final class Map {
 				map[i][j] = new Floor();
 		for(int i = 0; i < height; i++) {
 			map[0][i] = wall;
-			map[width - 1][i] = wall;
-			map[width / 2][i] = wall;
+			map[width - 1][i] = wall;		 
 		}
-		
-		map[width / 2][height / 2] = new Floor();
 		
 		for (int i = 0; i < width; i++) {
 			map[i][0] = wall;
 			map[i][height - 1] = wall;
+		}
+		
+		for (int x = width / 2, uX = x + height / 2, uY = height / 2, dY = height / 2; x <= uX && dY < height && uY >= 0; x++, dY++, uY--, uX--)
+			{
+				map[x][uY] = wall;
+				map[x][dY] = wall;
+				map[uX][uY] = wall;
+				map[uX][dY] = wall;
+			}
+		for (int x = width / 2 - 2, uX = x + height / 2 + 4, uY = height / 2, dY = height / 2; x <= uX && dY < height && uY >= 0; x++, dY++, uY--, uX--)
+		{
+			map[x][uY] = wall;
+			map[x][dY] = wall;
+			map[uX][uY] = wall;
+			map[uX][dY] = wall;
 		}
 	}
 	

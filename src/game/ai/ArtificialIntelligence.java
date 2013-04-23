@@ -22,7 +22,7 @@ public class ArtificialIntelligence {
 	
 	public static void chooseAction(GameCharacter mob) {
 		if ( target.isDead()) return;
-		if ( target.getPosition().distanceTo(mob.getPosition()) == 1 )
+		if ( target.getPosition().distanceTo(mob.getPosition()) < 2 )
 			mob.hit(target.getPosition());
 		else {
 			moveToTarget(mob);

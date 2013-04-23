@@ -19,14 +19,14 @@ public final class GameEngine {
 	
 	private static void init() {
 		GameUI.init();
-		Map.init(GameUI.getMapWidth() * 4, GameUI.getMapHeight() * 4, GameUI.getMapWidth(), GameUI.getMapHeight());
+		Map.init(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2, GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
 		player = new Player("DWARF");
-		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2);
+		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
 		
 //		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-		npcs.add(new NPC("goblin", "A regular goblin.", 'g'));
+//		npcs.add(new NPC("goblin", "A regular goblin.", 'g'));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
@@ -96,7 +96,7 @@ public final class GameEngine {
 		GameUI.showMessage("Prepare to play!");
 		drawMap();
 		showStats();
-		while ( !npcs.isEmpty() && !player.isDead() ) {
+		while ( !player.isDead() ) {
 			handleInput();
 			if (player.hasAction())
 				advanceTime();
