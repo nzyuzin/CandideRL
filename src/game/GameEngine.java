@@ -26,7 +26,7 @@ public final class GameEngine {
 		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
 		
 //		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-//		npcs.add(new NPC("goblin", "A regular goblin.", 'g'));
+		npcs.add(new NPC("goblin", "A regular goblin.", 'g'));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
@@ -96,7 +96,7 @@ public final class GameEngine {
 		GameUI.showMessage("Prepare to play!");
 		drawMap();
 		showStats();
-		while ( !player.isDead() ) {
+		while ( !player.isDead() && !npcs.isEmpty() ) {
 			handleInput();
 			if (player.hasAction())
 				advanceTime();

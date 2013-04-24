@@ -79,7 +79,7 @@ public class PathFinder {
 	
 	public Direction chooseQuickestWay(Position from) {
 
-		Position best = new Position(from.x, from.y);
+		Position best = from;
 		
 		Position p;
 		
