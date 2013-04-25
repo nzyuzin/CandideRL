@@ -78,10 +78,10 @@ public final class GameEngine {
 	
 	private static void drawMap() {
 		if (!player.isDead()) {
-			GameUI.drawMap(Map.toOneString(player.getPosition()));
+			GameUI.drawMap(player.getVisibleMap());
 			return;
 		}
-		GameUI.drawMap(Map.toOneString(player.getLastPosition()));
+		GameUI.drawMap(Map.toString(player.getLastPosition()));
 	}
 	
 	private static void showStats() {

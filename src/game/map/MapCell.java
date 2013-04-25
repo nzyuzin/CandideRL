@@ -11,6 +11,7 @@ import java.util.ArrayList;
 abstract class MapCell extends GameObject implements Visible {
 	protected final char charOnMap;
 	protected char visibleChar;
+	protected boolean transparent;
 	
 	protected boolean canBePassed = false;
 	protected int passageCost = 0;
@@ -20,8 +21,10 @@ abstract class MapCell extends GameObject implements Visible {
 	
 	protected MapCell(String name, String desc, char onMap) {
 		super(name, desc);
+		canBePassed = false;
 		charOnMap = onMap;
 		gameItems = new ArrayList<GameItem>();
+		transparent = false;
 	}
 	
 	public char getCharOnMap() {
@@ -80,5 +83,6 @@ class Floor extends MapCell {
 		canBePassed = true;
 		visibleChar = VisibleCharacters.FLOOR;
 		passageCost = 100;
+		transparent = true;
 	}
 }

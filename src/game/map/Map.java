@@ -66,7 +66,7 @@ public final class Map {
 		return map[pos.x][pos.y];
 	}
 	
-	private static char getVisibleChar(int x, int y) {
+	static char getVisibleChar(int x, int y) {
 		assert x < mapWidth && x >= 0 &&
 				y < mapHeight && y >= 0;
 		return map[x][y].getCharOnMap();
@@ -97,6 +97,12 @@ public final class Map {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
 		return getCell(pos).canBePassed;
+	}
+	
+	public static boolean isCellTransparent(Position pos) {
+		assert pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
+		return getCell(pos).transparent;
 	}
 	
 	public static void moveGameCharacter(GameCharacter mob, Position pos) {
@@ -136,32 +142,60 @@ public final class Map {
 		return array;
 	}
 	
-	public static String wholeMapAsString() {
+	public static String toString(Position pos) {
+		
+		MapCell[][] mep = getPartOfMap(
+				pos.x - (int) (mapScreenWidth / 2.0),
+				pos.x + (int) (mapScreenWidth / 2.0),
+				pos.y - (int) (mapScreenHeight / 2.0),
+				pos.y + (int) (mapScreenHeight / 2.0));
 		
 		StringBuffer buffer = new StringBuffer();
-		
-		for (int y = mapHeight - 1; y >= 0; y--)
-			for (int x = 0; x < mapWidth; x++)
-				buffer.append(getVisibleChar(x, y));
 
-		return buffer.toString();
-	}
-	
-	public static String toOneString(Position pos) {
-		
-		StringBuffer buffer = new StringBuffer();
-		
-		int drawPosX = pos.x - (int) (mapScreenWidth / 2.0);
-		int drawPosY = pos.y + (int) (mapScreenHeight / 2.0);
-
-		for (int y = drawPosY - 1; y >= drawPosY - mapScreenHeight; y--)
-			for (int x = drawPosX; x < drawPosX + mapScreenWidth; x++) {
-				if ( x < mapWidth && x >= 0 && y < mapHeight && y >= 0)
-					buffer.append(getVisibleChar(x, y));
+		for (int y = mep[0].length - 1; y >= 0; y--)
+			for (int x = 0; x < mep.length; x++) {
+				if ( mep[x][y] != null )
+					buffer.append( mep[x][y].visibleChar );
 				else buffer.append(" ");
 			}
 
 		return buffer.toString();
+	}
+	
+	private static MapCell[][] getPartOfMap(Position pos, int width, int height) {
+		return getPartOfMap(
+				pos.x - (int) (width / 2.0),
+				pos.x + (int) (width / 2.0),
+				pos.y - (int) (height / 2.0),
+				pos.y + (int) (height / 2.0));
+	}
+	
+	public static char[][] getVisibleChars(Position pos, int width, int height) {
+		MapCell[][] mep = getPartOfMap(pos, width, height);
+		
+		char[][] result = new char[mep.length][mep[0].length];
+		
+		for (int x = 0; x < mep.length; x++)
+			for (int y = 0; y < mep.length; y++) {
+				if ( mep[x][y] != null )
+					result[x][y] = mep[x][y].visibleChar;
+				else result[x][y] = ' ';
+			}
+		
+		return result;
+	}
+	
+	private static MapCell[][] getPartOfMap(int lX, int uX, int lY, int uY) {
+		MapCell[][] result = new MapCell[uX - lX][uY - lY];
+		
+		for (int x = lX, i = 0; x < uX; x++, i++)
+			for (int y = lY, j = 0; y < uY; y++, j++) {
+				if ( x < mapWidth && x >= 0 && y < mapHeight && y >= 0 )
+					result[i][j] = map[x][y];
+				else result[i][j] = null;
+			}
+		
+		return result;
 	}
 	
 	public static int getWidth() {
@@ -170,6 +204,11 @@ public final class Map {
 	
 	public static int getHeight() {
 		return mapHeight;
+	}
+	
+	public static boolean insideMap(Position pos) {
+		return pos.x < mapWidth && pos.x >= 0 &&
+				pos.y < mapHeight && pos.y >= 0;
 	}
 	
 }
