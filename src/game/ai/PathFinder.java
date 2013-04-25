@@ -32,9 +32,6 @@ public class PathFinder {
 		// First element is point closest to initial
 		Queue<Position> positionsToProcess = new ArrayDeque<Position>();
 		
-		// First element holds distance from initial point correspondingly to positionsToProcess queue
-		Queue<Integer> positionDistances = new ArrayDeque<Integer>();
-		
 		distance = new int[Map.getWidth()][Map.getHeight()];
 		boolean[][] checked = new boolean[distance.length][distance[0].length];
 		
@@ -43,20 +40,17 @@ public class PathFinder {
 				distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 	
 		checked[current.x][current.y] = true;
-		positionDistances.add(0);
+		distance[current.x][current.y] = 0;
 		
 		Position p;  // Only to simplify work with Positions inside the loop
 		
 		while (current != null) {
 
-			if ( positionDistances.peek() >= distanceLimit ) {
+			if ( distance[current.x][current.y] >= distanceLimit ) {
 				// No need to do something if it's too far
 				current = positionsToProcess.poll();
-				positionDistances.poll();
 				continue;
 			}
-
-			distance[current.x][current.y] = positionDistances.poll();
 
 			for (int i = current.x - 1; i <= current.x + 1; i++)
 				for (int j = current.y - 1; j <= current.y + 1; j++)
@@ -64,7 +58,7 @@ public class PathFinder {
 						p = new Position(i, j);
 						if ( Map.isCellPassable(p) ) {
 							positionsToProcess.add(p);
-							positionDistances.add(distance[current.x][current.y] + 1);
+							distance[i][j] = distance[current.x][current.y] + 1;
 							checked[i][j] = true;
 						}
 					}
