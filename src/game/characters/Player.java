@@ -1,10 +1,10 @@
 package game.characters;
 
-import game.map.LineOfSight;
+import game.map.FieldOfView;
 
 public final class Player extends GameCharacter {
 	
-	LineOfSight los = null;
+	FieldOfView los = null;
 	
 	public Player(String name) {
 		super(name, "It's you.", 100);
@@ -13,7 +13,7 @@ public final class Player extends GameCharacter {
 		currentActionPoints = 50;
 		speed = 1;
 		
-		los = new LineOfSight(this, 10);
+		los = new FieldOfView(this, 10);
 	}
 	
 	public String getStats() {

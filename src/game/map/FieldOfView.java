@@ -3,49 +3,46 @@ package game.map;
 import game.characters.GameCharacter;
 import game.utility.*;
 
-public final class LineOfSight {
+public final class FieldOfView {
 	private final GameCharacter watcher;
 	private boolean[][] seen;
 	
-	public LineOfSight(GameCharacter c, int size) {
-		seen = new boolean[size * 2][size * 2];
+	public FieldOfView(GameCharacter c, int size) {
+		seen = new boolean[Map.getWidth()][Map.getHeight()];
 		watcher = c;
 	}
 	
-	private void updateLOS() {
+	private void updateFOV() {
 		for (Direction d : Direction.values() )
-			markSeen(new Position( seen.length / 2, seen.length / 2), d);
+			markSeen(new Position( seen.length / 2, seen[0].length / 2), d);
 	}
 	
 	private void markSeen(Position pos, Direction there) {
-		Position heroPos = watcher.getPosition();
-		while ( insideSeenArray(pos) ) {
-			if ( !Map.insideMap(heroPos) || !Map.isCellTransparent(heroPos) )
-				break;
-			seen[pos.x][pos.y] = true;
+		Position mapPos = watcher.getPosition();
+		while ( insideSeenArray(pos) && Map.insideMap(mapPos) ) {
+//			if (Map.isCellTransparent(mapPos))
+			 seen[pos.x][pos.y] = true;
 			pos = DirectionProcessor.applyDirectionToPosition(pos, there);
-			heroPos = DirectionProcessor.applyDirectionToPosition(heroPos, there);
+			mapPos = DirectionProcessor.applyDirectionToPosition(mapPos, there);
 		}
 			
 	}
 	
 	public String toString() {
 		
-		updateLOS();
+		updateFOV();
 		
-		char[][] map = Map.getVisibleChars(watcher.getPosition(), seen.length, seen.length);
+		char[][] map = Map.getVisibleChars(watcher.getPosition());
 		
 		StringBuffer result = new StringBuffer();
 		
-		for (int y = map[0].length - 1; y >= 0; y--) {
+		for (int y = map[0].length - 1; y >= 0; y--)
 			for (int x = 0; x < map.length; x++) {
 				if (seen[x][y])
 					result.append(map[x][y]);
 				else
 					result.append(" ");
 			}
-			result.append('\n');
-		}
 		
 		return result.toString();
 	}

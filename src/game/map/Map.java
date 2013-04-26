@@ -112,7 +112,7 @@ public final class Map {
 		putGameCharacter(mob, pos);
 	}
 
-	public static boolean someoneHere(Position pos) {
+	public static boolean isSomeoneHere(Position pos) {
 		assert pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
 		return getCell(pos).gameCharacter != null;
@@ -170,13 +170,13 @@ public final class Map {
 				pos.y + (int) (height / 2.0));
 	}
 	
-	public static char[][] getVisibleChars(Position pos, int width, int height) {
-		MapCell[][] mep = getPartOfMap(pos, width, height);
+	public static char[][] getVisibleChars(Position pos) {
+		MapCell[][] mep = getPartOfMap(pos, mapScreenWidth, mapScreenHeight);
 		
 		char[][] result = new char[mep.length][mep[0].length];
 		
 		for (int x = 0; x < mep.length; x++)
-			for (int y = 0; y < mep.length; y++) {
+			for (int y = 0; y < mep[0].length; y++) {
 				if ( mep[x][y] != null )
 					result[x][y] = mep[x][y].visibleChar;
 				else result[x][y] = ' ';

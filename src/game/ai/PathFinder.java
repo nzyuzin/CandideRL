@@ -85,7 +85,7 @@ public class PathFinder {
 				
 				p = new Position(x, y);
 				
-				if ( !Map.someoneHere(p) && (
+				if ( !Map.isSomeoneHere(p) && (
 						distance[x][y] < distance[best.x][best.y] || 
 						( distance[x][y] == distance[best.x][best.y] && p == target.chooseClosest(p, best) ) ) )
 					best = p;
