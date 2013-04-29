@@ -115,18 +115,15 @@ public final class Map {
 		return getCell(pos).passageCost;
 	}
 	
-	static boolean[][] getTransparentCells(Position pos) {
-		
+	public static Position getHeroPos(Position pos) {
 		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
-		boolean[][] array = new boolean[partOfMap.length][partOfMap[0].length];
+		for (int y = partOfMap[0].length - 1; y >= 0; y--)
+			for (int x = 0; x < partOfMap.length; x++)
+				if ( partOfMap[x][y] != null && partOfMap[x][y].getGameCharacter() != null )
+					return new Position(x, y);
 		
-		for (int x = 0; x < array.length; x++)
-			for (int y = 0; y < array[0].length; y++)
-				if ( partOfMap[x][y] != null )
-					array[x][y] = partOfMap[x][y].transparent;
-		
-		return array;
+		return new Position(0, 0);
 	}
 	
 	public static String toString(Position pos) {
@@ -151,6 +148,20 @@ public final class Map {
 				pos.x + (int) (width / 2.0),
 				pos.y - (int) (height / 2.0),
 				pos.y + (int) (height / 2.0));
+	}
+	
+	static boolean[][] getTransparentCells(Position pos) {
+		
+		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
+		
+		boolean[][] array = new boolean[partOfMap.length][partOfMap[0].length];
+		
+		for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
+			for (int x = 0, j = 0; x < partOfMap.length; x++, j++)
+				if ( partOfMap[x][y] != null )
+					array[j][i] = partOfMap[x][y].transparent;
+		
+		return array;
 	}
 	
 	static ColoredChar[][] getVisibleChars(Position pos) {

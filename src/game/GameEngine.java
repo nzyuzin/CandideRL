@@ -26,7 +26,7 @@ public final class GameEngine {
 		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
 		
 //		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-		npcs.add(new NPC("goblin", "A regular goblin.", new ColoredChar('g', ColoredChar.GREEN)));
+//		npcs.add(new NPC("goblin", "A regular goblin.", new ColoredChar('g', ColoredChar.GREEN)));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
@@ -95,12 +95,12 @@ public final class GameEngine {
 		GameUI.showMessage("Prepare to play!");
 		drawMap();
 		showStats();
-		while ( !player.isDead() && !npcs.isEmpty() ) {
+		while ( !player.isDead() ) {
 			handleInput();
 			if (player.hasAction())
 				advanceTime();
 		}
-		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
+//		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
 		if ( player.isDead()) GameUI.showAnnouncement("You're dead! Congratulations.");
 		exit();
 		} catch(Exception e) {

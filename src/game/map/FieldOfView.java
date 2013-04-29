@@ -1,6 +1,7 @@
 package game.map;
 
 import game.characters.GameCharacter;
+import game.ui.GameUI;
 import game.utility.*;
 
 import java.util.ArrayDeque;
@@ -16,11 +17,14 @@ public final class FieldOfView {
 		Queue<Position> positionsQueue = new ArrayDeque<Position>();
 		
 		Position pos = null;
-		seen = new boolean[Map.getWidthOnScreen()][Map.getHeightOnScreen()];
 		boolean[][] transparent = Map.getTransparentCells(watcher.getPosition());
+		seen = new boolean[transparent.length][transparent[0].length];
 		boolean[][] marked = new boolean[transparent.length][transparent[0].length];
 		Direction[] directions = Direction.values();
-		Position watcherPos = new Position(seen.length / 2, seen[0].length / 2);
+		Position watcherPos = new Position(seen.length / 2, seen[0].length / 2 - 1);
+		
+		GameUI.showMessage("HeroPos: " + watcherPos);
+		GameUI.showMessage("Real pos: " + Map.getHeroPos(watcher.getPosition()) );
 		
 		seen[watcherPos.x][watcherPos.y] = true;
 		
@@ -46,6 +50,14 @@ public final class FieldOfView {
 							.applyDirectionToPosition(pos, directions[i]));
 					positionsQueue.add(DirectionProcessor
 							.applyDirectionToPosition(pos, directions[(i + 1) % directions.length]));
+				}
+				else {
+					pos = DirectionProcessor.applyDirectionToPosition(pos, directions[i]);
+					while (insideSeenArray(pos)) {
+						seen[pos.x][pos.y] = false;
+						marked[pos.x][pos.y] = true;
+						pos = DirectionProcessor.applyDirectionToPosition(pos, directions[i]);
+					}
 				}
 			}
 		}
