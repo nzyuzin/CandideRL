@@ -20,6 +20,12 @@ public final class MapWindow extends Rectangle {
 		Toolkit.printString(map, mapRectangle, mapFontColor);
 	}
 	
+	void drawMap(char[][] map, CharColor[][] colors) {
+		for (int i = 0; i < map.length; i++)
+			for (int j = 0; j < map[0].length; j++)
+				Toolkit.printString(map[i][j] + "", i + 1, j + 1, colors[i][j]);
+	}
+	
 	void redraw() {
 		if (map != null)
 			Toolkit.printString(map, mapRectangle, mapFontColor);

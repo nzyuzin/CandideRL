@@ -1,6 +1,7 @@
 package game.characters;
 
 import game.map.FieldOfView;
+import game.utility.Color;
 
 public final class Player extends GameCharacter {
 	
@@ -12,8 +13,9 @@ public final class Player extends GameCharacter {
 		this.charOnMap = game.utility.VisibleCharacters.PLAYER;
 		currentActionPoints = 50;
 		speed = 1;
+		this.color = new Color();
 		
-		los = new FieldOfView(this, 10);
+		los = new FieldOfView(this, 9);
 	}
 	
 	public String getStats() {
@@ -21,8 +23,8 @@ public final class Player extends GameCharacter {
 				"\nHP: " + currentHP + "/" + maxHP + "\n";
 	}
 	
-	public String getVisibleMap() {
-		return los.toString();
+	public char[][] getVisibleMap() {
+		return los.toCharArray();
 	}
 	
 }

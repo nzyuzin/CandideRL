@@ -3,6 +3,7 @@ package game.characters;
 import game.characters.actions.*;
 import game.utility.Direction;
 import game.utility.Position;
+import game.utility.Color;
 import game.utility.interfaces.*;
 import game.items.MiscItem;
 import game.GameObject;
@@ -36,6 +37,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected Position position= null;
 	protected Position lastPosition = null;
 	protected char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
+	protected Color color = null;
 	
 	protected int currentHP;
 	protected int maxHP;
@@ -148,7 +150,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	}
 	
 	public MiscItem getCorpse() {
-		return new MiscItem("Corpse of " + this.getName(),'*', 50, 50);
+		return new MiscItem("Corpse of " + this.getName(), this.getCharOnMap(), new Color(this.getColor().getForeground(), Color.RED), 50, 50);
 	}
 	
 	public char getCharOnMap() {
@@ -157,5 +159,9 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	
 	public void setCharOnMap(char onMap) {
 		charOnMap = onMap;
+	}
+	
+	public Color getColor() {
+		return this.color;
 	}
 }

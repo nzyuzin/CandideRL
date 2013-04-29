@@ -2,6 +2,8 @@ package game.ui;
 
 import jcurses.system.*;
 
+import game.utility.Color;
+
 // This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
 
 public class GameUI {
@@ -45,6 +47,14 @@ public class GameUI {
 	
 	public static void drawMap(String map) {
 		mapWindow.drawMap(map);
+	}
+	
+	public static void drawMap(char[][] map, Color[][] colors) {
+		CharColor[][] charColors = new CharColor[colors.length][colors[0].length];
+		for (int i = 0; i < charColors.length; i++)
+			for (int j = 0; j < charColors[0].length; j++)
+				charColors[i][j] = colors[i][j].getCharColor();
+		mapWindow.drawMap(map, charColors);
 	}
 	
 	public static char getInputChar() {
