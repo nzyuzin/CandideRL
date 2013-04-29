@@ -1,21 +1,20 @@
 package game.characters;
 
 import game.map.FieldOfView;
-import game.utility.Color;
+import game.utility.ColoredChar;
 
 public final class Player extends GameCharacter {
 	
-	FieldOfView los = null;
+	private FieldOfView fov = null;
 	
 	public Player(String name) {
 		super(name, "It's you.", 100);
 		this.name = name;
-		this.charOnMap = game.utility.VisibleCharacters.PLAYER;
+		this.charOnMap = new ColoredChar(game.utility.VisibleCharacters.PLAYER);
 		currentActionPoints = 50;
 		speed = 1;
-		this.color = new Color();
 		
-		los = new FieldOfView(this, 9);
+		fov = new FieldOfView(this, 9);
 	}
 	
 	public String getStats() {
@@ -23,8 +22,8 @@ public final class Player extends GameCharacter {
 				"\nHP: " + currentHP + "/" + maxHP + "\n";
 	}
 	
-	public char[][] getVisibleMap() {
-		return los.toCharArray();
+	public ColoredChar[][] getVisibleMap() {
+		return fov.toColoredCharArray();
 	}
 	
 }

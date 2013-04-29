@@ -26,7 +26,7 @@ public final class GameEngine {
 		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
 		
 //		npcs.add(new NPC("troll", "A furious beast with sharp claws.", 't', new Position(11,1)));
-		npcs.add(new NPC("goblin", "A regular goblin.", 'g', new Color(Color.GREEN)));
+		npcs.add(new NPC("goblin", "A regular goblin.", new ColoredChar('g', ColoredChar.GREEN)));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
@@ -78,10 +78,9 @@ public final class GameEngine {
 	
 	private static void drawMap() {
 		if (!player.isDead()) {
-			GameUI.drawMap(player.getVisibleMap(), Map.getColors( player.getPosition() ));
+			GameUI.drawMap(player.getVisibleMap());
 			return;
 		}
-		GameUI.drawMap(Map.toString(player.getLastPosition()));
 	}
 	
 	private static void showStats() {

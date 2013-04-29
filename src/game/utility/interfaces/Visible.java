@@ -1,9 +1,7 @@
 package game.utility.interfaces;
 
-import game.utility.Color;
+import game.utility.ColoredChar;
 
 public interface Visible {
-	char getCharOnMap();
-	void setCharOnMap(char onMap);
-	Color getColor();
+	ColoredChar getChar();
 }

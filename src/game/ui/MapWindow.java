@@ -5,34 +5,34 @@ import jcurses.util.Rectangle;
 
 public final class MapWindow extends Rectangle {
 
-	private CharColor mapFontColor = null;
+	private CharColor mapBorderColor = null;
 	private Rectangle mapRectangle = null;
-	private String map = null;
+	private String[][] map = null;
+	private CharColor[][] colors = null;
 	
-	MapWindow(int posX, int posY, int width, int height, CharColor mapFontColor) {
+	MapWindow(int posX, int posY, int width, int height, CharColor mapBorderColor) {
 		super(posX, posY, width, height);
 		mapRectangle = new Rectangle( posX + 1, posY + 1, width - 2, height - 2);
-		this.mapFontColor = mapFontColor;
+		this.mapBorderColor = mapBorderColor;
 	}
 
-	void drawMap(String map) {
+	void drawMap(String[][] map, CharColor[][] colors) {
+		
 		this.map = map;
-		Toolkit.printString(map, mapRectangle, mapFontColor);
-	}
-	
-	void drawMap(char[][] map, CharColor[][] colors) {
+		this.colors = colors;
+		
 		for (int i = 0; i < map.length; i++)
 			for (int j = 0; j < map[0].length; j++)
-				Toolkit.printString(map[i][j] + "", i + 1, j + 1, colors[i][j]);
+				Toolkit.printString(map[i][j], i + 1, j + 1, colors[i][j]);
 	}
 	
 	void redraw() {
-		if (map != null)
-			Toolkit.printString(map, mapRectangle, mapFontColor);
+		if (map != null && colors != null)
+			drawMap(this.map, this.colors);
 	}
 	
 	void drawBorders() {
-		Toolkit.drawBorder(this, mapFontColor);
+		Toolkit.drawBorder(this, mapBorderColor);
 	}
 	
 	int getMapWidth() {

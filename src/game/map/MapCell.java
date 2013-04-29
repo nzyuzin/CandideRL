@@ -4,59 +4,43 @@ import game.characters.GameCharacter;
 import game.utility.VisibleCharacters;
 import game.utility.interfaces.GameItem;
 import game.utility.interfaces.Visible;
-import game.utility.Color;
+import game.utility.ColoredChar;
 import game.GameObject;
 
 import java.util.ArrayList;
 
 abstract class MapCell extends GameObject implements Visible {
-	protected final char charOnMap;
-	protected char visibleChar;
+	protected final ColoredChar charOnMap;
+	protected ColoredChar visibleChar;
 	protected boolean transparent = false;
 	
 	protected boolean canBePassed = false;
 	protected int passageCost = 0;
-	protected Color color = null;
-	protected Color currentColor = null;
 	
 	protected GameCharacter gameCharacter = null;
 	protected ArrayList<GameItem> gameItems = null;
 	
-	protected MapCell(String name, String desc, char onMap) {
+	protected MapCell(String name, String desc, ColoredChar onMap) {
 		super(name, desc);
 		canBePassed = false;
 		charOnMap = onMap;
+		visibleChar = onMap;
 		gameItems = new ArrayList<GameItem>();
 		transparent = false;
 	}
 	
-	public char getCharOnMap() {
+	public ColoredChar getChar() {
 		return visibleChar;
 	}
 	
-	public Color getColor() {
-		return this.currentColor;
-	}
-	
-	public void setCharOnMap(char onMap) { 
-		visibleChar = onMap;
-	}
-	
 	protected void chooseCharOnMap() {
-		if ( gameCharacter != null ) {
-			visibleChar = gameCharacter.getCharOnMap();
-			currentColor = gameCharacter.getColor(); 
-		}
+		if ( gameCharacter != null )
+			visibleChar = gameCharacter.getChar();
 		else
-			if ( !gameItems.isEmpty() ) {
-				visibleChar = gameItems.get(0).getCharOnMap();
-				currentColor = gameItems.get(0).getColor();
-			}
+			if ( !gameItems.isEmpty() )
+				visibleChar = gameItems.get(0).getChar();
 			else 
-			{
 				visibleChar = charOnMap;
-				currentColor = color;
-			}
 	}
 		
 	protected void setGameCharacter(GameCharacter mob) {
@@ -85,23 +69,17 @@ abstract class MapCell extends GameObject implements Visible {
 
 class Wall extends MapCell {
 	Wall() {
-		super("Wall", "A regular rock wall.", VisibleCharacters.WALL);
-		visibleChar = VisibleCharacters.WALL;
+		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL, ColoredChar.YELLOW));
 		canBePassed = false;
 		transparent = false;
-		this.color = new Color(Color.YELLOW);
-		this.currentColor = color;
 	}
 }
 
 class Floor extends MapCell {	
 	Floor() {
-		super("Floor", "Rough rock floor.", VisibleCharacters.FLOOR);
+		super("Floor", "Rough rock floor.", new ColoredChar(VisibleCharacters.FLOOR));
 		canBePassed = true;
-		visibleChar = VisibleCharacters.FLOOR;
 		passageCost = 100;
 		transparent = true;
-		this.color = new Color();
-		this.currentColor = color;
 	}
 }

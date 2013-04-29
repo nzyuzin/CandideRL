@@ -3,7 +3,7 @@ package game.map;
 import game.characters.GameCharacter;
 import game.utility.Position;
 import game.utility.interfaces.GameItem;
-import game.utility.Color;
+import game.utility.ColoredChar;
 
 import java.lang.StringBuffer;
 
@@ -60,9 +60,9 @@ public final class Map {
 			map[uX][dY] = wall;
 		}
 		
-//		for ( int y = 0; y < height; y++) {
-//			map[width / 2][y] = wall;
-//		}
+		for ( int y = 0; y < height; y++) {
+			map[width / 2 + 8][y] = wall;
+		}
 	}
 	
 	private static MapCell getCell(Position pos) {
@@ -71,12 +71,8 @@ public final class Map {
 		return map[pos.x][pos.y];
 	}
 	
-	static char getVisibleChar(Position pos) {
-		return getCell(pos).getCharOnMap();
-	}
-	
-	static Color getColor(Position pos) {
-		return getCell(pos).getColor();
+	static ColoredChar getChar(Position pos) {
+		return getCell(pos).getChar();
 	}
 	
 	public static void removeGameCharacter(GameCharacter mob) {
@@ -149,21 +145,6 @@ public final class Map {
 		return buffer.toString();
 	}
 	
-	public static Color[][] getColors(Position pos) {
-		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
-		
-		Color[][] result = new Color[partOfMap.length][partOfMap[0].length];
-
-		for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
-			for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
-				if ( partOfMap[x][y] != null )
-					result[j][i] = partOfMap[x][y].getColor();
-				else result[j][i] = new Color();
-			}
-
-		return result;
-	}
-	
 	private static MapCell[][] getPartOfMap(Position pos, int width, int height) {
 		return getPartOfMap(
 				pos.x - (int) (width / 2.0),
@@ -172,16 +153,16 @@ public final class Map {
 				pos.y + (int) (height / 2.0));
 	}
 	
-	public static char[][] getVisibleChars(Position pos) {
+	static ColoredChar[][] getVisibleChars(Position pos) {
 		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
-		char[][] result = new char[partOfMap.length][partOfMap[0].length];
+		ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
 		
 		for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
 			for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
 				if ( partOfMap[x][y] != null )
 					result[j][i] = partOfMap[x][y].visibleChar;
-				else result[j][i] = ' ';
+				else result[j][i] = ColoredChar.NIHIL;
 			}
 		
 		return result;

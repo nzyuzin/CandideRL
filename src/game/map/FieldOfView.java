@@ -61,36 +61,24 @@ public final class FieldOfView {
 	}
 	
 	public boolean isSeen(Position mapPos) {
-		return true;
+		int x = seen.length + mapPos.x - watcher.getPosition().x;
+		int y = seen[0].length + mapPos.y - watcher.getPosition().y;
+		
+		if (!insideSeenArray(new Position(x, y)))
+			return false;
+		
+		return seen[x][y];
 	}
 	
-	public String toString() {
+	public ColoredChar[][] toColoredCharArray() {
 		updateFOV();
 		
-		char[][] map = Map.getVisibleChars(watcher.getPosition());
-
-		StringBuffer buffer = new StringBuffer();
-
-		for (int y = map[0].length - 1; y >= 0; y--)
-			for (int x = 0; x < map.length; x++) {
-				if (seen[x][y])
-					buffer.append(map[x][y]);
-				else
-					buffer.append(' ');
-			}
-
-		return buffer.toString();
-	}
-	
-	public char[][] toCharArray() {
-		updateFOV();
-		
-		char[][] map = Map.getVisibleChars(watcher.getPosition());
+		ColoredChar[][] map = Map.getVisibleChars(watcher.getPosition());
 
 		for (int x = 0; x < map.length; x++)
 			for (int y = 0; y < map[0].length; y++) {
 				if (!seen[x][y])
-					map[x][y] = ' ';
+					map[x][y] = ColoredChar.NIHIL;
 			}
 
 		return map;

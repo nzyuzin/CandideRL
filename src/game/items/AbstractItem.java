@@ -2,23 +2,22 @@ package game.items;
 
 import game.utility.interfaces.GameItem;
 import game.GameObject;
-import game.utility.Color;
+import game.utility.ColoredChar;
 
 public abstract class AbstractItem extends GameObject implements GameItem {
 	
-	protected char charOnMap = '?';
-	protected int quantity;
-	protected int weight;
-	protected int size;
-	protected Color color = null;
+	protected final ColoredChar charOnMap;
+	protected final int weight;
+	protected final int size;
 	
-	AbstractItem(String name, String description, char onMap, Color col, int weight, int size, int quantity) {
+	protected int quantity;
+	
+	AbstractItem(String name, String description, ColoredChar onMap, int weight, int size, int quantity) {
 		super(name, description);
 		this.charOnMap = onMap;
 		this.weight = weight;
 		this.size = size;
 		this.quantity = quantity;
-		this.color = col;
 	}
 	
 	public int getQuantity() {
@@ -33,15 +32,8 @@ public abstract class AbstractItem extends GameObject implements GameItem {
 		return size;
 	}
 	
-	public char getCharOnMap() {
+	public ColoredChar getChar() {
 		return charOnMap;
 	}
 	
-	public void setCharOnMap(char onMap) {
-		charOnMap = onMap;
-	}
-	
-	public Color getColor() {
-		return this.color;
-	}
 }

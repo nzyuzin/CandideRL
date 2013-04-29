@@ -3,7 +3,7 @@ package game.characters;
 import game.characters.actions.*;
 import game.utility.Direction;
 import game.utility.Position;
-import game.utility.Color;
+import game.utility.ColoredChar;
 import game.utility.interfaces.*;
 import game.items.MiscItem;
 import game.GameObject;
@@ -36,8 +36,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	
 	protected Position position= null;
 	protected Position lastPosition = null;
-	protected char charOnMap = '?';       // this charOnMap should never appear on map if everything goes fine. Should be overwritten by successor classes.
-	protected Color color = null;
+	protected ColoredChar charOnMap = null;
 	
 	protected int currentHP;
 	protected int maxHP;
@@ -108,13 +107,6 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	
 	public void performAction() {
 		// TODO make use of action points
-		
-//		GameAction current = gameActions.peek();
-//		if (current.actionPointsLeft() < 0)
-//			gameActions.poll().execute();
-//		else {
-//			current.setActionPointsLeft(current.actionPointsLeft() - currentActionPoints);
-//		}
 		if (gameActions.isEmpty()) return;
 		gameActions.poll().execute();
 	}
@@ -150,18 +142,11 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	}
 	
 	public MiscItem getCorpse() {
-		return new MiscItem("Corpse of " + this.getName(), this.getCharOnMap(), new Color(this.getColor().getForeground(), Color.RED), 50, 50);
+		return new MiscItem("Corpse of " + this.getName(), new ColoredChar(this.charOnMap.getChar(), this.charOnMap.getColor().getForeground(), ColoredChar.RED), 50, 50);
 	}
 	
-	public char getCharOnMap() {
-		return charOnMap;
+	public ColoredChar getChar() {
+		return this.charOnMap;
 	}
 	
-	public void setCharOnMap(char onMap) {
-		charOnMap = onMap;
-	}
-	
-	public Color getColor() {
-		return this.color;
-	}
 }
