@@ -29,7 +29,7 @@ public final class FieldOfView {
 		seen[watcherPos.x][watcherPos.y] = true;
 		
 		for ( int i = 0; i < directions.length; i++ ) {
-			positionsQueue.add(DirectionProcessor.applyDirectionToPosition(watcherPos, directions[i]));
+			positionsQueue.add(DirectionProcessor.applyDirection(watcherPos, directions[i]));
 			
 			while ( !positionsQueue.isEmpty() ) {
 				pos = positionsQueue.poll();
@@ -45,18 +45,18 @@ public final class FieldOfView {
 				
 				if ( transparent[pos.x][pos.y] ) {
 					positionsQueue.add(DirectionProcessor
-							.applyDirectionToPosition(pos, directions[(i - 1 + directions.length)  % directions.length]));
+							.applyDirection(pos, directions[(i - 1 + directions.length)  % directions.length]));
 					positionsQueue.add(DirectionProcessor
-							.applyDirectionToPosition(pos, directions[i]));
+							.applyDirection(pos, directions[i]));
 					positionsQueue.add(DirectionProcessor
-							.applyDirectionToPosition(pos, directions[(i + 1) % directions.length]));
+							.applyDirection(pos, directions[(i + 1) % directions.length]));
 				}
 				else {
-					pos = DirectionProcessor.applyDirectionToPosition(pos, directions[i]);
+					pos = DirectionProcessor.applyDirection(pos, directions[i]);
 					while (insideSeenArray(pos)) {
 						seen[pos.x][pos.y] = false;
 						marked[pos.x][pos.y] = true;
-						pos = DirectionProcessor.applyDirectionToPosition(pos, directions[i]);
+						pos = DirectionProcessor.applyDirection(pos, directions[i]);
 					}
 				}
 			}

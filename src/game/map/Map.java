@@ -60,9 +60,9 @@ public final class Map {
 			map[uX][dY] = wall;
 		}
 		
-		for ( int y = 0; y < height; y++) {
-			map[width / 2 + 8][y] = wall;
-		}
+//		for ( int y = 0; y < height; y++) {
+//			map[width / 2 + 8][y] = wall;
+//		}
 	}
 	
 	private static MapCell getCell(Position pos) {

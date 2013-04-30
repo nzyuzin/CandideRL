@@ -91,7 +91,7 @@ public class PathFinder {
 					best = p;
 			}
 		
-		return DirectionProcessor.getDirectionFromPositions(from, best);
+		return DirectionProcessor.getDirection(from, best);
 		
 	}
 	

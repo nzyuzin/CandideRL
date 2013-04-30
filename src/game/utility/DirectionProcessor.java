@@ -4,7 +4,7 @@ public final class DirectionProcessor {
 	
 	private DirectionProcessor() { }
 	
-	public static Position applyDirectionToPosition(Position pos, Direction there) {
+	public static Position applyDirection(Position pos, Direction there) {
 		
 		switch (there) {
 		
@@ -31,7 +31,7 @@ public final class DirectionProcessor {
 		}
 	}
 	
-	public static Direction getDirectionFromPositions(Position from, Position to) {
+	public static Direction getDirection(Position from, Position to) {
 		if( from.x == to.x && from.y > to.y  )
 			return Direction.SOUTH;
 		if( from.x == to.x && from.y < to.y )
@@ -52,7 +52,7 @@ public final class DirectionProcessor {
 		return null;
 	}
 	
-	public static Direction getDirectionFromChar(char key) {
+	public static Direction getDirection(char key) {
 
 		if( key == KeyDefinitions.DIRECTION_KEYS[0] )
 			return Direction.SOUTH;

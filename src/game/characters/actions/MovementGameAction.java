@@ -10,7 +10,7 @@ public final class MovementGameAction extends AbstractGameAction {
 
 	public MovementGameAction(GameCharacter subject, Direction there) {
 		super(subject);
-		position = DirectionProcessor.applyDirectionToPosition(subject.getPosition(), there);
+		position = DirectionProcessor.applyDirection(subject.getPosition(), there);
 		actionPointsLeft = Map.getPassageCost(position);
 	}
 	

@@ -37,7 +37,7 @@ public class ArtificialIntelligence {
 			return;
 		}
 		
-		HitGameAction hit = new HitGameAction(mob, DirectionProcessor.applyDirectionToPosition(mob.getPosition(), there));
+		HitGameAction hit = new HitGameAction(mob, DirectionProcessor.applyDirection(mob.getPosition(), there));
 		
 		if ( hit.canBeExecuted() ) mob.addAction(hit);
 	}
