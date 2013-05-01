@@ -65,7 +65,7 @@ public final class GameEngine {
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
-			ArtificialIntelligence.chooseActionInDirection(player, DirectionProcessor.getDirection(input));
+			ArtificialIntelligence.chooseActionInDirection(player, Direction.getDirection(input));
 		if (input == 's')
 			advanceTime();
 	}

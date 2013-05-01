@@ -19,7 +19,7 @@ public final class ColoredChar {
 	public static final short WHITE = CharColor.WHITE;
 	
 	public static final short STANDART_BACKGROUND_COLOR = BLACK;
-	public static final short STANDART_FOREGROUND_COLOR = WHITE;
+	public static final short STANDART_FOREGROUND_COLOR = CharColor.WHITE;
 	
 	public static final ColoredChar NIHIL = new ColoredChar(' ');
 

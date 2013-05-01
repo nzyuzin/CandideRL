@@ -1,6 +1,5 @@
 package game.ai;
 
-import game.utility.DirectionProcessor;
 import game.utility.Position;
 import game.utility.Direction;
 import game.map.Map;
@@ -91,7 +90,7 @@ public class PathFinder {
 					best = p;
 			}
 		
-		return DirectionProcessor.getDirection(from, best);
+		return Direction.getDirection(from, best);
 		
 	}
 	

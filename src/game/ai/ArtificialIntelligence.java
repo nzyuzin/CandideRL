@@ -5,7 +5,6 @@ import game.characters.actions.HitGameAction;
 import game.characters.actions.MovementGameAction;
 
 import game.utility.Direction;
-import game.utility.DirectionProcessor;
 
 public class ArtificialIntelligence {
 	
@@ -37,7 +36,7 @@ public class ArtificialIntelligence {
 			return;
 		}
 		
-		HitGameAction hit = new HitGameAction(mob, DirectionProcessor.applyDirection(mob.getPosition(), there));
+		HitGameAction hit = new HitGameAction(mob, Direction.applyDirection(mob.getPosition(), there));
 		
 		if ( hit.canBeExecuted() ) mob.addAction(hit);
 	}
