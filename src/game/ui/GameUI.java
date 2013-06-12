@@ -4,7 +4,7 @@ import jcurses.system.*;
 
 import game.utility.ColoredChar;
 
-// This class is supposed to be hidden from every class other than GameEngine. You shouldn't use it's fields and methods outside of GameEngine.
+// This class is supposed to be hidden from every class other than GameEngine. You shouldn't use its fields and methods outside of GameEngine.
 
 public class GameUI {
 	private static CharColor fontColor;

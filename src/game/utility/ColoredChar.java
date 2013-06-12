@@ -77,7 +77,7 @@ public final class ColoredChar {
 	public short getForeground() {
 		return this.foreground;
 	}
-
+	
 	public boolean equals( ColoredChar col ) {
 		return( this.background == col.background &&
 				this.foreground == col.foreground &&
