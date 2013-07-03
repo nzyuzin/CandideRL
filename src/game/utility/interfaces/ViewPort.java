@@ -15,10 +15,12 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.utility;
+package game.utility.interfaces;
 
-public final class VisibleCharacters {
-	public final static char FLOOR = '.';
-	public final static char WALL = '#';
-	public final static char PLAYER = '@';
+public interface ViewPort {
+
+	void drawBorders();
+	void redrawContent();
+	void handleInput(char input);
+
 }

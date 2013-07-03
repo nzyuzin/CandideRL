@@ -15,10 +15,8 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.utility;
+package game.map;
 
-public final class VisibleCharacters {
-	public final static char FLOOR = '.';
-	public final static char WALL = '#';
-	public final static char PLAYER = '@';
+public final class MapFactory {
+	
 }

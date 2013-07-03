@@ -1,48 +1,46 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.ui;
 
 import jcurses.system.*;
 
 import game.utility.ColoredChar;
+import game.utility.interfaces.ViewPort;
 
 // This class is supposed to be hidden from every class other than GameEngine. You shouldn't use its fields and methods outside of GameEngine.
 
 public class GameUI {
 	private static CharColor fontColor;
 	
-	private static MapWindow mapWindow = null;
+	private static PlayerViewPort playerView = null;
 	
-	private static MessagesWindow messagesWindow = null;
-	
-	private static StatsWindow statsWindow = null;
+	private static ViewPort currentView = null;
 	
 	private GameUI() {	}
 	
 	public static void init() {
 		Toolkit.init();
 		fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
-		int windowWidth = Toolkit.getScreenWidth();
-		int windowHeight = Toolkit.getScreenHeight();
-		
-		int mapWidth = windowWidth / 5 * 4;
-		int mapHeight = windowHeight / 4 * 3;
-		mapWindow = new MapWindow(0, 0, mapWidth, mapHeight, fontColor);
-		
-		int messageWindowWidth = windowWidth;
-		int messageWindowHeight = windowHeight - mapHeight;
-		int messageWindowPosition = mapHeight;
-		messagesWindow = new MessagesWindow(0, messageWindowPosition, messageWindowWidth, messageWindowHeight, fontColor);
-		
-		int statsWindowWidth = windowWidth - mapWidth;
-		int statsWindowHeight = mapHeight;
-		statsWindow = new StatsWindow(mapWidth, 0, statsWindowWidth, statsWindowHeight, fontColor);
-		
-		drawBorders();
+		playerView = new PlayerViewPort(fontColor);
 	}
 	
 	private static void drawBorders() {
-		mapWindow.drawBorders();
-		messagesWindow.drawBorders();
-		statsWindow.drawBorders();
+		playerView.drawBorders();
 	}
 	
 	public static void drawMap(ColoredChar[][] charMap) {
@@ -55,7 +53,9 @@ public class GameUI {
 				colors[i][j] = charMap[i][j].getColor();
 			}
 		
-		mapWindow.drawMap(stringMap, colors);
+		currentView = playerView;
+		currentView.drawBorders();
+		playerView.drawMap(charMap);
 	}
 	
 	public static char getInputChar() {
@@ -73,11 +73,11 @@ public class GameUI {
 	}
 	
 	public static void showMessage(String msg) {
-		messagesWindow.showMessage(msg);
+		playerView.showMessage(msg);
 	}
 	
 	public static void showStats(String stats) {
-		statsWindow.showStats(stats);
+		playerView.showStats(stats);
 	}
 	
 	private static void waitForChar(char c) {
@@ -86,9 +86,7 @@ public class GameUI {
 	
 	private static void redrawUI() {
 		drawBorders();
-		mapWindow.redraw();
-		messagesWindow.redraw();
-		statsWindow.redraw();
+		currentView.redrawContent();
 	}
 	
 	public static void exit() {
@@ -97,11 +95,11 @@ public class GameUI {
 	}
 	
 	public static int getMapWidth() {
-		return mapWindow.getMapWidth();
+		return playerView.getMapWidth();
 	}
 	
 	public static int getMapHeight() {
-		return mapWindow.getMapHeight();
+		return playerView.getMapHeight();
 	}
 
 }

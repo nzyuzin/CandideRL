@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.utility;
 
 import jcurses.system.CharColor;
@@ -59,9 +76,9 @@ public final class ColoredChar {
 	}
 
 	public CharColor getColor() {
-		CharColor c = new CharColor(this.background, this.foreground );
-		if( this.highlight )
-			c.setColorAttribute( CharColor.BOLD );
+		CharColor c = new CharColor(this.background, this.foreground);
+		if(this.highlight)
+			c.setColorAttribute(CharColor.BOLD);
 
 		return c;
 	}
@@ -79,9 +96,9 @@ public final class ColoredChar {
 	}
 	
 	public boolean equals( ColoredChar col ) {
-		return( this.background == col.background &&
+		return (this.background == col.background &&
 				this.foreground == col.foreground &&
-				this.highlight == col.highlight );
+				this.highlight == col.highlight);
 	}
 	
 	public String toString() {

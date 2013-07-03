@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game;
 import game.ai.ArtificialIntelligence;
 import game.characters.*;
@@ -7,7 +24,8 @@ import game.utility.*;
 
 import java.util.ArrayList;
 
-// Should know about all classes without restrictions, but no class should know about existence of GameEngine.
+// Should know about all classes without restrictions, 
+// but no class should know about existence of GameEngine.
 
 public final class GameEngine {
 	private static Player player = null;
@@ -19,14 +37,18 @@ public final class GameEngine {
 	
 	private static void init() {
 		GameUI.init();
-		Map.init(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2, GameUI.getMapWidth(), GameUI.getMapHeight());
+		Map.init(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2,
+				GameUI.getMapWidth(), GameUI.getMapHeight());
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
-		player = new Player("DWARF");
-		ArtificialIntelligence.init(player, (GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
+		player = Player.getInstance();
+		ArtificialIntelligence.init(player, 
+				(GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
 		
-		npcs.add(new NPC("troll", "A furious beast with sharp claws.", new ColoredChar('t', ColoredChar.RED)));
-//		npcs.add(new NPC("goblin", "A regular goblin.", new ColoredChar('g', ColoredChar.GREEN)));
+		npcs.add(new NPC("troll", "A furious beast with sharp claws.",
+				new ColoredChar('t', ColoredChar.RED)));
+//		npcs.add(new NPC("goblin", "A regular goblin.",
+//				new ColoredChar('g', ColoredChar.GREEN)));
 		
 		Map.putGameCharacter(player, new Position(43, 1));
 		for ( NPC mob : npcs ) 
@@ -65,7 +87,8 @@ public final class GameEngine {
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
-			ArtificialIntelligence.chooseActionInDirection(player, Direction.getDirection(input));
+			ArtificialIntelligence
+			.chooseActionInDirection(player, Direction.getDirection(input));
 		if (input == 's')
 			advanceTime();
 	}
@@ -84,7 +107,8 @@ public final class GameEngine {
 	}
 	
 	private static void showStats() {
-		GameUI.showStats(player.getStats() + "Current turn: " + currentTurn + "\n");
+		GameUI.showStats(player.getStats() + "Current turn: " 
+					+ currentTurn + "\n");
 	}
 	
 	// This method is a subject of constant changes.
@@ -100,8 +124,8 @@ public final class GameEngine {
 			if (player.hasAction())
 				advanceTime();
 		}
-		if ( npcs.isEmpty() ) GameUI.showAnnouncement("All mobs are dead!");
-		if ( player.isDead()) GameUI.showAnnouncement("You're dead! Congratulations.");
+		if (npcs.isEmpty()) GameUI.showAnnouncement("All mobs are dead!");
+		if (player.isDead()) GameUI.showAnnouncement("You're dead!");
 		exit();
 		} catch(Exception e) {
 			GameUI.exit();

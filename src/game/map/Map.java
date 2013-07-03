@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.map;
 
 import game.characters.GameCharacter;
@@ -19,7 +36,8 @@ public final class Map {
 	
 	private Map() { }
 	
-	public static void init(int width, int height, int screenWidth, int screenHeight) {
+	public static void init(int width, int height, 
+			int screenWidth, int screenHeight) {
 		//TODO make complicated map generation
 		
 		mapWidth = width;
@@ -28,7 +46,8 @@ public final class Map {
 		mapWidthOnScreen = screenWidth;
 		mapHeightOnScreen = screenHeight;
 		
-		// Wall is of no use now, so it's meaningless to create more than one wall to fill space on map
+		// Wall is of no use now, so it's meaningless to create more 
+		// than one wall to fill space on map
 		Wall wall = new Wall();
 		map = new MapCell[width][height];
 		
@@ -45,14 +64,18 @@ public final class Map {
 			map[i][height - 1] = wall;
 		}
 
-		for (int x = width / 2, uX = x + height / 2, uY = height / 2, dY = height / 2; x <= uX && dY < height && uY >= 0; x++, dY++, uY--, uX--)
+		for (int x = width / 2, uX = x + height / 2, uY = height / 2, 
+				dY = height / 2; x <= uX && dY < height && uY >= 0;
+				x++, dY++, uY--, uX--)
 		{
 			map[x][uY] = wall;
 			map[x][dY] = wall;
 			map[uX][uY] = wall;
 			map[uX][dY] = wall;
 		}
-		for (int x = width / 2 - 2, uX = x + height / 2 + 4, uY = height / 2, dY = height / 2; x <= uX && dY < height && uY >= 0; x++, dY++, uY--, uX--)
+		for (int x = width / 2 - 2, uX = x + height / 2 + 4, uY = height / 2,
+				dY = height / 2; x <= uX && dY < height && uY >= 0;
+				x++, dY++, uY--, uX--)
 		{
 			map[x][uY] = wall;
 			map[x][dY] = wall;
@@ -60,9 +83,6 @@ public final class Map {
 			map[uX][dY] = wall;
 		}
 		
-//		for ( int y = 0; y < height; y++) {
-//			map[width / 2 + 8][y] = wall;
-//		}
 	}
 	
 	private static MapCell getCell(Position pos) {
@@ -116,11 +136,13 @@ public final class Map {
 	}
 	
 	public static Position getHeroPos(Position pos) {
-		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
+		MapCell[][] partOfMap = 
+				getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
 		for (int y = partOfMap[0].length - 1; y >= 0; y--)
 			for (int x = 0; x < partOfMap.length; x++)
-				if ( partOfMap[x][y] != null && partOfMap[x][y].getGameCharacter() != null )
+				if (partOfMap[x][y] != null 
+						&& partOfMap[x][y].getGameCharacter() != null)
 					return new Position(x, y);
 		
 		return new Position(0, 0);
@@ -128,7 +150,8 @@ public final class Map {
 	
 	public static String toString(Position pos) {
 		
-		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
+		MapCell[][] partOfMap = 
+				getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
 		StringBuffer buffer = new StringBuffer();
 
@@ -143,8 +166,7 @@ public final class Map {
 	}
 	
 	private static MapCell[][] getPartOfMap(Position pos, int width, int height) {
-		return getPartOfMap(
-				pos.x - (int) (width / 2.0),
+		return getPartOfMap(pos.x - (int) (width / 2.0),
 				pos.x + (int) (width / 2.0),
 				pos.y - (int) (height / 2.0),
 				pos.y + (int) (height / 2.0));
@@ -152,7 +174,8 @@ public final class Map {
 	
 	static boolean[][] getTransparentCells(Position pos) {
 		
-		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
+		MapCell[][] partOfMap = 
+				getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
 		boolean[][] array = new boolean[partOfMap.length][partOfMap[0].length];
 		
@@ -165,9 +188,11 @@ public final class Map {
 	}
 	
 	static ColoredChar[][] getVisibleChars(Position pos) {
-		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
+		MapCell[][] partOfMap = 
+				getPartOfMap(pos, mapWidthOnScreen, mapHeightOnScreen);
 		
-		ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
+		ColoredChar[][] result = 
+				new ColoredChar[partOfMap.length][partOfMap[0].length];
 		
 		for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
 			for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
@@ -208,12 +233,12 @@ public final class Map {
 		return mapHeightOnScreen;
 	}
 	
-	public static boolean insideMap(Position pos) {
+	public static boolean isInsideMap(Position pos) {
 		return pos.x < mapWidth && pos.x >= 0 &&
 				pos.y < mapHeight && pos.y >= 0;
 	}
 	
-	public static boolean insideMapScreen(Position pos) {
+	public static boolean isInsideMapScreen(Position pos) {
 		return pos.x < mapWidthOnScreen && pos.x >= 0 &&
 				pos.y < mapHeightOnScreen && pos.y >= 0;
 	}

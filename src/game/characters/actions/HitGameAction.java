@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.characters.actions;
 
 import game.characters.GameCharacter;
@@ -14,19 +31,22 @@ public final class HitGameAction extends AbstractGameAction {
 	}
 	
 	public boolean canBeExecuted() {
-		return target != null && !target.isDead() && !performer.isDead() && target.getPosition().distanceTo(performer.getPosition()) < 2;
+		return target != null && !target.isDead() && !performer.isDead() 
+				&& target.getPosition().distanceTo(performer.getPosition()) < 2;
 	}
 	
 	public void execute() {
 		int damage = performer.roleDamageDice();
 		target.takeDamage(damage);
-		String message = performer.getName() + " dealt " + damage + " points of damage to " + target.getName();
-		if ( target.isDead()) {
+		String message = performer.getName() + " dealt " + damage 
+				+ " points of damage to " + target.getName();
+		if (target.isDead()) {
 			message += " and " + target.getName() + " died.";
 			Map.putItem(target.getCorpse(), target.getPosition());
 			Map.removeGameCharacter(target);
 		}
-		else message += ". Current " + target.getName() + "'s hp is: " + target.getCurrentHP() + "/" + target.getMaxHP();
+		else message += ". Current " + target.getName() + "'s hp is: " 
+		+ target.getCurrentHP() + "/" + target.getMaxHP();
 		game.GameEngine.showMessage(message);
 
 	}

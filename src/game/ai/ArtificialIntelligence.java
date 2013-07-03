@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.ai;
 
 import game.characters.*;
@@ -20,8 +37,8 @@ public class ArtificialIntelligence {
 	}
 	
 	public static void chooseAction(GameCharacter mob) {
-		if ( target.isDead()) return;
-		if ( target.getPosition().distanceTo(mob.getPosition()) < 2 )
+		if (target.isDead()) return;
+		if (target.getPosition().distanceTo(mob.getPosition()) < 2)
 			mob.hit(target.getPosition());
 		else {
 			moveToTarget(mob);
@@ -36,15 +53,17 @@ public class ArtificialIntelligence {
 			return;
 		}
 		
-		HitGameAction hit = new HitGameAction(mob, Direction.applyDirection(mob.getPosition(), there));
+		HitGameAction hit = new HitGameAction(mob, Direction
+				.applyDirection(mob.getPosition(), there));
 		
-		if ( hit.canBeExecuted() ) mob.addAction(hit);
+		if (hit.canBeExecuted()) mob.addAction(hit);
 	}
 	
 	private static void moveToTarget(GameCharacter mob) {
-		if ( mob.getPosition().distanceTo(target.getPosition()) > distanceLimit ) return;
+		if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit) 
+			return;
 		
-		if ( target.getLastPosition() != target.getPosition() )
+		if (target.getLastPosition() != target.getPosition())
 			path = new PathFinder(target.getPosition(), distanceLimit);
 		mob.move(path.chooseQuickestWay(mob.getPosition()));
 	}

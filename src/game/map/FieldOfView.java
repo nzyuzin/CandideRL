@@ -1,3 +1,20 @@
+/*
+ *  This file is part of CandideRL.
+ *
+ *  CandideRL is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  CandideRL is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package game.map;
 
 import game.characters.GameCharacter;
@@ -24,26 +41,26 @@ public final class FieldOfView {
 		Position watcherPos = new Position(seen.length / 2, seen[0].length / 2 - 1);
 		
 		GameUI.showMessage("HeroPos: " + watcherPos);
-		GameUI.showMessage("Real pos: " + Map.getHeroPos(watcher.getPosition()) );
+		GameUI.showMessage("Real pos: " + Map.getHeroPos(watcher.getPosition()));
 		
 		seen[watcherPos.x][watcherPos.y] = true;
 		
-		for ( int i = 0; i < directions.length; i++ ) {
+		for (int i = 0; i < directions.length; i++) {
 			positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
 			
-			while ( !positionsQueue.isEmpty() ) {
+			while (!positionsQueue.isEmpty()) {
 				pos = positionsQueue.poll();
 				
-				if ( !insideSeenArray(pos) || watcherPos.distanceTo(pos) > viewDistance )
+				if (!isInsideSeenArray(pos) || watcherPos.distanceTo(pos) > viewDistance)
 					continue;
 				
-				if ( marked[pos.x][pos.y] )
+				if (marked[pos.x][pos.y])
 					continue;
 	
 				marked[pos.x][pos.y] = true;
 				seen[pos.x][pos.y] = true;
 				
-				if ( transparent[pos.x][pos.y] ) {
+				if (transparent[pos.x][pos.y]) {
 					positionsQueue.add(Direction
 							.applyDirection(pos, directions[(i - 1 + directions.length)  % directions.length]));
 					positionsQueue.add(Direction
@@ -53,7 +70,7 @@ public final class FieldOfView {
 				}
 				else {
 					pos = Direction.applyDirection(pos, directions[i]);
-					while (insideSeenArray(pos)) {
+					while (isInsideSeenArray(pos)) {
 						seen[pos.x][pos.y] = false;
 						marked[pos.x][pos.y] = true;
 						pos = Direction.applyDirection(pos, directions[i]);
@@ -63,7 +80,7 @@ public final class FieldOfView {
 		}
 	}
 	
-	private boolean insideSeenArray(Position pos) {
+	private boolean isInsideSeenArray(Position pos) {
 		return pos.x < seen.length && pos.x >= 0 && pos.y < seen[0].length && pos.y >= 0;
 	}
 	
@@ -76,7 +93,7 @@ public final class FieldOfView {
 		int x = seen.length + mapPos.x - watcher.getPosition().x;
 		int y = seen[0].length + mapPos.y - watcher.getPosition().y;
 		
-		if (!insideSeenArray(new Position(x, y)))
+		if (!isInsideSeenArray(new Position(x, y)))
 			return false;
 		
 		return seen[x][y];
