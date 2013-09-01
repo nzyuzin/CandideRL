@@ -17,12 +17,13 @@
 
 package game.map;
 
+import game.GameObject;
 import game.characters.GameCharacter;
+import game.utility.ColoredChar;
+import game.utility.Position;
 import game.utility.VisibleCharacters;
 import game.utility.interfaces.GameItem;
 import game.utility.interfaces.Visible;
-import game.utility.ColoredChar;
-import game.GameObject;
 
 import java.util.ArrayList;
 
@@ -30,13 +31,14 @@ abstract class MapCell extends GameObject implements Visible {
 	protected final ColoredChar charOnMap;
 	protected ColoredChar visibleChar;
 	protected boolean transparent = false;
-	
+	protected Position position;
+
 	protected boolean canBePassed = false;
 	protected int passageCost = 0;
-	
+
 	protected GameCharacter gameCharacter = null;
 	protected ArrayList<GameItem> gameItems = null;
-	
+
 	protected MapCell(String name, String desc, ColoredChar onMap) {
 		super(name, desc);
 		canBePassed = false;
@@ -45,58 +47,68 @@ abstract class MapCell extends GameObject implements Visible {
 		gameItems = new ArrayList<GameItem>();
 		transparent = false;
 	}
-	
+
+	@Override
 	public ColoredChar getChar() {
 		return visibleChar;
 	}
-	
+
 	protected void chooseCharOnMap() {
-		if ( gameCharacter != null )
+		if (gameCharacter != null)
 			visibleChar = gameCharacter.getChar();
+		else if (!gameItems.isEmpty())
+			visibleChar = gameItems.get(0).getChar();
 		else
-			if ( !gameItems.isEmpty() )
-				visibleChar = gameItems.get(0).getChar();
-			else 
-				visibleChar = charOnMap;
+			visibleChar = charOnMap;
 	}
-		
-	protected void setGameCharacter(GameCharacter mob) {
+
+	protected MapCell setGameCharacter(GameCharacter mob) {
 		this.gameCharacter = mob;
 		chooseCharOnMap();
+		return this;
 	}
-	
+
 	protected GameCharacter getGameCharacter() {
 		return gameCharacter;
 	}
-	
+
+	protected Position getPosition() {
+		return this.position;
+	}
+
+	protected MapCell setPosition(Position pos) {
+		this.position = pos;
+		return this;
+	}
+
 	protected void putItem(GameItem item) {
 		gameItems.add(item);
 	}
-	
+
 	protected void removeItem(GameItem item) {
 		gameItems.remove(item);
 	}
-	
+
 	protected GameItem[] getListOfItems() {
 		return (GameItem[]) gameItems.toArray();
-		
+
 	}
-	
+
 }
 
 class Wall extends MapCell {
 	Wall() {
-		super("Wall", "A regular rock wall.", 
-				new ColoredChar(VisibleCharacters.WALL, ColoredChar.YELLOW));
+		super("Wall", "A regular rock wall.", new ColoredChar(
+				VisibleCharacters.WALL, ColoredChar.YELLOW));
 		canBePassed = false;
 		transparent = false;
 	}
 }
 
-class Floor extends MapCell {	
+class Floor extends MapCell {
 	Floor() {
-		super("Floor", "Rough rock floor.", 
-				new ColoredChar(VisibleCharacters.FLOOR));
+		super("Floor", "Rough rock floor.", new ColoredChar(
+				VisibleCharacters.FLOOR));
 		canBePassed = true;
 		passageCost = 100;
 		transparent = true;

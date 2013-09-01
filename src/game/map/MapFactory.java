@@ -18,5 +18,25 @@
 package game.map;
 
 public final class MapFactory {
-	
+
+	private static final MapFactory INSTACE = new MapFactory();
+
+	private static final int DEFAULT_SIZE = 100;
+
+	private static int screenWidth;
+	private static int screenHeight;
+
+	public MapFactory getInstance() {
+		return this.INSTACE;
+	}
+
+	public void setScreenSize(int width, int height) {
+		this.screenWidth = width;
+		this.screenHeight = height;
+	}
+
+	public Map getMap() {
+		return new Map(DEFAULT_SIZE, DEFAULT_SIZE, screenWidth, screenHeight);
+	}
+
 }
