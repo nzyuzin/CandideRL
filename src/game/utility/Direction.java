@@ -21,7 +21,7 @@ public enum Direction {
 	NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
 	
 	public static Position applyDirection(Position pos, Direction there) {
-		
+		try {
 		switch (there) {
 		
 		case NORTH:
@@ -45,6 +45,9 @@ public enum Direction {
 			return null;
 			
 		}
+        } catch (AssertionError ex) {
+            return pos;
+        }
 	}
 	
 	public static Direction getDirection(Position from, Position to) {

@@ -26,8 +26,8 @@ public final class MapFactory {
 	private static int screenWidth;
 	private static int screenHeight;
 
-	public MapFactory getInstance() {
-		return this.INSTACE;
+	public static MapFactory getInstance() {
+		return INSTACE;
 	}
 
 	public void setScreenSize(int width, int height) {

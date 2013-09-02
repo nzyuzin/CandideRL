@@ -23,7 +23,7 @@ import game.utility.ColoredChar;
 public final class Player extends GameCharacter {
 	
 	private FieldOfView fov = null;
-	private static Player player = new Player();
+	private final static Player PLAYER = new Player();
 	
 	private Player() {
 		super("Player", "It's you.", 100);
@@ -44,7 +44,7 @@ public final class Player extends GameCharacter {
 	}
 	
 	public static Player getInstance() {
-		return player;
+		return PLAYER;
 	}
 	
 }

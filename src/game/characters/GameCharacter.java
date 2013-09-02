@@ -58,7 +58,6 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected int currentHP;
 	protected int maxHP;
 	protected double speed = 1;
-	protected String name;
 	
 	protected double attackRate;
 	protected Attributes attributes;

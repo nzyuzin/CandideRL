@@ -29,23 +29,23 @@ import java.util.ArrayList;
 
 abstract class MapCell extends GameObject implements Visible {
 	protected final ColoredChar charOnMap;
-	protected ColoredChar visibleChar;
-	protected boolean transparent = false;
-	protected Position position;
+	protected final boolean transparent;
+	protected final Position position;
+	protected final boolean canBePassed;
 
-	protected boolean canBePassed = false;
-	protected int passageCost = 0;
+    protected ColoredChar visibleChar;
 
 	protected GameCharacter gameCharacter = null;
 	protected ArrayList<GameItem> gameItems = null;
 
-	protected MapCell(String name, String desc, ColoredChar onMap) {
+	protected MapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed, Position pos) {
 		super(name, desc);
-		canBePassed = false;
-		charOnMap = onMap;
-		visibleChar = onMap;
-		gameItems = new ArrayList<GameItem>();
-		transparent = false;
+		this.canBePassed = canBePassed;
+		this.charOnMap = onMap;
+		this.visibleChar = onMap;
+		this.gameItems = new ArrayList<GameItem>();
+		this.transparent = transp;
+        this.position = pos;
 	}
 
 	@Override
@@ -76,11 +76,6 @@ abstract class MapCell extends GameObject implements Visible {
 		return this.position;
 	}
 
-	protected MapCell setPosition(Position pos) {
-		this.position = pos;
-		return this;
-	}
-
 	protected void putItem(GameItem item) {
 		gameItems.add(item);
 	}
@@ -94,23 +89,58 @@ abstract class MapCell extends GameObject implements Visible {
 
 	}
 
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof MapCell))
+            return false;
+        return this.name.equals(((MapCell) object).getName())
+                && this.position.equals(((MapCell) object).getPosition())
+                && this.charOnMap.equals(((MapCell) object).charOnMap)
+                && this.transparent == ((MapCell) object).transparent
+                && this.canBePassed == ((MapCell) object).canBePassed
+                && this.position.equals(((MapCell) object).getPosition());
+    }
+
 }
 
 class Wall extends MapCell {
-	Wall() {
-		super("Wall", "A regular rock wall.", new ColoredChar(
-				VisibleCharacters.WALL, ColoredChar.YELLOW));
-		canBePassed = false;
-		transparent = false;
+	private Wall(Position pos) {
+		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL, ColoredChar.YELLOW),
+                false, false, pos);
 	}
+
+    static Wall getWall(Position position) {
+        MapCell cellOnMap = position.getMap().getCell(position);
+        if (cellOnMap instanceof Wall)
+            return (Wall) cellOnMap;
+        return new Wall(position);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Wall))
+            return false;
+        return super.equals(object);
+    }
 }
 
 class Floor extends MapCell {
-	Floor() {
+	private Floor(Position pos) {
 		super("Floor", "Rough rock floor.", new ColoredChar(
-				VisibleCharacters.FLOOR));
-		canBePassed = true;
-		passageCost = 100;
-		transparent = true;
+				VisibleCharacters.FLOOR), true, true, pos);
 	}
+
+    static Floor getFloor(Position position) {
+        MapCell cellOnMap = position.getMap().getCell(position);
+        if (cellOnMap instanceof Floor)
+            return (Floor) cellOnMap;
+        return new Floor(position);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Floor))
+            return false;
+        return super.equals(object);
+    }
 }

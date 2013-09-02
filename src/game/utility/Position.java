@@ -21,9 +21,21 @@ import game.map.Map;
 
 public final class Position {
 
-	public final int x;
-	public final int y;
-	public final Map map;
+	private final int x;
+    private final int y;
+    private final Map map;
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public Map getMap() {
+        return map;
+    }
 
 	private Position(int x, int y, Map map) {
 		this.x = x;
@@ -53,5 +65,14 @@ public final class Position {
 	public String toString() {
 		return "(" + x + ", " + y + ")";
 	}
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Position))
+            return false;
+        return this.x == ((Position) object).getX()
+                && this.y == ((Position) object).getY()
+                && this.map.equals(((Position) object).getMap());
+    }
 
 }

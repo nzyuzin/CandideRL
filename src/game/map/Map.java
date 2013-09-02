@@ -41,49 +41,43 @@ public final class Map {
 
 		// Wall is of no use now, so it's meaningless to create more
 		// than one wall to fill space on map
-		Wall wall = new Wall();
 		map = new MapCell[width][height];
 
 		for (int i = 1; i < width - 1; i++)
 			for (int j = 1; j < height - 1; j++)
-				map[i][j] = new Floor()
-					.setPosition(Position.getPosition(i, j,	this));
+				map[i][j] = Floor.getFloor(Position.getPosition(i, j, this));
 		for (int i = 0; i < height; i++) {
-			map[0][i] = wall;
-			map[width - 1][i] = wall;
+			map[0][i] = Wall.getWall(Position.getPosition(0, i, this));
+			map[width - 1][i] = Wall.getWall(Position.getPosition(width - 1, i, this));
 		}
 
 		for (int i = 0; i < width; i++) {
-			map[i][0] = wall;
-			map[i][height - 1] = wall;
-		}
-
-		for (int x = width / 2, uX = x + height / 2, uY = height / 2, dY = height / 2; x <= uX
-				&& dY < height && uY >= 0; x++, dY++, uY--, uX--) {
-			map[x][uY] = wall;
-			map[x][dY] = wall;
-			map[uX][uY] = wall;
-			map[uX][dY] = wall;
-		}
-		for (int x = width / 2 - 2, uX = x + height / 2 + 4, uY = height / 2, dY = height / 2; x <= uX
-				&& dY < height && uY >= 0; x++, dY++, uY--, uX--) {
-			map[x][uY] = wall;
-			map[x][dY] = wall;
-			map[uX][uY] = wall;
-			map[uX][dY] = wall;
+			map[i][0] = Wall.getWall(Position.getPosition(i, 0, this));
+			map[i][height - 1] = Wall.getWall(Position.getPosition(i, height - 1, this));
 		}
 
 	}
 
-	private MapCell getCell(Position pos) {
-		assert pos.x < mapWidth && pos.x >= 0 && pos.y < mapHeight
-				&& pos.y >= 0;
-		return map[pos.x][pos.y];
+	MapCell getCell(Position pos) {
+		assert pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
+				&& pos.getY() >= 0;
+        if (!pos.getMap().equals(this))
+            throw new AssertionError();
+		return map[pos.getX()][pos.getY()];
 	}
 
 	ColoredChar getChar(Position pos) {
 		return getCell(pos).getChar();
 	}
+
+    public Position getPosition(int x, int y) {
+        try {
+            return map[x][y].getPosition();
+        }
+        catch (ArrayIndexOutOfBoundsException ex) {
+            throw new AssertionError(ex);
+        }
+    }
 
 	public void removeGameCharacter(GameCharacter mob) {
 		MapCell cell = getCell(mob.getPosition());
@@ -121,10 +115,6 @@ public final class Map {
 		return getCell(pos).gameCharacter;
 	}
 
-	public int getPassageCost(Position pos) {
-		return getCell(pos).passageCost;
-	}
-
 	public Position getHeroPos(Position pos) {
 		MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen,
 				mapHeightOnScreen);
@@ -157,8 +147,8 @@ public final class Map {
 	}
 
 	private MapCell[][] getPartOfMap(Position pos, int width, int height) {
-		return getPartOfMap(pos.x - (int) (width / 2.0), pos.x
-				+ (int) (width / 2.0), pos.y - (int) (height / 2.0), pos.y
+		return getPartOfMap(pos.getX() - (int) (width / 2.0), pos.getX()
+				+ (int) (width / 2.0), pos.getY() - (int) (height / 2.0), pos.getY()
 				+ (int) (height / 2.0));
 	}
 
@@ -225,13 +215,13 @@ public final class Map {
 	}
 
 	public boolean isInsideMap(Position pos) {
-		return pos.x < mapWidth && pos.x >= 0 && pos.y < mapHeight
-				&& pos.y >= 0;
+		return pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
+				&& pos.getY() >= 0;
 	}
 
 	public boolean isInsideMapScreen(Position pos) {
-		return pos.x < mapWidthOnScreen && pos.x >= 0
-				&& pos.y < mapHeightOnScreen && pos.y >= 0;
+		return pos.getX() < mapWidthOnScreen && pos.getX() >= 0
+				&& pos.getY() < mapHeightOnScreen && pos.getY() >= 0;
 	}
 
 }

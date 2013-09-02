@@ -19,6 +19,7 @@ package game;
 import game.ai.ArtificialIntelligence;
 import game.characters.*;
 import game.map.Map;
+import game.map.MapFactory;
 import game.ui.GameUI;
 import game.utility.*;
 
@@ -28,17 +29,23 @@ import java.util.ArrayList;
 // but no class should know about existence of GameEngine.
 
 public final class GameEngine {
+	
+	public static void main(String args[]) {
+		play();
+	}
+	
 	private static Player player = null;
 	private static ArrayList<NPC> npcs = null;
 	private static MessageLog messageLog = null;
 	private static int currentTurn;
+    private static Map currentMap = null;
 	
 	private GameEngine() { }
 	
 	private static void init() {
 		GameUI.init();
-		Map.init(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2,
-				GameUI.getMapWidth(), GameUI.getMapHeight());
+        MapFactory.getInstance().setScreenSize(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2);
+        currentMap = MapFactory.getInstance().getMap();
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
 		player = Player.getInstance();
@@ -50,9 +57,9 @@ public final class GameEngine {
 //		npcs.add(new NPC("goblin", "A regular goblin.",
 //				new ColoredChar('g', ColoredChar.GREEN)));
 		
-		Map.putGameCharacter(player, new Position(43, 1));
+		currentMap.putGameCharacter(player, Position.getPosition(43, 1, currentMap));
 		for ( NPC mob : npcs ) 
-			Map.putGameCharacter(mob, new Position(1, 1));
+			currentMap.putGameCharacter(mob, Position.getPosition(1, 1, currentMap));
 		currentTurn = 0;
 	}
 	
