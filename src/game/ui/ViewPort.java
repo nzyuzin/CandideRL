@@ -15,14 +15,12 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.utility.interfaces;
+package game.ui;
 
-public interface GameItem extends Visible {
-	
-	public int getQuantity();
-	
-	public int getWeight();
-	
-	public int getSize();
-	
+public interface ViewPort {
+
+	void drawBorders();
+	void redrawContent();
+	void handleInput(char input);
+
 }

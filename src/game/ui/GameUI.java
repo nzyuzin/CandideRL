@@ -20,9 +20,8 @@ package game.ui;
 import jcurses.system.*;
 
 import game.utility.ColoredChar;
-import game.utility.interfaces.ViewPort;
 
-// This class is supposed to be hidden from every class other than GameEngine. You shouldn't use its fields and methods outside of GameEngine.
+// TODO: Screw jcurses, use some other library instead
 
 public class GameUI {
 	private static CharColor fontColor;
@@ -44,18 +43,9 @@ public class GameUI {
 	}
 	
 	public static void drawMap(ColoredChar[][] charMap) {
-		String[][] stringMap = new String[charMap.length][charMap[0].length];
-		CharColor[][] colors = new CharColor[charMap.length][charMap[0].length];
-		
-		for (int i = 0; i < charMap.length; i++)
-			for (int j = 0; j < charMap[0].length; j++) {
-				stringMap[i][j] = charMap[i][j].toString();
-				colors[i][j] = charMap[i][j].getColor();
-			}
-		
 		currentView = playerView;
-		currentView.drawBorders();
 		playerView.drawMap(charMap);
+        currentView.drawBorders();
 	}
 	
 	public static char getInputChar() {
@@ -85,14 +75,21 @@ public class GameUI {
 	}
 	
 	private static void redrawUI() {
-		drawBorders();
 		currentView.redrawContent();
+        drawBorders();
 	}
 	
 	public static void exit() {
-		Toolkit.clearScreen(fontColor);
 		Toolkit.shutdown();
 	}
+
+    public static int getScreenWidth() {
+        return Toolkit.getScreenWidth();
+    }
+
+    public static int getScreenHeight() {
+        return Toolkit.getScreenHeight();
+    }
 	
 	public static int getMapWidth() {
 		return playerView.getMapWidth();

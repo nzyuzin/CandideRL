@@ -17,7 +17,6 @@
 
 package game.items;
 
-import game.utility.interfaces.GameItem;
 import game.GameObject;
 import game.utility.ColoredChar;
 

@@ -18,7 +18,6 @@
 package game.map;
 
 import game.characters.GameCharacter;
-import game.ui.GameUI;
 import game.utility.*;
 
 import java.util.ArrayDeque;
@@ -28,22 +27,48 @@ public final class FieldOfView {
 	private final GameCharacter watcher;
 	private boolean[][] seen;
 	private int viewDistance;
-	
+    private Map map;
+
+    public FieldOfView(GameCharacter c, int viewDistance) {
+        this.viewDistance = viewDistance;
+        this.watcher = c;
+    }
+
+    public boolean isSeen(Position mapPos) {
+        int x = seen.length + mapPos.getX() - watcher.getPosition().getX();
+        int y = seen[0].length + mapPos.getY() - watcher.getPosition().getY();
+
+        return isInsideSeenArray(Position.getPosition(x, y)) && seen[x][y];
+    }
+
+    public ColoredChar[][] toColoredCharArray() {
+        updateFOV();
+
+        ColoredChar[][] resultMap = map.getVisibleChars(watcher.getPosition());
+
+        for (int x = 0; x < resultMap.length; x++)
+            for (int y = 0; y < resultMap[0].length; y++) {
+                if (!seen[x][y])
+                    resultMap[x][y] = ColoredChar.NIHIL;
+            }
+
+        return resultMap;
+    }
+
 	private void updateFOV() {
-		
+
+        map = watcher.getPositionOnMap().getMap();
+
 		Queue<Position> positionsQueue = new ArrayDeque<Position>();
 		
-		Position pos = null;
-		boolean[][] transparent = Map.getTransparentCells(watcher.getPosition());
+		Position pos;
+		boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
 		seen = new boolean[transparent.length][transparent[0].length];
 		boolean[][] marked = new boolean[transparent.length][transparent[0].length];
 		Direction[] directions = Direction.values();
-		Position watcherPos = new Position(seen.length / 2, seen[0].length / 2 - 1);
+		Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
 		
-		GameUI.showMessage("HeroPos: " + watcherPos);
-		GameUI.showMessage("Real pos: " + Map.getHeroPos(watcher.getPosition()));
-		
-		seen[watcherPos.x][watcherPos.y] = true;
+		seen[watcherPos.getX()][watcherPos.getY()] = true;
 		
 		for (int i = 0; i < directions.length; i++) {
 			positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
@@ -54,13 +79,13 @@ public final class FieldOfView {
 				if (!isInsideSeenArray(pos) || watcherPos.distanceTo(pos) > viewDistance)
 					continue;
 				
-				if (marked[pos.x][pos.y])
+				if (marked[pos.getX()][pos.getY()])
 					continue;
 	
-				marked[pos.x][pos.y] = true;
-				seen[pos.x][pos.y] = true;
+				marked[pos.getX()][pos.getY()] = true;
+				seen[pos.getX()][pos.getY()] = true;
 				
-				if (transparent[pos.x][pos.y]) {
+				if (transparent[pos.getX()][pos.getY()]) {
 					positionsQueue.add(Direction
 							.applyDirection(pos, directions[(i - 1 + directions.length)  % directions.length]));
 					positionsQueue.add(Direction
@@ -71,8 +96,8 @@ public final class FieldOfView {
 				else {
 					pos = Direction.applyDirection(pos, directions[i]);
 					while (isInsideSeenArray(pos)) {
-						seen[pos.x][pos.y] = false;
-						marked[pos.x][pos.y] = true;
+						seen[pos.getX()][pos.getY()] = false;
+						marked[pos.getX()][pos.getY()] = true;
 						pos = Direction.applyDirection(pos, directions[i]);
 					}
 				}
@@ -81,36 +106,6 @@ public final class FieldOfView {
 	}
 	
 	private boolean isInsideSeenArray(Position pos) {
-		return pos.x < seen.length && pos.x >= 0 && pos.y < seen[0].length && pos.y >= 0;
+		return pos.getX() < seen.length && pos.getX() >= 0 && pos.getY() < seen[0].length && pos.getY() >= 0;
 	}
-	
-	public FieldOfView(GameCharacter c, int viewDistance) {
-		this.viewDistance = viewDistance;
-		watcher = c;
-	}
-	
-	public boolean isSeen(Position mapPos) {
-		int x = seen.length + mapPos.x - watcher.getPosition().x;
-		int y = seen[0].length + mapPos.y - watcher.getPosition().y;
-		
-		if (!isInsideSeenArray(new Position(x, y)))
-			return false;
-		
-		return seen[x][y];
-	}
-	
-	public ColoredChar[][] toColoredCharArray() {
-		updateFOV();
-		
-		ColoredChar[][] map = Map.getVisibleChars(watcher.getPosition());
-
-		for (int x = 0; x < map.length; x++)
-			for (int y = 0; y < map[0].length; y++) {
-				if (!seen[x][y])
-					map[x][y] = ColoredChar.NIHIL;
-			}
-
-		return map;
-	}
-	
 }

@@ -20,7 +20,6 @@ package game.ui;
 import jcurses.system.CharColor;
 import jcurses.system.Toolkit;
 import game.utility.ColoredChar;
-import game.utility.interfaces.ViewPort;
 
 public class PlayerViewPort implements ViewPort {
 	
@@ -60,6 +59,7 @@ public class PlayerViewPort implements ViewPort {
 			}
 		
 		mapWindow.drawMap(stringMap, colors);
+        messagesWindow.redraw();
 	}
 	
 	public void showMessage(String msg) {

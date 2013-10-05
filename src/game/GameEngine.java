@@ -25,9 +25,6 @@ import game.utility.*;
 
 import java.util.ArrayList;
 
-// Should know about all classes without restrictions, 
-// but no class should know about existence of GameEngine.
-
 public final class GameEngine {
 	
 	public static void main(String args[]) {
@@ -44,7 +41,7 @@ public final class GameEngine {
 	
 	private static void init() {
 		GameUI.init();
-        MapFactory.getInstance().setScreenSize(GameUI.getMapWidth() * 2, GameUI.getMapHeight() * 2);
+        MapFactory.getInstance().setScreenSize(GameUI.getScreenWidth(), GameUI.getScreenHeight());
         currentMap = MapFactory.getInstance().getMap();
 		npcs = new ArrayList<NPC>();
 		messageLog = new MessageLog(500);
@@ -57,9 +54,9 @@ public final class GameEngine {
 //		npcs.add(new NPC("goblin", "A regular goblin.",
 //				new ColoredChar('g', ColoredChar.GREEN)));
 		
-		currentMap.putGameCharacter(player, Position.getPosition(43, 1, currentMap));
+		currentMap.putGameCharacter(player, Position.getPosition(43, 1));
 		for ( NPC mob : npcs ) 
-			currentMap.putGameCharacter(mob, Position.getPosition(1, 1, currentMap));
+			currentMap.putGameCharacter(mob, Position.getPosition(1, 1));
 		currentTurn = 0;
 	}
 	
@@ -117,27 +114,25 @@ public final class GameEngine {
 		GameUI.showStats(player.getStats() + "Current turn: " 
 					+ currentTurn + "\n");
 	}
-	
-	// This method is a subject of constant changes.
-	
+
 	public static void play() {
-		try {
-		init();
-		GameUI.showMessage("Prepare to play!");
-		drawMap();
-		showStats();
-		while ( !player.isDead() ) {
-			handleInput();
-			if (player.hasAction())
-				advanceTime();
-		}
-		if (npcs.isEmpty()) GameUI.showAnnouncement("All mobs are dead!");
-		if (player.isDead()) GameUI.showAnnouncement("You're dead!");
-		exit();
-		} catch(Exception e) {
-			GameUI.exit();
-			e.printStackTrace();
-		}
+        try {
+            init();
+            GameUI.showMessage("Prepare to play!");
+            drawMap();
+            showStats();
+            while ( !player.isDead() ) {
+                handleInput();
+                if (player.hasAction())
+                    advanceTime();
+            }
+            if (npcs.isEmpty()) GameUI.showAnnouncement("All mobs are dead!");
+            if (player.isDead()) GameUI.showAnnouncement("You're dead!");
+            exit();
+        } catch(Exception e) {
+            GameUI.exit();
+            e.printStackTrace();
+        }
  	}
 
 }

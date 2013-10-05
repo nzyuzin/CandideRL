@@ -18,7 +18,6 @@
 package game.characters.actions;
 
 import game.characters.GameCharacter;
-import game.utility.interfaces.GameAction;
 
 // GameActions connect GameCharacters and classes from another packages,
 // such as Map, so GameCharacters will only operate with highly abstract methods.

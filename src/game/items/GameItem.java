@@ -15,16 +15,16 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.utility.interfaces;
+package game.items;
 
-public interface GameAction {
-	  
-	  void execute();
+import game.utility.interfaces.Visible;
 
-	  boolean canBeExecuted();
-	  
-	  int actionPointsLeft();
-
-	  void setActionPointsLeft(int points);
-
+public interface GameItem extends Visible {
+	
+	public int getQuantity();
+	
+	public int getWeight();
+	
+	public int getSize();
+	
 }

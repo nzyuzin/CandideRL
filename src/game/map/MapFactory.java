@@ -21,7 +21,7 @@ public final class MapFactory {
 
 	private static final MapFactory INSTACE = new MapFactory();
 
-	private static final int DEFAULT_SIZE = 100;
+	private static final int DEFAULT_SIZE = 1000;
 
 	private static int screenWidth;
 	private static int screenHeight;

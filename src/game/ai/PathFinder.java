@@ -29,52 +29,50 @@ public class PathFinder {
 	
 	// BFS won't go on further distance than this limit
 	private int distanceLimit;
+    private final Map map;
 	
 	Position target = null;
 	
-	public PathFinder(Position targetPos, int distLimit) {
+	public PathFinder(Position targetPos, int distLimit, Map map) {
 		distanceLimit = distLimit;
 		target = targetPos;
+        this.map = map;
 		calculateDistances(target);
 	}
 	
-	/* 
+	/**
 	 * Fills distance array up using breadth-first-search 
 	 * Takes initial position as argument
 	 */
-	
 	private void calculateDistances(Position current) {
-		
-		// First element is point closest to initial
 		Queue<Position> positionsToProcess = new ArrayDeque<Position>();
 		
-		distance = new int[Map.getWidth()][Map.getHeight()];
+		distance = new int[map.getWidth()][map.getHeight()];
 		boolean[][] checked = new boolean[distance.length][distance[0].length];
 		
 		for (int i = 0; i < distance.length; i++)
 			for (int j = 0; j < distance[0].length; j++)
 				distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 	
-		checked[current.x][current.y] = true;
-		distance[current.x][current.y] = 0;
+		checked[current.getX()][current.getY()] = true;
+		distance[current.getX()][current.getY()] = 0;
 		
-		Position p;  // Only to simplify work with Positions inside the loop
+		Position p;
 		
 		while (current != null) {
 
-			if ( distance[current.x][current.y] >= distanceLimit ) {
-				// No need to do something if it's too far
+			if ( distance[current.getX()][current.getY()] >= distanceLimit ) {
 				current = positionsToProcess.poll();
 				continue;
 			}
 
-			for (int i = current.x - 1; i <= current.x + 1; i++)
-				for (int j = current.y - 1; j <= current.y + 1; j++)
+			for (int i = current.getX() - 1; i <= current.getX() + 1; i++)
+				for (int j = current.getY() - 1; j <= current.getY() + 1; j++)
 					if ( insideArray(i, j) && !checked[i][j] ) {
-						p = new Position(i, j);
-						if ( Map.isCellPassable(p) ) {
+						p = Position.getPosition(i, j);
+						if (map.isCellPassable(p)) {
 							positionsToProcess.add(p);
-							distance[i][j] = distance[current.x][current.y] + 1;
+							distance[i][j] = distance[current.getX()][current.getY()] + 1;
 							checked[i][j] = true;
 						}
 					}
@@ -93,17 +91,17 @@ public class PathFinder {
 		
 		Position p;
 		
-		for (int x = from.x - 1; x <= from.x + 1; x++)
-			for (int y = from.y - 1; y <= from.y + 1; y++) {
+		for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
+			for (int y = from.getY() - 1; y <= from.getY() + 1; y++) {
 				
 				if ( !insideArray(x, y) )
 					continue;
 				
-				p = new Position(x, y);
+				p = Position.getPosition(x, y);
 				
-				if ( !Map.isSomeoneHere(p) && (
-						distance[x][y] < distance[best.x][best.y] || 
-						( distance[x][y] == distance[best.x][best.y] && p == target.chooseClosest(p, best) ) ) )
+				if (!map.isSomeoneHere(p) && (
+						distance[x][y] < distance[best.getX()][best.getY()] ||
+						(distance[x][y] == distance[best.getX()][best.getY()] && p == target.chooseClosest(p, best))))
 					best = p;
 			}
 		

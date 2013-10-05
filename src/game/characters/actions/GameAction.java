@@ -15,12 +15,16 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.utility.interfaces;
+package game.characters.actions;
 
-public interface ViewPort {
+public interface GameAction {
+	  
+	  void execute();
 
-	void drawBorders();
-	void redrawContent();
-	void handleInput(char input);
+	  boolean canBeExecuted();
+	  
+	  int actionPointsLeft();
+
+	  void setActionPointsLeft(int points);
 
 }

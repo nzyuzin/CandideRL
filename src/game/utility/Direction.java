@@ -25,21 +25,21 @@ public enum Direction {
 		switch (there) {
 		
 		case NORTH:
-			return new Position(pos.x, pos.y + 1);
+			return Position.getPosition(pos.getX(), pos.getY() + 1);
 		case SOUTH:
-			return new Position(pos.x, pos.y - 1);
+			return Position.getPosition(pos.getX(), pos.getY() - 1);
 		case WEST:
-			return new Position(pos.x - 1, pos.y);
+			return Position.getPosition(pos.getX() - 1, pos.getY());
 		case EAST:
-			return new Position(pos.x + 1, pos.y);
+			return Position.getPosition(pos.getX() + 1, pos.getY());
 		case NORTHEAST:
-			return new Position(pos.x + 1, pos.y + 1);
+			return Position.getPosition(pos.getX() + 1, pos.getY() + 1);
 		case SOUTHEAST:
-			return new Position(pos.x + 1, pos.y - 1);
+			return Position.getPosition(pos.getX() + 1, pos.getY() - 1);
 		case SOUTHWEST:
-			return new Position(pos.x - 1, pos.y - 1);
+			return Position.getPosition(pos.getX() - 1, pos.getY() - 1);
 		case NORTHWEST:
-			return new Position(pos.x - 1, pos.y + 1);
+			return Position.getPosition(pos.getX() - 1, pos.getY() + 1);
 			
 		default:
 			return null;
@@ -51,21 +51,21 @@ public enum Direction {
 	}
 	
 	public static Direction getDirection(Position from, Position to) {
-		if( from.x == to.x && from.y > to.y  )
+		if(from.getX() == to.getX() && from.getY() > to.getY())
 			return Direction.SOUTH;
-		if( from.x == to.x && from.y < to.y )
+		if(from.getX() == to.getX() && from.getY() < to.getY())
 			return Direction.NORTH;
-		if( from.x > to.x && from.y == to.y )
+		if(from.getX() > to.getX() && from.getY() == to.getY())
 			return Direction.WEST;
-		if( from.x < to.x && from.y == to.y )
+		if(from.getX() < to.getX() && from.getY() == to.getY())
 			return Direction.EAST;
-		if( from.x > to.x && from.y < to.y )
+		if(from.getX() > to.getX() && from.getY() < to.getY())
 			return Direction.NORTHWEST;
-		if( from.x < to.x && from.y < to.y )
+		if(from.getX() < to.getX() && from.getY() < to.getY())
 			return Direction.NORTHEAST;
-		if( from.x > to.x && from.y > to.y )
+		if(from.getX() > to.getX() && from.getY() > to.getY())
 			return Direction.SOUTHWEST;
-		if( from.x < to.x && from.y > to.y )
+		if(from.getX() < to.getX() && from.getY() > to.getY())
 			return Direction.SOUTHEAST;
 		
 		return null;
@@ -73,21 +73,21 @@ public enum Direction {
 	
 	public static Direction getDirection(char key) {
 
-		if( key == KeyDefinitions.DIRECTION_KEYS[0] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[0])
 			return Direction.SOUTH;
-		if( key == KeyDefinitions.DIRECTION_KEYS[1] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[1])
 			return Direction.NORTH;
-		if( key == KeyDefinitions.DIRECTION_KEYS[2] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[2])
 			return Direction.WEST;
-		if( key == KeyDefinitions.DIRECTION_KEYS[3] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[3])
 			return Direction.EAST;
-		if( key == KeyDefinitions.DIRECTION_KEYS[4] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[4])
 			return Direction.NORTHWEST;
-		if( key == KeyDefinitions.DIRECTION_KEYS[5] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[5])
 			return Direction.NORTHEAST;
-		if( key == KeyDefinitions.DIRECTION_KEYS[6] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[6])
 			return Direction.SOUTHWEST;
-		if( key == KeyDefinitions.DIRECTION_KEYS[7] )
+		if(key == KeyDefinitions.DIRECTION_KEYS[7])
 			return Direction.SOUTHEAST;
 
 		return null;

@@ -58,7 +58,7 @@ public final class MessagesWindow extends Rectangle {
 	}
 	
 	private void showMessages() {
-		StringBuffer messages = new StringBuffer();
+		StringBuilder messages = new StringBuilder();
 		for (String msg : lastMessages)
 			messages.append(fitString(msg));
 		Toolkit.printString(messages.toString(), messagesRectangle, fontColor);

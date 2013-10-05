@@ -63,8 +63,8 @@ public class ArtificialIntelligence {
 		if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit) 
 			return;
 		
-		if (target.getLastPosition() != target.getPosition())
-			path = new PathFinder(target.getPosition(), distanceLimit);
+		if (target.getPositionOnMap().getLastPos() != target.getPosition())
+			path = new PathFinder(target.getPosition(), distanceLimit, target.getPositionOnMap().getMap());
 		mob.move(path.chooseQuickestWay(mob.getPosition()));
 	}
 	

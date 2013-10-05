@@ -35,21 +35,21 @@ public final class ColoredChar {
 	public static final short CYAN = CharColor.CYAN;
 	public static final short WHITE = CharColor.WHITE;
 	
-	public static final short STANDART_BACKGROUND_COLOR = BLACK;
-	public static final short STANDART_FOREGROUND_COLOR = CharColor.WHITE;
+	public static final short STANDARD_BACKGROUND_COLOR = BLACK;
+	public static final short STANDARD_FOREGROUND_COLOR = WHITE;
 	
 	public static final ColoredChar NIHIL = new ColoredChar(' ');
 
 	public ColoredChar (char c) {
-		this.background = STANDART_BACKGROUND_COLOR;
-		this.foreground = STANDART_FOREGROUND_COLOR;
+		this.background = STANDARD_BACKGROUND_COLOR;
+		this.foreground = STANDARD_FOREGROUND_COLOR;
 		this.highlight = false;
 		this.visibleChar = c;
 	}
 	
 	public ColoredChar (char c, short fg) {
 		this.foreground = fg;
-		this.background = STANDART_BACKGROUND_COLOR;
+		this.background = STANDARD_BACKGROUND_COLOR;
 		this.highlight = false;
 		this.visibleChar = c;
 	}
@@ -105,4 +105,27 @@ public final class ColoredChar {
 		return visibleChar + "";
 	}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ColoredChar that = (ColoredChar) o;
+
+        if (background != that.background) return false;
+        if (foreground != that.foreground) return false;
+        if (highlight != that.highlight) return false;
+        if (visibleChar != that.visibleChar) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) background;
+        result = 31 * result + (int) foreground;
+        result = 31 * result + (highlight ? 1 : 0);
+        result = 31 * result + (int) visibleChar;
+        return result;
+    }
 }

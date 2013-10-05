@@ -21,6 +21,7 @@ import game.characters.actions.*;
 import game.utility.Direction;
 import game.utility.Position;
 import game.utility.ColoredChar;
+import game.utility.PositionOnMap;
 import game.utility.interfaces.*;
 import game.items.MiscItem;
 import game.GameObject;
@@ -38,21 +39,20 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected final class Attributes {
 		public short strength;
 		public short dexterity;
-		public short intellegence;
+		public short intelligence;
 		public short armor;
 		
 		public Attributes() {
 			this.strength = 8;
 			this.armor = 0;
 			this.dexterity = 8;
-			this.intellegence = 8;
+			this.intelligence = 8;
 		}
 	}
 	
 	protected Queue<GameAction> gameActions = null;
 	
-	protected Position position= null;
-	protected Position lastPosition = null;
+	protected PositionOnMap position;
 	protected ColoredChar charOnMap = null;
 	
 	protected int currentHP;
@@ -74,7 +74,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 		this.canTakeDamage = true;
 		this.attackRate = 1.0;
 		attributes = new Attributes();
-		gameActions = new ArrayDeque<GameAction>();
+		gameActions = new ArrayDeque<>();
 	}
 
 	
@@ -95,9 +95,17 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	}
 	
 	public Position getPosition() {
-		return position;
+		return position.getPosition();
 	}
-	
+
+    public PositionOnMap getPositionOnMap() {
+        return position;
+    }
+
+    public void setPositionOnMap(PositionOnMap position) {
+        this.position = position;
+    }
+
 	public int getCurrentHP() {
 		return currentHP;
 	}
@@ -106,19 +114,8 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 		return maxHP;
 	}
 	
-	public void setPosition(Position position) {
-		this.lastPosition = this.position;
-		this.position = position;
-	}
-	
-	public Position getLastPosition() {
-		return this.lastPosition;
-	}
-	
 	public boolean canPerformAction() {
-		if ( hasAction() )
-			return gameActions.peek().canBeExecuted();
-		return false;
+		return hasAction() && gameActions.peek().canBeExecuted();
 	}
 	
 	public void performAction() {

@@ -17,13 +17,15 @@
 
 package game.utility;
 
-import game.map.Map;
+import java.util.Map;
+import java.util.HashMap;
 
 public final class Position {
 
 	private final int x;
     private final int y;
-    private final Map map;
+
+    private static final HashMap<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
 
     public int getY() {
         return y;
@@ -33,18 +35,28 @@ public final class Position {
         return x;
     }
 
-    public Map getMap() {
-        return map;
+	private Position(int x, int y) {
+		this.x = x;
+        this.y = y;
     }
 
-	private Position(int x, int y, Map map) {
-		this.x = x;
-		this.y = y;
-		this.map = map;
-	}
-
-	public static Position getPosition(int x, int y, Map map) {
-		return new Position(x, y, map);
+	public static Position getPosition(int x, int y) {
+        if (CACHE.containsKey(x)) {
+            Map<Integer, Position> y2Position= CACHE.get(x);
+            if (y2Position.containsKey(y)) {
+                return y2Position.get(y);
+            } else {
+                Position pos = new Position(x, y);
+                y2Position.put(y, pos);
+                return pos;
+            }
+        } else {
+            Position pos = new Position(x, y);
+            Map<Integer, Position> y2Position = new HashMap<>();
+            y2Position.put(y,pos);
+            CACHE.put(x, y2Position);
+            return pos;
+        }
 	}
 
 	public double distanceTo(int x, int y) {
@@ -68,11 +80,17 @@ public final class Position {
 
     @Override
     public boolean equals(Object object) {
+        if (this == object) return true;
         if (!(object instanceof Position))
             return false;
         return this.x == ((Position) object).getX()
-                && this.y == ((Position) object).getY()
-                && this.map.equals(((Position) object).getMap());
+                && this.y == ((Position) object).getY();
     }
 
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
+    }
 }

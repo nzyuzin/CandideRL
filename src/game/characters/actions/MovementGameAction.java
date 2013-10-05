@@ -24,19 +24,20 @@ import game.utility.*;
 public final class MovementGameAction extends AbstractGameAction {
 	
 	private final Position position;
+    private final Map map;
 
 	public MovementGameAction(GameCharacter subject, Direction there) {
 		super(subject);
 		position = Direction.applyDirection(subject.getPosition(), there);
-		actionPointsLeft = Map.getPassageCost(position);
+        map = subject.getPositionOnMap().getMap();
 	}
 	
 	public boolean canBeExecuted() {
 		return !performer.isDead() && performer.getPosition().distanceTo(position) < 2 
-				&& Map.isCellPassable(position) && !Map.isSomeoneHere(position);
+				&& map.isCellPassable(position) && !map.isSomeoneHere(position);
 	}
 	
 	public void execute() {
-		Map.moveGameCharacter(performer, position);
+		map.moveGameCharacter(performer, position);
 	}
 }

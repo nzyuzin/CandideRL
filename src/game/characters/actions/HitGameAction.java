@@ -24,10 +24,12 @@ import game.utility.*;
 public final class HitGameAction extends AbstractGameAction {
 
 	private GameCharacter target;
+    private Map map;
 	
 	public HitGameAction(GameCharacter performer, Position pos) {
 		super(performer);
-		target = Map.getGameCharacter(pos);
+        map = performer.getPositionOnMap().getMap();
+		target = map.getGameCharacter(pos);
 	}
 	
 	public boolean canBeExecuted() {
@@ -42,8 +44,8 @@ public final class HitGameAction extends AbstractGameAction {
 				+ " points of damage to " + target.getName();
 		if (target.isDead()) {
 			message += " and " + target.getName() + " died.";
-			Map.putItem(target.getCorpse(), target.getPosition());
-			Map.removeGameCharacter(target);
+			map.putItem(target.getCorpse(), target.getPosition());
+			map.removeGameCharacter(target);
 		}
 		else message += ". Current " + target.getName() + "'s hp is: " 
 		+ target.getCurrentHP() + "/" + target.getMaxHP();

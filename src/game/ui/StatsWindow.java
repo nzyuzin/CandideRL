@@ -38,7 +38,7 @@ public final class StatsWindow extends Rectangle {
 	}
 	
 	private String fitString(String str) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		if ( str.contains("\n")) {
 			int nCount = 0;
 			for (int i = 0; i < str.length(); i++)
