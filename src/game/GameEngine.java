@@ -116,6 +116,7 @@ public final class GameEngine {
 	}
 
 	public static void play() {
+        Exception e = null;
         try {
             init();
             GameUI.showMessage("Prepare to play!");
@@ -129,10 +130,14 @@ public final class GameEngine {
             if (npcs.isEmpty()) GameUI.showAnnouncement("All mobs are dead!");
             if (player.isDead()) GameUI.showAnnouncement("You're dead!");
             exit();
-        } catch(Exception e) {
+        } catch(Exception exc) {
+            e = exc;
+        } finally {
             GameUI.exit();
-            e.printStackTrace();
+            if (e != null) {
+                e.printStackTrace();
+            }
         }
- 	}
+     }
 
 }
