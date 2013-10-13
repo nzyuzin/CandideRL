@@ -26,46 +26,47 @@ import game.utility.*;
 import java.util.ArrayList;
 
 public final class GameEngine {
-	
+
 	public static void main(String args[]) {
-		play();
+		GameEngine engine = new GameEngine();
+        engine.play();
 	}
-	
-	private static Player player = null;
-	private static ArrayList<NPC> npcs = null;
-	private static MessageLog messageLog = null;
-	private static int currentTurn;
-    private static Map currentMap = null;
-	
-	private GameEngine() { }
-	
-	private static void init() {
-		GameUI.init();
-        MapFactory.getInstance().setScreenSize(GameUI.getScreenWidth(), GameUI.getScreenHeight());
+
+    private static final GameEngine INSTANCE = new GameEngine();
+
+	private Player player = null;
+	private ArrayList<NPC> npcs = null;
+	private MessageLog messageLog = null;
+	private int currentTurn;
+    private Map currentMap = null;
+    private final GameUI UI;
+
+	private GameEngine() {
+        UI = GameUI.getInstance();
+        MapFactory.getInstance().setScreenSize(UI.getScreenWidth(), UI.getScreenHeight());
         currentMap = MapFactory.getInstance().getMap();
-		npcs = new ArrayList<NPC>();
-		messageLog = new MessageLog(500);
-		player = Player.getInstance();
-		ArtificialIntelligence.init(player, 
-				(GameUI.getMapWidth() + GameUI.getMapHeight()) / 2 + 100);
-		
-		npcs.add(new NPC("troll", "A furious beast with sharp claws.",
-				new ColoredChar('t', ColoredChar.RED)));
+        npcs = new ArrayList<>();
+        messageLog = new MessageLog(500);
+        player = Player.getInstance();
+        ArtificialIntelligence.init(player,
+                (UI.getMapWidth() + UI.getMapHeight()) / 2 + 100);
+
+        npcs.add(new NPC("troll", "A furious beast with sharp claws.",
+                new ColoredChar('t', ColoredChar.RED)));
 //		npcs.add(new NPC("goblin", "A regular goblin.",
 //				new ColoredChar('g', ColoredChar.GREEN)));
-		
-		currentMap.putGameCharacter(player, Position.getPosition(43, 1));
-		for ( NPC mob : npcs ) 
-			currentMap.putGameCharacter(mob, Position.getPosition(1, 1));
-		currentTurn = 0;
-	}
-	
-	public static void showMessage(String msg) {
-		messageLog.add(msg);
-		GameUI.showMessage(msg);
-	}
-	
-	private static void processActions() {
+
+        currentMap.putGameCharacter(player, Position.getPosition(43, 1));
+        for ( NPC mob : npcs )
+            currentMap.putGameCharacter(mob, Position.getPosition(1, 1));
+        currentTurn = 0;
+    }
+
+    public static GameEngine getInstance() {
+        return INSTANCE;
+    }
+
+	private void processActions() {
 		player.performAction();
 		for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
 			if (npc.isDead()) {
@@ -78,16 +79,16 @@ public final class GameEngine {
 			else npc.removeCurrentAction();
 		}
 	}
-	
-	private static void advanceTime() {
+
+	private void advanceTime() {
 		currentTurn++;
 		processActions();
 		drawMap();
 		showStats();
 	}
-	
-	private static void handleInput() {
-		char input = GameUI.getInputChar();
+
+	private void handleInput() {
+		char input = UI.getInputChar();
 		if (KeyDefinitions.isExitChar(input))
 			exit();
 		if (KeyDefinitions.isDirectionKey(input))
@@ -96,30 +97,28 @@ public final class GameEngine {
 		if (input == 's')
 			advanceTime();
 	}
-	
-	private static void exit() {
-		GameUI.showAnnouncement("You're leaving the game.");
-		GameUI.exit();
+
+	private void exit() {
+		UI.showAnnouncement("You're leaving the game.");
+		UI.exit();
 		System.exit(0);
 	}
-	
-	private static void drawMap() {
+
+	private void drawMap() {
 		if (!player.isDead()) {
-			GameUI.drawMap(player.getVisibleMap());
-			return;
+			UI.drawMap(player.getVisibleMap());
 		}
 	}
-	
-	private static void showStats() {
-		GameUI.showStats(player.getStats() + "Current turn: " 
+
+	private void showStats() {
+		UI.showStats(player.getStats() + "Current turn: "
 					+ currentTurn + "\n");
 	}
 
-	public static void play() {
+	public void play() {
         Exception e = null;
         try {
-            init();
-            GameUI.showMessage("Prepare to play!");
+            UI.showMessage("Prepare to play!");
             drawMap();
             showStats();
             while ( !player.isDead() ) {
@@ -127,13 +126,13 @@ public final class GameEngine {
                 if (player.hasAction())
                     advanceTime();
             }
-            if (npcs.isEmpty()) GameUI.showAnnouncement("All mobs are dead!");
-            if (player.isDead()) GameUI.showAnnouncement("You're dead!");
+            if (npcs.isEmpty()) UI.showAnnouncement("All mobs are dead!");
+            if (player.isDead()) UI.showAnnouncement("You're dead!");
             exit();
         } catch(Exception exc) {
             e = exc;
         } finally {
-            GameUI.exit();
+            UI.exit();
             if (e != null) {
                 e.printStackTrace();
             }

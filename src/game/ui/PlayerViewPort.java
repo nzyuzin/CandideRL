@@ -22,50 +22,50 @@ import jcurses.system.Toolkit;
 import game.utility.ColoredChar;
 
 public class PlayerViewPort implements ViewPort {
-	
-	private static MapWindow mapWindow = null;
-	
-	private static MessagesWindow messagesWindow = null;
-	
-	private static StatsWindow statsWindow = null;
-	
+
+	private MapWindow mapWindow = null;
+
+	private MessagesWindow messagesWindow = null;
+
+	private StatsWindow statsWindow = null;
+
 	public PlayerViewPort(CharColor fontColor) {
 		int windowWidth = Toolkit.getScreenWidth();
 		int windowHeight = Toolkit.getScreenHeight();
-		
+
 		int mapWidth = windowWidth / 5 * 4;
 		int mapHeight = windowHeight / 4 * 3;
 		mapWindow = new MapWindow(0, 0, mapWidth, mapHeight, fontColor);
-		
+
 		int messageWindowWidth = windowWidth;
 		int messageWindowHeight = windowHeight - mapHeight;
 		int messageWindowPosition = mapHeight;
 		messagesWindow = new MessagesWindow(0, messageWindowPosition, messageWindowWidth, messageWindowHeight, fontColor);
-		
+
 		int statsWindowWidth = windowWidth - mapWidth;
 		int statsWindowHeight = mapHeight;
 		statsWindow = new StatsWindow(mapWidth, 0, statsWindowWidth, statsWindowHeight, fontColor);
-		
+
 	}
-	
+
 	public void drawMap(ColoredChar[][] charMap) {
 		String[][] stringMap = new String[charMap.length][charMap[0].length];
 		CharColor[][] colors = new CharColor[charMap.length][charMap[0].length];
-		
+
 		for (int i = 0; i < charMap.length; i++)
 			for (int j = 0; j < charMap[0].length; j++) {
 				stringMap[i][j] = charMap[i][j].toString();
 				colors[i][j] = charMap[i][j].getColor();
 			}
-		
+
 		mapWindow.drawMap(stringMap, colors);
         messagesWindow.redraw();
 	}
-	
+
 	public void showMessage(String msg) {
 		messagesWindow.showMessage(msg);
 	}
-	
+
 	public void showStats(String stats) {
 		statsWindow.showStats(stats);
 	}
@@ -94,9 +94,9 @@ public class PlayerViewPort implements ViewPort {
 	public int getMapWidth() {
 		return mapWindow.getMapWidth();
 	}
-	
+
 	public int getMapHeight() {
 		return mapWindow.getMapHeight();
 	}
-	
+
 }

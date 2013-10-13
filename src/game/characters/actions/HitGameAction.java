@@ -25,31 +25,24 @@ public final class HitGameAction extends AbstractGameAction {
 
 	private GameCharacter target;
     private Map map;
-	
+
 	public HitGameAction(GameCharacter performer, Position pos) {
 		super(performer);
         map = performer.getPositionOnMap().getMap();
 		target = map.getGameCharacter(pos);
 	}
-	
+
 	public boolean canBeExecuted() {
-		return target != null && !target.isDead() && !performer.isDead() 
+		return target != null && !target.isDead() && !performer.isDead()
 				&& target.getPosition().distanceTo(performer.getPosition()) < 2;
 	}
-	
+
 	public void execute() {
 		int damage = performer.roleDamageDice();
 		target.takeDamage(damage);
-		String message = performer.getName() + " dealt " + damage 
-				+ " points of damage to " + target.getName();
-		if (target.isDead()) {
-			message += " and " + target.getName() + " died.";
-			map.putItem(target.getCorpse(), target.getPosition());
-			map.removeGameCharacter(target);
-		}
-		else message += ". Current " + target.getName() + "'s hp is: " 
-		+ target.getCurrentHP() + "/" + target.getMaxHP();
-		game.GameEngine.showMessage(message);
-
+        if (target.isDead()) {
+            map.putItem(target.getCorpse(), target.getPosition());
+            map.removeGameCharacter(target);
+        }
 	}
 }

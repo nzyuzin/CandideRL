@@ -23,79 +23,86 @@ import game.utility.ColoredChar;
 
 // TODO: Screw jcurses, use some other library instead
 
+// TODO: GUI is first priority, do it ASAP
+
 public class GameUI {
-	private static CharColor fontColor;
-	
-	private static PlayerViewPort playerView = null;
-	
-	private static ViewPort currentView = null;
-	
-	private GameUI() {	}
-	
-	public static void init() {
-		Toolkit.init();
-		fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
-		playerView = new PlayerViewPort(fontColor);
-	}
-	
-	private static void drawBorders() {
+
+    private static final GameUI INSTANCE = new GameUI();
+
+	private CharColor fontColor;
+
+	private PlayerViewPort playerView = null;
+
+	private ViewPort currentView = null;
+
+	private GameUI() {
+        Toolkit.init();
+        fontColor = new CharColor(CharColor.BLACK, CharColor.WHITE);
+        playerView = new PlayerViewPort(fontColor);
+    }
+
+    public static GameUI getInstance() {
+        return INSTANCE;
+    }
+
+	private void drawBorders() {
 		playerView.drawBorders();
 	}
-	
-	public static void drawMap(ColoredChar[][] charMap) {
+
+	public void drawMap(ColoredChar[][] charMap) {
 		currentView = playerView;
 		playerView.drawMap(charMap);
         currentView.drawBorders();
 	}
-	
-	public static char getInputChar() {
+
+	public char getInputChar() {
 		InputChar input = Toolkit.readCharacter();
 		while (input.isSpecialCode())
 			input = Toolkit.readCharacter();
 		return input.getCharacter();
 	}
-	
-	public static void showAnnouncement(String msg) {
+
+	public void showAnnouncement(String msg) {
 		Toolkit.clearScreen(fontColor);
 		Toolkit.printString(msg + " Press spacebar to continue...", 0, 0, fontColor);
 		waitForChar(' ');
 		redrawUI();
 	}
-	
-	public static void showMessage(String msg) {
+
+	public void showMessage(String msg) {
 		playerView.showMessage(msg);
 	}
-	
-	public static void showStats(String stats) {
+
+	public void showStats(String stats) {
 		playerView.showStats(stats);
 	}
-	
-	private static void waitForChar(char c) {
-		while ( getInputChar() != c );
+
+	private void waitForChar(char c) {
+		while (getInputChar() != c);
 	}
-	
-	private static void redrawUI() {
+
+	private void redrawUI() {
 		currentView.redrawContent();
         drawBorders();
 	}
-	
-	public static void exit() {
+
+	public void exit() {
 		Toolkit.shutdown();
 	}
 
-    public static int getScreenWidth() {
+    public int getScreenWidth() {
         return Toolkit.getScreenWidth();
     }
 
-    public static int getScreenHeight() {
+    public int getScreenHeight() {
         return Toolkit.getScreenHeight();
     }
-	
-	public static int getMapWidth() {
+
+	public int getMapWidth() {
 		return playerView.getMapWidth();
 	}
-	
-	public static int getMapHeight() {
+
+	public int getMapHeight() {
 		return playerView.getMapHeight();
 	}
 
