@@ -18,11 +18,11 @@
 package game.characters.actions;
 
 public interface GameAction {
-	  
+
 	  void execute();
 
 	  boolean canBeExecuted();
-	  
+
 	  int actionPointsLeft();
 
 	  void setActionPointsLeft(int points);

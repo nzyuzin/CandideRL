@@ -31,7 +31,7 @@ public final class HitGameAction extends AbstractGameAction {
         map = performer.getPositionOnMap().getMap();
 		target = map.getGameCharacter(pos);
 	}
-
+    
 	public boolean canBeExecuted() {
 		return target != null && !target.isDead() && !performer.isDead()
 				&& target.getPosition().distanceTo(performer.getPosition()) < 2;

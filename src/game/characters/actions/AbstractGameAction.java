@@ -27,12 +27,12 @@ public abstract class AbstractGameAction implements GameAction {
 	protected final GameCharacter performer; // The one who performs an action
 
 	protected int actionPointsLeft = 0;  // Not implemented yet.
-	
+
 	public abstract boolean canBeExecuted();
-	
+
 	/* Perform an action. Action is not supposed to used after doing this method once. */
 	public abstract void execute();
-	
+
 	public AbstractGameAction(GameCharacter subject) {
 		this.performer = subject;
 	}
