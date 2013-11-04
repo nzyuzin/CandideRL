@@ -23,15 +23,16 @@ import game.utility.Position;
 import game.items.GameItem;
 import game.utility.PositionOnMap;
 
-import org.apache.log4j.Logger;
-
 import java.util.Random;
 import java.lang.StringBuilder;
 import java.util.Formatter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public final class Map {
 
-    private final Logger log = Logger.getLogger(Map.class);
+    private final Log log = LogFactory.getLog(Map.class);
 
 	private final int mapWidth;
 	private final int mapHeight;
