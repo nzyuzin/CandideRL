@@ -29,7 +29,7 @@ public class ArtificialIntelligence {
 	private static int distanceLimit;
 	private static PathFinder path;
 
-	public ArtificialIntelligence(){ }
+	public ArtificialIntelligence() { }
 
 	public static void init(GameCharacter t, int distance) {
 		distanceLimit = distance;

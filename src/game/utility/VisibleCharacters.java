@@ -17,8 +17,25 @@
 
 package game.utility;
 
-public final class VisibleCharacters {
-	public final static char FLOOR = '.';
-	public final static char WALL = '#';
-	public final static char PLAYER = '@';
+public enum VisibleCharacters {
+	FLOOR('.'), WALL('#'), PLAYER('@');
+
+    private char visibleChar;
+
+    VisibleCharacters(char c) {
+        visibleChar = c;
+    }
+
+    public boolean isVisible(char c) {
+        for (VisibleCharacters s : values()) {
+            if (s.visibleChar == c)
+                return true;
+        }
+        return false;
+    }
+
+    public char getVisibleChar() {
+        return visibleChar;
+    }
+
 }

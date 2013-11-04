@@ -15,39 +15,40 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.ui;
+package game.ui.jcurses;
 
 import jcurses.system.CharColor;
 import jcurses.system.Toolkit;
 import jcurses.util.Rectangle;
 
+@Deprecated
 public final class StatsWindow extends Rectangle {
-	
+
 	private CharColor fontColor = null;
 	private Rectangle statsRectangle = null;
 	private String stats = null;
-	
+
 	StatsWindow(int posX, int posY, int width, int height, CharColor fontColor) {
 		super(posX, posY, width, height);
 		statsRectangle = new Rectangle( posX + 1, posY + 1, width - 2, height - 2);
 		this.fontColor = fontColor;
 	}
-	
+
 	void drawBorders() {
 		Toolkit.drawBorder(this, fontColor);
 	}
-	
+
 	private String fitString(String str) {
 		StringBuilder result = new StringBuilder();
 		if ( str.contains("\n")) {
 			int nCount = 0;
 			for (int i = 0; i < str.length(); i++)
 				if (str.charAt(i) == '\n') nCount++;
-			String[] splittedString = new String[nCount];
+			String[] splittedString;
 			splittedString = str.split("\n");
 			for (int i = 0; i < nCount; i++)
 				result.append(fitString(splittedString[i]));
-			return result.toString();		
+			return result.toString();
 		}
 		result.append(str);
 		for (int rectWidth = statsRectangle.getWidth(),
@@ -55,12 +56,12 @@ public final class StatsWindow extends Rectangle {
 			result.append(" ");
 		return result.toString();
 	}
-	
+
 	void showStats(String stats) {
 		this.stats = fitString(stats);
 		Toolkit.printString(this.stats, statsRectangle, fontColor);
 	}
-	
+
 	void redraw() {
 		if (stats != null)
 			Toolkit.printString(this.stats, statsRectangle, fontColor);

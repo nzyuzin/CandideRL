@@ -97,7 +97,7 @@ abstract class MapCell extends GameObject implements Visible {
 
 class Wall extends MapCell {
 	private Wall() {
-		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL, ColoredChar.YELLOW),
+		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
                 false, false);
 	}
 
@@ -114,7 +114,7 @@ class Wall extends MapCell {
 class Floor extends MapCell {
 	private Floor() {
 		super("Floor", "Rough rock floor.", new ColoredChar(
-				VisibleCharacters.FLOOR), true, true);
+				VisibleCharacters.FLOOR.getVisibleChar()), true, true);
 	}
 
     static Floor getFloor() {

@@ -30,7 +30,7 @@ public abstract class AbstractGameAction implements GameAction {
 
 	public abstract boolean canBeExecuted();
 
-	/* Perform an action. Action is not supposed to used after doing this method once. */
+	/* Perform an action. Action is not supposed to be used after doing this method once. */
 	public abstract void execute();
 
 	public AbstractGameAction(GameCharacter subject) {

@@ -15,7 +15,7 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.ui;
+package game.ui.jcurses;
 
 import jcurses.system.CharColor;
 import jcurses.system.Toolkit;
@@ -23,18 +23,19 @@ import jcurses.util.Rectangle;
 import java.util.Queue;
 import java.util.ArrayDeque;
 
+@Deprecated
 public final class MessagesWindow extends Rectangle {
 	private CharColor fontColor = null;
 	private Rectangle messagesRectangle = null;
 	private Queue<String> lastMessages = null;
-	
+
 	MessagesWindow(int posX, int posY, int width, int height, CharColor fontColor) {
 		super(posX, posY, width, height);
 		lastMessages = new ArrayDeque<String>();
 		messagesRectangle = new Rectangle( posX + 1, posY + 1, width - 2, height - 2);
 		this.fontColor = fontColor;
 	}
-	
+
 	void drawBorders() {
 		Toolkit.drawBorder(this, fontColor);
 	}
@@ -50,27 +51,27 @@ public final class MessagesWindow extends Rectangle {
 		else addToLog(msg);
 		showMessages();
 	}
-	
+
 	private void addToLog(String message) {
 		if (lastMessages.size() == messagesRectangle.getHeight())
 			lastMessages.poll();
 		lastMessages.add(message);
 	}
-	
+
 	private void showMessages() {
 		StringBuilder messages = new StringBuilder();
 		for (String msg : lastMessages)
 			messages.append(fitString(msg));
 		Toolkit.printString(messages.toString(), messagesRectangle, fontColor);
 	}
-	
+
 	void redraw() {
 		showMessages();
 	}
-	
+
 	private String fitString(String str) {
 		assert str.length() <= messagesRectangle.getWidth();
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		result.append(str);
 		for (int i = str.length(); i < messagesRectangle.getWidth(); i++)
 			result.append(" ");

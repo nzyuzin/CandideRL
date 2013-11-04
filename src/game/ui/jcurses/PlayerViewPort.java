@@ -15,12 +15,14 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.ui;
+package game.ui.jcurses;
 
+import game.ui.ViewPort;
 import jcurses.system.CharColor;
 import jcurses.system.Toolkit;
 import game.utility.ColoredChar;
 
+@Deprecated
 public class PlayerViewPort implements ViewPort {
 
 	private MapWindow mapWindow = null;
@@ -55,7 +57,7 @@ public class PlayerViewPort implements ViewPort {
 		for (int i = 0; i < charMap.length; i++)
 			for (int j = 0; j < charMap[0].length; j++) {
 				stringMap[i][j] = charMap[i][j].toString();
-				colors[i][j] = charMap[i][j].getColor();
+				colors[i][j] = new CharColor(CharColor.WHITE, CharColor.BLACK);
 			}
 
 		mapWindow.drawMap(stringMap, colors);

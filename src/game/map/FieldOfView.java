@@ -46,12 +46,12 @@ public final class FieldOfView {
 
         ColoredChar[][] resultMap = map.getVisibleChars(watcher.getPosition());
 
-        for (int x = 0; x < resultMap.length; x++)
+       /* for (int x = 0; x < resultMap.length; x++)
             for (int y = 0; y < resultMap[0].length; y++) {
                 if (!seen[x][y])
                     resultMap[x][y] = ColoredChar.NIHIL;
             }
-
+*/
         return resultMap;
     }
 
@@ -60,31 +60,31 @@ public final class FieldOfView {
         map = watcher.getPositionOnMap().getMap();
 
 		Queue<Position> positionsQueue = new ArrayDeque<Position>();
-		
+
 		Position pos;
 		boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
 		seen = new boolean[transparent.length][transparent[0].length];
 		boolean[][] marked = new boolean[transparent.length][transparent[0].length];
 		Direction[] directions = Direction.values();
 		Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
-		
+
 		seen[watcherPos.getX()][watcherPos.getY()] = true;
-		
+
 		for (int i = 0; i < directions.length; i++) {
 			positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
-			
+
 			while (!positionsQueue.isEmpty()) {
 				pos = positionsQueue.poll();
-				
+
 				if (!isInsideSeenArray(pos) || watcherPos.distanceTo(pos) > viewDistance)
 					continue;
-				
+
 				if (marked[pos.getX()][pos.getY()])
 					continue;
-	
+
 				marked[pos.getX()][pos.getY()] = true;
 				seen[pos.getX()][pos.getY()] = true;
-				
+
 				if (transparent[pos.getX()][pos.getY()]) {
 					positionsQueue.add(Direction
 							.applyDirection(pos, directions[(i - 1 + directions.length)  % directions.length]));
@@ -104,7 +104,7 @@ public final class FieldOfView {
 			}
 		}
 	}
-	
+
 	private boolean isInsideSeenArray(Position pos) {
 		return pos.getX() < seen.length && pos.getX() >= 0 && pos.getY() < seen[0].length && pos.getY() >= 0;
 	}

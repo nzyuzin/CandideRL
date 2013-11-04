@@ -76,10 +76,8 @@ public class PositionOnMap {
 
         PositionOnMap that = (PositionOnMap) o;
 
-        if (!map.equals(that.map)) return false;
-        if (!position.equals(that.position)) return false;
+        return map.equals(that.map) && position.equals(that.position);
 
-        return true;
     }
 
     @Override

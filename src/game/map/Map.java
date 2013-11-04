@@ -23,7 +23,15 @@ import game.utility.Position;
 import game.items.GameItem;
 import game.utility.PositionOnMap;
 
+import org.apache.log4j.Logger;
+
+import java.util.Random;
+import java.lang.StringBuilder;
+import java.util.Formatter;
+
 public final class Map {
+
+    private final Logger log = Logger.getLogger(Map.class);
 
 	private final int mapWidth;
 	private final int mapHeight;
@@ -34,6 +42,14 @@ public final class Map {
 	private final MapCell[][] map;
 
 	protected Map(int width, int height, int screenWidth, int screenHeight) {
+
+        assert width > 0 && height > 0 && screenHeight > 0 && screenWidth > 0;
+
+        if (log.isTraceEnabled()) {
+            log.trace(new Formatter().format("Map construction start :: passed arguments: %d %d %d %d",
+                    width, height, screenWidth, screenHeight));
+        }
+
 		mapWidth = width;
 		mapHeight = height;
 
@@ -59,6 +75,10 @@ public final class Map {
 			map[i][height - 1] = wall;
 		}
 
+        if (log.isTraceEnabled()) {
+            log.trace("Map construction end");
+        }
+
 	}
 
 	MapCell getCell(Position pos) {
@@ -66,6 +86,12 @@ public final class Map {
 				&& pos.getY() >= 0;
 		return map[pos.getX()][pos.getY()];
 	}
+
+    void setCell(Position pos, MapCell cell) {
+        assert pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
+                && pos.getY() >= 0;
+        map[pos.getX()][pos.getY()] = cell;
+    }
 
 	ColoredChar getChar(Position pos) {
 		return getCell(pos).getChar();
@@ -106,6 +132,20 @@ public final class Map {
 	public GameCharacter getGameCharacter(Position pos) {
 		return getCell(pos).gameCharacter;
 	}
+
+    /**
+     * Method to fetch free cell randomly positioned on map.
+     * Current implementation relies on the fact that the map is sparse and can run into infinite loop otherwise.
+     *
+     * @return passable map Position on which none stands
+     */
+    public Position getRandomFreeCell() {
+        Random rand = new Random();
+        Position pos = Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+        while (isSomeoneHere(pos) || !isCellPassable(pos))
+            pos = Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+        return pos;
+    }
 
 	public String toString(Position pos) {
 
@@ -164,6 +204,7 @@ public final class Map {
 	}
 
 	private MapCell[][] getPartOfMap(int lX, int uX, int lY, int uY) {
+        // l stands for lower bound and u stands for upper
 		MapCell[][] result = new MapCell[uX - lX][uY - lY];
 
 		for (int x = lX, i = 0; x < uX; x++, i++)

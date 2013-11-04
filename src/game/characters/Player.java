@@ -21,32 +21,29 @@ import game.map.FieldOfView;
 import game.utility.ColoredChar;
 
 public final class Player extends GameCharacter {
-	
+
 	private FieldOfView fov = null;
 	private final static Player PLAYER = new Player();
 
     private final static int PLAYER_INITIAL_MAX_HP = 100;
-	
+
 	private Player() {
 		super("Player", "It's you.", PLAYER_INITIAL_MAX_HP);
-		this.charOnMap = new ColoredChar(game.utility.VisibleCharacters.PLAYER);
-		currentActionPoints = 50;
-		speed = 1;
-		
-		fov = new FieldOfView(this, 9);
+		this.charOnMap = new ColoredChar(game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.getColor("#a2a42c"));
+		fov = new FieldOfView(this, 10);
 	}
-	
+
 	public String getStats() {
 		return "Name:\n" + name +
 				"\nHP: " + currentHP + "/" + maxHP + "\n";
 	}
-	
+
 	public ColoredChar[][] getVisibleMap() {
 		return fov.toColoredCharArray();
 	}
-	
+
 	public static Player getInstance() {
 		return PLAYER;
 	}
-	
+
 }

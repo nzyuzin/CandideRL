@@ -25,6 +25,7 @@ public final class Position {
 	private final int x;
     private final int y;
 
+    // TODO: find library that handles caching properly
     private static final HashMap<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
 
     public int getY() {

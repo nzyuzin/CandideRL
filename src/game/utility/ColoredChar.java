@@ -17,27 +17,23 @@
 
 package game.utility;
 
-import jcurses.system.CharColor;
+import java.awt.Color;
 
 public final class ColoredChar {
 
-	private final short background;
-	private final short foreground;
+	private final Color background;
+	private final Color foreground;
 	private final boolean highlight;
 	private final char visibleChar;
 
-	public static final short BLACK = CharColor.BLACK;
-	public static final short RED = CharColor.RED;
-	public static final short GREEN = CharColor.GREEN;
-	public static final short YELLOW = CharColor.YELLOW;
-	public static final short BLUE = CharColor.BLUE;
-	public static final short MAGENTA = CharColor.MAGENTA;
-	public static final short CYAN = CharColor.CYAN;
-	public static final short WHITE = CharColor.WHITE;
-	
-	public static final short STANDARD_BACKGROUND_COLOR = BLACK;
-	public static final short STANDARD_FOREGROUND_COLOR = WHITE;
-	
+    public static final Color RED = Color.RED;
+    public static final Color YELLOW = Color.YELLOW;
+    public static final Color MAGENTA = Color.MAGENTA;
+    public static final Color GREEN = Color.GREEN;
+
+	public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
+	public static final Color STANDARD_FOREGROUND_COLOR = Color.white;
+
 	public static final ColoredChar NIHIL = new ColoredChar(' ');
 
 	public ColoredChar (char c) {
@@ -46,22 +42,22 @@ public final class ColoredChar {
 		this.highlight = false;
 		this.visibleChar = c;
 	}
-	
-	public ColoredChar (char c, short fg) {
+
+	public ColoredChar (char c, Color fg) {
 		this.foreground = fg;
 		this.background = STANDARD_BACKGROUND_COLOR;
 		this.highlight = false;
 		this.visibleChar = c;
 	}
-	
-	public ColoredChar(char c, short bg, short fg) {
+
+	public ColoredChar(char c, Color fg, Color bg) {
 		this.background = bg;
 		this.foreground = fg;
 		this.highlight = false;
 		this.visibleChar = c;
 	}
 
-	public ColoredChar(char c, short bg, short fg, boolean highlight) {
+	public ColoredChar(char c, Color fg, Color bg, boolean highlight) {
 		this.background = bg;
 		this.foreground = fg;
 		this.highlight = highlight;
@@ -75,35 +71,31 @@ public final class ColoredChar {
 		this.visibleChar = c.visibleChar;
 	}
 
-	public CharColor getColor() {
-		CharColor c = new CharColor(this.background, this.foreground);
-		if(this.highlight)
-			c.setColorAttribute(CharColor.BOLD);
-
-		return c;
-	}
-	
 	public char getChar() {
 		return this.visibleChar;
 	}
-	
-	public short getBackground() {
+
+	public Color getBackground() {
 		return this.background;
 	}
-	
-	public short getForeground() {
+
+	public Color getForeground() {
 		return this.foreground;
 	}
-	
+
 	public boolean equals( ColoredChar col ) {
 		return (this.background == col.background &&
 				this.foreground == col.foreground &&
 				this.highlight == col.highlight);
 	}
-	
+
 	public String toString() {
 		return visibleChar + "";
 	}
+
+    public static Color getColor(String rgb) {
+        return Color.decode(rgb);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -112,18 +104,15 @@ public final class ColoredChar {
 
         ColoredChar that = (ColoredChar) o;
 
-        if (background != that.background) return false;
-        if (foreground != that.foreground) return false;
-        if (highlight != that.highlight) return false;
-        if (visibleChar != that.visibleChar) return false;
+        return background == that.background && foreground == that.foreground
+               && highlight == that.highlight && visibleChar == that.visibleChar;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) background;
-        result = 31 * result + (int) foreground;
+        int result = background.hashCode();
+        result = 31 * result + foreground.hashCode();
         result = 31 * result + (highlight ? 1 : 0);
         result = 31 * result + (int) visibleChar;
         return result;

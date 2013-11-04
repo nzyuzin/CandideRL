@@ -30,18 +30,14 @@ import java.util.Random;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-// GameCharacter shouldn't know about existence of Map neither of GameUI nor of GameEngine.
-// Every actions that is performed on Map is supposed to be expressed through GameAction classes
-// and added to queue, which is field of this class.
-
 public abstract class GameCharacter extends GameObject implements Movable, Damageable, Visible  {
-	
+
 	protected final class Attributes {
 		public short strength;
 		public short dexterity;
 		public short intelligence;
 		public short armor;
-		
+
 		public Attributes() {
 			this.strength = 8;
 			this.armor = 0;
@@ -49,16 +45,16 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 			this.intelligence = 8;
 		}
 	}
-	
+
 	protected Queue<GameAction> gameActions = null;
-	
+
 	protected PositionOnMap position;
 	protected ColoredChar charOnMap = null;
-	
+
 	protected int currentHP;
 	protected int maxHP;
 	protected double speed = 1;
-	
+
 	protected double attackRate;
 	protected Attributes attributes;
 	protected boolean canTakeDamage;
@@ -66,7 +62,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	protected int currentActionPoints;  // Those three fields are of no use for now.
 	protected int maximumActionPoints;  //
 
-	
+
 	GameCharacter(String name, String description, int HP) {
 		super(name, description);
 		maxHP = HP;
@@ -77,23 +73,23 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 		gameActions = new ArrayDeque<>();
 	}
 
-	
+
 	public boolean hasAction() {
 		return !gameActions.isEmpty();
 	}
-	
+
 	public void addAction(GameAction action) {
 		gameActions.add(action);
 	}
-	
+
 	public void removeCurrentAction() {
 		gameActions.poll();
 	}
-	
+
 	public boolean isDead() {
 		return currentHP <= 0;
 	}
-	
+
 	public Position getPosition() {
 		return position.getPosition();
 	}
@@ -109,59 +105,59 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 	public int getCurrentHP() {
 		return currentHP;
 	}
-	
+
 	public int getMaxHP() {
 		return maxHP;
 	}
-	
+
 	public boolean canPerformAction() {
 		return hasAction() && gameActions.peek().canBeExecuted();
 	}
-	
+
 	public void performAction() {
 		// TODO make use of action points
 		if (gameActions.isEmpty()) return;
 		gameActions.poll().execute();
 	}
-	
+
 	public void breakActionQueue() {
 		gameActions = new ArrayDeque<GameAction>();
-	} 
-	
+	}
+
 	public void hit(Position pos) {
 		addAction(new HitGameAction(this, pos));
 	}
-	
+
 	public int roleDamageDice() {
 		Random dice = new Random();
 		return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
 	}
-	
+
 	public void move(Direction there) {
 		if (there != null)
 			addAction(new MovementGameAction(this, there));
 	}
-	
+
 	public boolean canTakeDamage() {
 		return canTakeDamage;
 	}
-	
+
 	public void takeDamage(int damage) {
 	/* TODO
 	 * if takes 0 as arguments - attacker missed,
-	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.	
+	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.
 	 */
 		currentHP -= damage;
 	}
-	
+
 	public MiscItem getCorpse() {
-		return new MiscItem("Corpse of " + this.getName(), 
-				new ColoredChar(this.charOnMap.getChar(), 
-						this.charOnMap.getColor().getForeground(), ColoredChar.RED), 50, 50);
+		return new MiscItem("Corpse of " + this.getName(),
+				new ColoredChar(this.charOnMap.getChar(),
+						this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
 	}
-	
+
 	public ColoredChar getChar() {
 		return this.charOnMap;
 	}
-	
+
 }

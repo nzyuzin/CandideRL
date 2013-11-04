@@ -19,16 +19,30 @@ package game.map;
 
 public final class MapFactory {
 
-	private static final MapFactory INSTACE = new MapFactory();
+	private static final int DEFAULT_SIZE = 10;
 
-	private static final int DEFAULT_SIZE = 1000;
+	private int screenWidth;
+	private int screenHeight;
 
-	private static int screenWidth;
-	private static int screenHeight;
+    private int mapWidth = DEFAULT_SIZE;
+    private int mapHeight = DEFAULT_SIZE;
 
-	public static MapFactory getInstance() {
-		return INSTACE;
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public static MapFactory getInstance() {
+		return new MapFactory();
 	}
+
+    public void setMapSize(int width, int height) {
+        mapWidth = width;
+        mapHeight = height;
+    }
 
 	public void setScreenSize(int width, int height) {
 		this.screenWidth = width;
@@ -36,7 +50,7 @@ public final class MapFactory {
 	}
 
 	public Map getMap() {
-		return new Map(DEFAULT_SIZE, DEFAULT_SIZE, screenWidth, screenHeight);
+        return new Map(mapWidth, mapHeight, screenWidth, screenHeight);
 	}
 
 }
