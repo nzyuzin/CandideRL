@@ -80,17 +80,11 @@ public class PlayerViewPort implements ViewPort {
 	}
 
 	@Override
-	public void redrawContent() {
+	public void drawContent() {
 		drawBorders();
 		mapWindow.redraw();
 		messagesWindow.redraw();
 		statsWindow.redraw();
-	}
-
-	@Override
-	public void handleInput(char input) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public int getMapWidth() {

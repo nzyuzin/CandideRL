@@ -24,8 +24,8 @@ public final class MapFactory {
 	private int screenWidth;
 	private int screenHeight;
 
-    private int mapWidth = DEFAULT_SIZE;
-    private int mapHeight = DEFAULT_SIZE;
+    private int mapWidth = 80;
+    private int mapHeight = 25;
 
     public int getScreenWidth() {
         return screenWidth;

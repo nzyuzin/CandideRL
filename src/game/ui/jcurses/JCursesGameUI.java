@@ -81,7 +81,7 @@ public class JCursesGameUI implements GameUI {
 	}
 
 	private void redrawUI() {
-		currentView.redrawContent();
+		currentView.drawContent();
         drawBorders();
 	}
 

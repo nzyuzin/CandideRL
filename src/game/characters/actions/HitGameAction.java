@@ -55,6 +55,8 @@ public final class HitGameAction extends AbstractGameAction {
             map.putItem(target.getCorpse(), target.getPosition());
             map.removeGameCharacter(target);
         }
-        log.trace("execute ends");
-	}
+        if (log.isTraceEnabled()) {
+            log.trace("execute ends");
+        }
+    }
 }

@@ -31,7 +31,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.PatternLayout;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public final class GameEngine implements AutoCloseable {
 
@@ -67,7 +66,9 @@ public final class GameEngine implements AutoCloseable {
         mapFactory.setScreenSize(UI.getScreenWidth(), UI.getScreenHeight());
         currentMap = mapFactory.getMap();
 
-        log.trace("mapFactory done");
+        if (log.isTraceEnabled()) {
+            log.trace("mapFactory done");
+        }
 
         npcs = new ArrayList<>();
 
@@ -78,8 +79,6 @@ public final class GameEngine implements AutoCloseable {
 
         //Some magic constants here
         ArtificialIntelligence.init(player, (UI.getMapWidth() + UI.getMapHeight()) / 2 + 100);
-
-        Random rand = new Random();
 
 //        npcs.add(new NPC("troll", "A furious beast with sharp claws.",new ColoredChar('t', ColoredChar.RED)));
 //		npcs.add(new NPC("goblin", "A regular goblin.",new ColoredChar('g', ColoredChar.GREEN)));
@@ -119,14 +118,14 @@ public final class GameEngine implements AutoCloseable {
 		drawMap();
 		showStats();
         if (log.isTraceEnabled()) {
-            log.trace("advanceTime end :: currentTurn = " + currentTurn);
+            log.trace(String.format("advanceTime end :: currentTurn = %d", currentTurn));
         }
 	}
 
 	private void handleInput() throws Exception {
 		char input = UI.getInputChar();
         if (log.isDebugEnabled() && input != '\n') {
-            log.debug("handleInput input = " + input);
+            log.debug(String.format("handleInput input = %s", input));
         }
 		if (KeyDefinitions.isDirectionKey(input)) {
 			ArtificialIntelligence.chooseActionInDirection(player, Direction.getDirection(input));
@@ -149,14 +148,18 @@ public final class GameEngine implements AutoCloseable {
 	}
 
 	private void drawMap() {
-        log.trace("drawMap start");
-        long initTime = System.currentTimeMillis();
-		if (!player.isDead()) {
+        long initTime = 0;
+        if (log.isTraceEnabled()) {
+            log.trace("drawMap start");
+            initTime = System.currentTimeMillis();
+        }
+        if (!player.isDead()) {
 			UI.drawMap(player.getVisibleMap());
 		}
-        long endTime = System.currentTimeMillis();
-        log.trace("drawMap end :: time=" + (endTime - initTime));
-	}
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("drawMap end :: time=%d", System.currentTimeMillis() - initTime));
+        }
+    }
 
 	private void showStats() {
 		UI.showStats(player.getStats() + "Current turn: "
@@ -164,7 +167,9 @@ public final class GameEngine implements AutoCloseable {
 	}
 
     public void play() throws Exception {
-        log.trace("Game starts");
+        if (log.isTraceEnabled()) {
+            log.trace("Game starts");
+        }
         UI.showMessage("Prepare to play!");
         drawMap();
         showStats();
@@ -175,7 +180,9 @@ public final class GameEngine implements AutoCloseable {
         }
         if (npcs.isEmpty()) UI.showAnnouncement("All mobs are dead!");
         if (player.isDead()) UI.showAnnouncement("You're dead!");
-        log.trace("Game ends");
-     }
+        if (log.isTraceEnabled()) {
+            log.trace("Game ends");
+        }
+    }
 
 }

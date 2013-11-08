@@ -38,7 +38,8 @@ public class TextWindow extends JComponent {
 
     private static final Color DEFAULT_FOREGROUND = Color.LIGHT_GRAY;
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;
-    private static final Font DEFAULT_FONT = new Font("DejaVu Sans Mono", Font.PLAIN, 14);
+    private static final Font DEFAULT_FONT = new Font("DejaVu Sans Mono", Font.PLAIN, 16);
+    private static final boolean FIT_TO_SCREEN = false;
 
     private TextWindowContent data;
 
@@ -55,26 +56,21 @@ public class TextWindow extends JComponent {
 
     public static TextWindow instance = new TextWindow();
 
-    public static TextWindow getTextWindow(int columns, int rows) {
-        instance.init(columns, rows);
+    public static TextWindow getTextWindow(int columns, int rows, Dimension screenSize) {
+        instance.init(columns, rows, screenSize);
         return instance;
     }
 
     private TextWindow() { }
 
-    private void init(int columns, int rows) {
+    private void init(int columns, int rows, Dimension screenSize) {
         data = TextWindowContent.getTextWindowContent(columns, rows);
 
         data.fillText(' ');
         data.fillBackground(DEFAULT_BACKGROUND);
         data.fillForeground(DEFAULT_FOREGROUND);
 
-        setMainFont(DEFAULT_FONT);
-        setFont(mainFont);
-    }
-
-    public void setMainFont(Font font) {
-        mainFont = font;
+        mainFont = DEFAULT_FONT;
 
         FontRenderContext fontRenderContext = new FontRenderContext(mainFont.getTransform(), true, false);
         Rectangle2D charBounds = mainFont.getStringBounds("X", fontRenderContext);
@@ -82,15 +78,36 @@ public class TextWindow extends JComponent {
         fontHeight = (int) charBounds.getHeight();
         fontYOffset = -(int) charBounds.getMinY() - fontHeight;
 
-        if (log.isDebugEnabled()) {
-            log.debug(new Formatter()
-                    .format("fontWidth = %d fontHeight = %d fontYOffset = %d", fontWidth, fontHeight, fontYOffset)
-                    );
+        int windowWidth = data.getColumns() * fontWidth;
+
+        // TODO: find out where did this magical constant come from and figure out how to get rid of it
+        int windowHeight = data.getRows() * fontHeight - (fontYOffset + fontHeight) * 2;
+        Dimension windowSize = new Dimension(windowWidth, windowHeight);
+
+        if (FIT_TO_SCREEN) {
+            // TODO: think about real implementation, current one is crap
+            float k = ((float) screenSize.width / (float) windowWidth + screenSize.height / windowHeight) / 2;
+            mainFont = mainFont.deriveFont(k * mainFont.getSize2D());
+            charBounds = mainFont.getStringBounds("X", fontRenderContext);
+            fontWidth = (int) charBounds.getWidth();
+            fontHeight = (int) charBounds.getHeight();
+            fontYOffset = -(int) charBounds.getMinY() - fontHeight;
         }
 
-        setPreferredSize(new Dimension(data.getColumns() * fontWidth, data.getRows() * (fontHeight + fontYOffset)));
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("fontWidth = %d fontHeight = %d fontYOffset = %d",
+                    fontWidth, fontHeight, fontYOffset)
+            );
+            log.debug(String.format("screenSize = %s", windowSize));
+        }
 
+        setMinimumSize(windowSize);
+        setPreferredSize(windowSize);
+        setMaximumSize(windowSize);
+
+        setFont(mainFont);
         repaint();
+
     }
 
     public int getFontWidth() {
@@ -131,12 +148,12 @@ public class TextWindow extends JComponent {
         int column2;
 
         for (row = 0; row < data.getRows(); row++) {
-            for (column1 = 0; column1 < data.getColumns();) {
+            for (column1 = 0, column2 = 1; column1 < data.getColumns(); column1 = column2) {
 
                 fgColor = data.getForegroundAt(column1, row);
                 bgColor = data.getBackgroundAt(column1, row);
 
-                //  invariant holds that place between column1 and column2 is filled with one color
+                //  invariant holds that place between column1 and column2 is filled with same color
 
                 column2 = column1 + 1;
 
@@ -150,8 +167,13 @@ public class TextWindow extends JComponent {
 
                 g.setColor(fgColor);
 
-                g.drawChars(data.getRow(row), column1, column2 - column1, column1 * fontWidth, row * fontHeight + fontYOffset);
-                column1 = column2;
+                g.drawChars(
+                        data.getRow(row),
+                        column1,
+                        column2 - column1,
+                        column1 * fontWidth,
+                        row * fontHeight + fontYOffset
+                );
             }
         }
     }
@@ -321,8 +343,7 @@ final class TextWindowContent {
     void fillArea(char c, Color fg, Color bg, int column,
                   int row, int width, int height) {
         for (int q = Math.max(0, row); q < Math.min(row + height, rows); q++) {
-            for (int p = Math.max(0, column); p < Math.min(column + width,
-                    columns); p++) {
+            for (int p = Math.max(0, column); p < Math.min(column + width, columns); p++) {
                 text[q][p] = c;
                 foreground[q][p] = fg;
                 background[q][p] = bg;

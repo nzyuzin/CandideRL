@@ -20,7 +20,6 @@ package game.ui;
 public interface ViewPort {
 
 	void drawBorders();
-	void redrawContent();
-	void handleInput(char input);
+	void drawContent();
 
 }
