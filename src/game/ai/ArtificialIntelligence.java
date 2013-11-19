@@ -17,7 +17,7 @@
 
 package game.ai;
 
-import game.characters.*;
+import game.characters.GameCharacter;
 import game.characters.actions.HitGameAction;
 import game.characters.actions.MovementGameAction;
 
@@ -25,41 +25,39 @@ import game.utility.Direction;
 
 public class ArtificialIntelligence {
 
-	private static GameCharacter target = null;
-	private static int distanceLimit;
-	private static PathFinder path;
+	private final GameCharacter target;
+	private final int distanceLimit;
+	private PathFinder path;
 
-	public ArtificialIntelligence() { }
+	public ArtificialIntelligence(GameCharacter t, int distance) {
+        distanceLimit = distance;
+        target = t;
+    }
 
-	public static void init(GameCharacter t, int distance) {
-		distanceLimit = distance;
-		target = t;
-	}
-
-	public static void chooseAction(GameCharacter mob) {
+	public void chooseAction(GameCharacter mob) {
 		if (target.isDead()) return;
-		if (target.getPosition().distanceTo(mob.getPosition()) < 2)
+		if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
 			mob.hit(target.getPosition());
-		else {
+        } else {
 			moveToTarget(mob);
 		}
 	}
 
-	public static void chooseActionInDirection(GameCharacter mob, Direction there) {
+	public void chooseActionInDirection(GameCharacter mob, Direction there) {
 		MovementGameAction move = new MovementGameAction(mob, there);
 
-		if ( move.canBeExecuted() ) {
+		if (move.canBeExecuted()) {
 			mob.addAction(move);
 			return;
 		}
 
-		HitGameAction hit = new HitGameAction(mob, Direction
-				.applyDirection(mob.getPosition(), there));
+		HitGameAction hit = new HitGameAction(mob, Direction .applyDirection(mob.getPosition(), there));
 
 		if (hit.canBeExecuted()) mob.addAction(hit);
 	}
 
-	private static void moveToTarget(GameCharacter mob) {
+	private void moveToTarget(GameCharacter mob) {
+        // TODO: whole implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
 		if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit)
 			return;
 

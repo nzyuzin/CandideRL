@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 public final class Map {
 
-    private final Log log = LogFactory.getLog(Map.class);
+    private final static Log log = LogFactory.getLog(Map.class);
 
 	private final int mapWidth;
 	private final int mapHeight;
@@ -42,45 +42,64 @@ public final class Map {
 
 	private final MapCell[][] map;
 
-	protected Map(int width, int height, int screenWidth, int screenHeight) {
-
+    private Map(int width, int height, int screenWidth, int screenHeight) {
         assert width > 0 && height > 0 && screenHeight > 0 && screenWidth > 0;
 
+        map = new MapCell[width][height];
+
+        mapWidth = width;
+        mapHeight = height;
+
+        mapWidthOnScreen = screenWidth;
+        mapHeightOnScreen = screenHeight;
+    }
+
+	static Map buildEmptyMap(int width, int height, int screenWidth, int screenHeight) {
+        Map instance = new Map(width, height, screenWidth, screenHeight);
+
         if (log.isTraceEnabled()) {
-            log.trace(new Formatter().format("Map construction start :: passed arguments: %d %d %d %d",
-                    width, height, screenWidth, screenHeight));
+            log.trace(new Formatter().format("Map construction start :: passed arguments: %d %d %d %d%nTotal Map size = %d",
+                    width, height, screenWidth, screenHeight, width * height));
         }
 
-		mapWidth = width;
-		mapHeight = height;
-
-		mapWidthOnScreen = screenWidth;
-		mapHeightOnScreen = screenHeight;
 
 		// Wall is of no use now, so it's meaningless to create more
 		// than one wall to fill space on map
         Wall wall = Wall.getWall();
 
-		map = new MapCell[width][height];
 
 		for (int i = 1; i < width - 1; i++)
 			for (int j = 1; j < height - 1; j++)
-				map[i][j] = Floor.getFloor();
+				instance.setCell(Position.getPosition(i, j), Floor.getFloor());
 		for (int i = 0; i < height; i++) {
-			map[0][i] = wall;
-			map[width - 1][i] = wall;
+			instance.setCell(Position.getPosition(0, i), wall);
+			instance.setCell(Position.getPosition(width - 1, i), wall);
 		}
 
 		for (int i = 0; i < width; i++) {
-			map[i][0] = wall;
-			map[i][height - 1] = wall;
+            instance.setCell(Position.getPosition(i, 0), wall);
+            instance.setCell(Position.getPosition(i, height - 1), wall);
 		}
 
         if (log.isTraceEnabled()) {
             log.trace("Map construction end");
         }
 
+        return instance;
 	}
+
+    static Map buildRandomizedMap(int width, int height, int screenWidth, int screenHeight, double filledCells) {
+
+        assert filledCells < 1 && filledCells > 0;
+
+        Map instance = buildEmptyMap(width, height, screenWidth, screenHeight);
+
+        for (int i = 0; i < instance.mapHeight * instance.mapWidth * filledCells; i++) {
+            instance.setCell(instance.getRandomFreePosition(), Wall.getWall());
+        }
+
+        return instance;
+    }
 
 	MapCell getCell(Position pos) {
 		assert pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
@@ -140,11 +159,10 @@ public final class Map {
      *
      * @return passable map Position on which none stands
      */
-    public Position getRandomFreeCell() {
-        Random rand = new Random();
-        Position pos = Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+    public Position getRandomFreePosition() {
+        Position pos = getRandomPositionInsideMap();
         while (isSomeoneHere(pos) || !isCellPassable(pos))
-            pos = Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+            pos = getRandomPositionInsideMap();
         return pos;
     }
 
@@ -244,5 +262,10 @@ public final class Map {
 		return pos.getX() < mapWidthOnScreen && pos.getX() >= 0
 				&& pos.getY() < mapHeightOnScreen && pos.getY() >= 0;
 	}
+
+    private Position getRandomPositionInsideMap() {
+        Random rand = new Random();
+        return Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+    }
 
 }

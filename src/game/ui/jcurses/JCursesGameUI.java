@@ -77,6 +77,7 @@ public class JCursesGameUI implements GameUI {
 	}
 
 	private void waitForChar(char c) {
+        //noinspection StatementWithEmptyBody
         while (getInputChar() != c);
 	}
 

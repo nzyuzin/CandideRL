@@ -29,7 +29,7 @@ public final class Player extends GameCharacter {
 
 	private Player() {
 		super("Player", "It's you.", PLAYER_INITIAL_MAX_HP);
-		this.charOnMap = new ColoredChar(game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.getColor("#a2a42c"));
+		this.charOnMap = new ColoredChar(game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
 		fov = new FieldOfView(this, 10);
 	}
 

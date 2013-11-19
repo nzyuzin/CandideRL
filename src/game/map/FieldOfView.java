@@ -23,11 +23,16 @@ import game.utility.*;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public final class FieldOfView {
 	private final GameCharacter watcher;
 	private boolean[][] seen;
 	private int viewDistance;
     private Map map;
+
+    private static final Log log = LogFactory.getLog(FieldOfView.class);
 
     public FieldOfView(GameCharacter c, int viewDistance) {
         this.viewDistance = viewDistance;
@@ -42,16 +47,25 @@ public final class FieldOfView {
     }
 
     public ColoredChar[][] toColoredCharArray() {
+        long startTime = 0;
+        if (log.isTraceEnabled()) {
+            startTime = System.currentTimeMillis();
+            log.trace("toColoredCharArray start");
+        }
+
         updateFOV();
 
         ColoredChar[][] resultMap = map.getVisibleChars(watcher.getPosition());
 
-       /* for (int x = 0; x < resultMap.length; x++)
+        for (int x = 0; x < resultMap.length; x++)
             for (int y = 0; y < resultMap[0].length; y++) {
                 if (!seen[x][y])
                     resultMap[x][y] = ColoredChar.NIHIL;
             }
-*/
+
+        if (log.isTraceEnabled()) {
+            log.trace(String.format("toColoredCharArray end :: %dms", System.currentTimeMillis() - startTime));
+        }
         return resultMap;
     }
 
@@ -92,8 +106,7 @@ public final class FieldOfView {
 							.applyDirection(pos, directions[i]));
 					positionsQueue.add(Direction
 							.applyDirection(pos, directions[(i + 1) % directions.length]));
-				}
-				else {
+				} else {
 					pos = Direction.applyDirection(pos, directions[i]);
 					while (isInsideSeenArray(pos)) {
 						seen[pos.getX()][pos.getY()] = false;

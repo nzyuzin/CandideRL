@@ -20,6 +20,9 @@ package game.utility;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public final class Position {
 
 	private final int x;
@@ -27,6 +30,9 @@ public final class Position {
 
     // TODO: find library that handles caching properly
     private static final HashMap<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
+
+    private static final Log log = LogFactory.getLog(Position.class);
+    private static int cacheSize = 0;
 
     public int getY() {
         return y;
@@ -42,6 +48,9 @@ public final class Position {
     }
 
 	public static Position getPosition(int x, int y) {
+        if (log.isDebugEnabled() && (x < 0 || y < 0)) {
+            log.debug(String.format("Negative argument! x = %d; y = %d", x, y), new RuntimeException());
+        }
         if (CACHE.containsKey(x)) {
             Map<Integer, Position> y2Position= CACHE.get(x);
             if (y2Position.containsKey(y)) {
@@ -49,6 +58,10 @@ public final class Position {
             } else {
                 Position pos = new Position(x, y);
                 y2Position.put(y, pos);
+                if (log.isTraceEnabled()) {
+                    cacheSize++;
+                    log.trace(String.format("created new Position: %s%nTotal size of CACHE is %d", pos, cacheSize));
+                }
                 return pos;
             }
         } else {
@@ -56,6 +69,10 @@ public final class Position {
             Map<Integer, Position> y2Position = new HashMap<>();
             y2Position.put(y,pos);
             CACHE.put(x, y2Position);
+            if (log.isTraceEnabled()) {
+                cacheSize++;
+                log.trace(String.format("created new Position: %s%nTotal size of CACHE is %d", pos, cacheSize));
+            }
             return pos;
         }
 	}

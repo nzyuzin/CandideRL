@@ -25,6 +25,7 @@ import game.items.GameItem;
 import game.utility.interfaces.Visible;
 
 import java.util.ArrayList;
+import java.util.List;
 
 abstract class MapCell extends GameObject implements Visible {
 	protected final ColoredChar charOnMap;
@@ -34,7 +35,7 @@ abstract class MapCell extends GameObject implements Visible {
     protected ColoredChar visibleChar;
 
 	protected GameCharacter gameCharacter = null;
-	protected ArrayList<GameItem> gameItems = null;
+	protected List<GameItem> gameItems = null;
 
 	protected MapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
 		super(name, desc);
@@ -77,9 +78,10 @@ abstract class MapCell extends GameObject implements Visible {
 		gameItems.remove(item);
 	}
 
-	protected GameItem[] getListOfItems() {
-		return (GameItem[]) gameItems.toArray();
-
+	protected List<GameItem> getListOfItems() {
+        ArrayList<GameItem> result = new ArrayList<>();
+        result.addAll(gameItems);
+		return result;
 	}
 
     @Override
@@ -93,16 +95,19 @@ abstract class MapCell extends GameObject implements Visible {
                 && this.canBePassed == cell.canBePassed;
     }
 
+
+
 }
 
 class Wall extends MapCell {
+    private final static Wall instance = new Wall();
 	private Wall() {
 		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
                 false, false);
 	}
 
     static Wall getWall() {
-        return new Wall();
+        return instance;
     }
 
     @Override

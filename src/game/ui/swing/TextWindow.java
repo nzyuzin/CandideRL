@@ -30,7 +30,6 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JComponent;
 
 import java.util.Arrays;
-import java.util.Formatter;
 
 public class TextWindow extends JComponent {
 
@@ -53,10 +52,8 @@ public class TextWindow extends JComponent {
     private Color currentForeground = DEFAULT_FOREGROUND;
     private Color currentBackground = DEFAULT_BACKGROUND;
 
-
-    public static TextWindow instance = new TextWindow();
-
     public static TextWindow getTextWindow(int columns, int rows, Dimension screenSize) {
+        TextWindow instance = new TextWindow();
         instance.init(columns, rows, screenSize);
         return instance;
     }
@@ -148,7 +145,7 @@ public class TextWindow extends JComponent {
         int column2;
 
         for (row = 0; row < data.getRows(); row++) {
-            for (column1 = 0, column2 = 1; column1 < data.getColumns(); column1 = column2) {
+            for (column1 = 0, column2 = 0; column1 < data.getColumns(); column1 = column2) {
 
                 fgColor = data.getForegroundAt(column1, row);
                 bgColor = data.getBackgroundAt(column1, row);

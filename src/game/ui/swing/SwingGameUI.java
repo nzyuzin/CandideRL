@@ -113,6 +113,11 @@ public class SwingGameUI implements GameUI {
 
     @Override
     public char getInputChar() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
         if (keyRead) return '\n';
         keyRead = true;
         return key;

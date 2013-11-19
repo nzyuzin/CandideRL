@@ -30,6 +30,7 @@ public final class ColoredChar {
     public static final Color YELLOW = Color.YELLOW;
     public static final Color MAGENTA = Color.MAGENTA;
     public static final Color GREEN = Color.GREEN;
+    public static final Color WHITE = Color.WHITE;
 
 	public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
 	public static final Color STANDARD_FOREGROUND_COLOR = Color.white;

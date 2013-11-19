@@ -45,7 +45,7 @@ public class PathFinder {
 	 * Takes initial position as argument
 	 */
 	private void calculateDistances(Position current) {
-		Queue<Position> positionsToProcess = new ArrayDeque<Position>();
+		Queue<Position> positionsToProcess = new ArrayDeque<>();
 
 		distance = new int[map.getWidth()][map.getHeight()];
 		boolean[][] checked = new boolean[distance.length][distance[0].length];

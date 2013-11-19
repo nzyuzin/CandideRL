@@ -19,13 +19,13 @@ package game.map;
 
 public final class MapFactory {
 
-	private static final int DEFAULT_SIZE = 10;
+	private static final int DEFAULT_SIZE = 100;
 
 	private int screenWidth;
 	private int screenHeight;
 
-    private int mapWidth = 80;
-    private int mapHeight = 25;
+    private int mapWidth = DEFAULT_SIZE;
+    private int mapHeight = DEFAULT_SIZE;
 
     public int getScreenWidth() {
         return screenWidth;
@@ -50,7 +50,11 @@ public final class MapFactory {
 	}
 
 	public Map getMap() {
-        return new Map(mapWidth, mapHeight, screenWidth, screenHeight);
+        return Map.buildRandomizedMap(mapWidth, mapHeight, screenWidth, screenHeight, 0.25);
 	}
+
+    public Map getEmptyMap() {
+        return Map.buildEmptyMap(mapWidth, mapHeight, screenWidth, screenHeight);
+    }
 
 }
