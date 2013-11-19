@@ -125,7 +125,7 @@ public final class GameEngine implements AutoCloseable {
         }
 	}
 
-	private void handleInput() throws Exception {
+	private void handleInput() throws GameClosedException {
 		char input = UI.getInputChar();
         if (log.isDebugEnabled() && input != '\n') {
             log.debug(String.format("handleInput input = %s", input));
@@ -143,9 +143,13 @@ public final class GameEngine implements AutoCloseable {
         }
 	}
 
-	public void close() throws Exception {
+	public void close() {
 		UI.showAnnouncement("You're leaving the game.");
-		UI.close();
+        try {
+		    UI.close();
+        } catch (Exception ex) {
+            throw new RuntimeException("Game closing exception");
+        }
 	}
 
 	private void drawMap() {
@@ -167,7 +171,7 @@ public final class GameEngine implements AutoCloseable {
 					+ currentTurn + "\n");
 	}
 
-    public void play() throws Exception {
+    public void play() {
         if (log.isTraceEnabled()) {
             log.trace("Game starts");
         }
@@ -175,7 +179,7 @@ public final class GameEngine implements AutoCloseable {
         drawMap();
         showStats();
         try {
-            while ( !player.isDead() ) {
+            while (!player.isDead()) {
                 handleInput();
                 if (player.hasAction())
                     advanceTime();

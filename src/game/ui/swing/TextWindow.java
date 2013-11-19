@@ -141,34 +141,31 @@ public class TextWindow extends JComponent {
         Color fgColor;
         Color bgColor;
         int row;
-        int column1;
-        int column2;
+        int col1;
+        int col2;
 
         for (row = 0; row < data.getRows(); row++) {
-            for (column1 = 0, column2 = 0; column1 < data.getColumns(); column1 = column2) {
+            for (col1 = 0, col2 = col1 + 1; col1 < data.getColumns(); col1 = col2, col2 = col1 + 1) {
 
-                fgColor = data.getForegroundAt(column1, row);
-                bgColor = data.getBackgroundAt(column1, row);
+                fgColor = data.getForegroundAt(col1, row);
+                bgColor = data.getBackgroundAt(col1, row);
 
-                //  invariant holds that place between column1 and column2 is filled with same color
-
-                column2 = column1 + 1;
-
-                while (column2 < data.getColumns() && fgColor == data.getForegroundAt(column2, row)
-                        && bgColor == data.getBackgroundAt(column2, row)) {
-                    column2++;
+                while (col2 < data.getColumns() && fgColor == data.getForegroundAt(col2, row)
+                        && bgColor == data.getBackgroundAt(col2, row)) {
+                    col2++;
                 }
 
+                //  place between col1 and col2 is filled with same color
                 g.setBackground(bgColor);
-                g.clearRect(fontWidth * column1, (row - 1) * fontHeight, fontWidth * (column2 - column1), fontHeight);
+                g.clearRect(fontWidth * col1, (row - 1) * fontHeight, fontWidth * (col2 - col1), fontHeight);
 
                 g.setColor(fgColor);
 
                 g.drawChars(
                         data.getRow(row),
-                        column1,
-                        column2 - column1,
-                        column1 * fontWidth,
+                        col1,
+                        col2 - col1,
+                        col1 * fontWidth,
                         row * fontHeight + fontYOffset
                 );
             }
