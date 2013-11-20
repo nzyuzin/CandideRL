@@ -48,9 +48,6 @@ public final class Position {
     }
 
 	public static Position getPosition(int x, int y) {
-        if (log.isDebugEnabled() && (x < 0 || y < 0)) {
-            log.debug(String.format("Negative argument! x = %d; y = %d", x, y), new RuntimeException());
-        }
         if (CACHE.containsKey(x)) {
             Map<Integer, Position> y2Position= CACHE.get(x);
             if (y2Position.containsKey(y)) {

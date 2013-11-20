@@ -17,15 +17,15 @@
 
 package game.map;
 
-public final class MapFactory {
+import game.GameConfig;
 
-	private static final int DEFAULT_SIZE = 100;
+public final class MapFactory {
 
 	private int screenWidth;
 	private int screenHeight;
 
-    private int mapWidth = DEFAULT_SIZE;
-    private int mapHeight = DEFAULT_SIZE;
+    private int mapWidth = GameConfig.DEFAULT_MAP_SIZE;
+    private int mapHeight = GameConfig.DEFAULT_MAP_SIZE;
 
     public int getScreenWidth() {
         return screenWidth;

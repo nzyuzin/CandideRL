@@ -37,10 +37,8 @@ public final class GameEngine implements AutoCloseable {
 
     private static final Logger log = Logger.getRootLogger();
 
-    private static final String LOG_CONVERSION_PATTERN = "%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] %C.%M:%L - %m%n";
-
 	public static void main(String args[]) {
-		try (GameEngine engine = getGameEngine()) {
+        try (GameEngine engine = getGameEngine()) {
             engine.play();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -66,7 +64,7 @@ public final class GameEngine implements AutoCloseable {
         UI = SwingGameUI.getUI();
         MapFactory mapFactory = MapFactory.getInstance();
         mapFactory.setScreenSize(UI.getScreenWidth(), UI.getScreenHeight());
-        mapFactory.setMapSize(1000, 2000);
+        mapFactory.setMapSize(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
         currentMap = mapFactory.getMap();
 
         if (log.isTraceEnabled()) {
@@ -94,7 +92,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void initLog() {
-        log.addAppender(new ConsoleAppender(new PatternLayout(LOG_CONVERSION_PATTERN), ConsoleAppender.SYSTEM_OUT));
+        log.addAppender(new ConsoleAppender(new PatternLayout(GameConfig.LOG_CONVERSION_PATTERN), ConsoleAppender.SYSTEM_OUT));
         log.setLevel(Level.OFF);
     }
 
@@ -127,7 +125,7 @@ public final class GameEngine implements AutoCloseable {
 
 	private void handleInput() throws GameClosedException {
 		char input = UI.getInputChar();
-        if (log.isDebugEnabled() && input != '\n') {
+        if (log.isDebugEnabled()) {
             log.debug(String.format("handleInput input = %s", input));
         }
 		if (KeyDefinitions.isDirectionKey(input)) {

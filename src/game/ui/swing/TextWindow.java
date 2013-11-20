@@ -17,6 +17,8 @@
 
 package game.ui.swing;
 
+import game.GameConfig;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,9 +39,6 @@ public class TextWindow extends JComponent {
 
     private static final Color DEFAULT_FOREGROUND = Color.LIGHT_GRAY;
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;
-    private static final Font DEFAULT_FONT = new Font("DejaVu Sans Mono", Font.PLAIN, 16);
-    private static final boolean FIT_TO_SCREEN = false;
-
     private TextWindowContent data;
 
     private int fontWidth;
@@ -67,7 +66,7 @@ public class TextWindow extends JComponent {
         data.fillBackground(DEFAULT_BACKGROUND);
         data.fillForeground(DEFAULT_FOREGROUND);
 
-        mainFont = DEFAULT_FONT;
+        mainFont = GameConfig.DEFAULT_FONT;
 
         FontRenderContext fontRenderContext = new FontRenderContext(mainFont.getTransform(), true, false);
         Rectangle2D charBounds = mainFont.getStringBounds("X", fontRenderContext);
@@ -81,7 +80,7 @@ public class TextWindow extends JComponent {
         int windowHeight = data.getRows() * fontHeight - (fontYOffset + fontHeight) * 2;
         Dimension windowSize = new Dimension(windowWidth, windowHeight);
 
-        if (FIT_TO_SCREEN) {
+        if (GameConfig.FIT_TO_SCREEN) {
             // TODO: think about real implementation, current one is crap
             float k = ((float) screenSize.width / (float) windowWidth + screenSize.height / windowHeight) / 2;
             mainFont = mainFont.deriveFont(k * mainFont.getSize2D());
