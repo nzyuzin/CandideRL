@@ -46,6 +46,8 @@ public class SwingGameUI implements GameUI {
     private final int DEFAULT_MAP_HEIGHT = 25;
 
     private Character key = ' ';
+    private boolean keyRead;
+    private final Object lock = new Object();
 
     private final Log log = LogFactory.getLog(SwingGameUI.class);
 
@@ -78,10 +80,11 @@ public class SwingGameUI implements GameUI {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                synchronized (key) {
-                    key.notify();
+                synchronized (lock) {
+                    lock.notify();
+                    key = e.getKeyChar();
+                    keyRead = false;
                 }
-                key = e.getKeyChar();
             }
 
             @Override
@@ -114,14 +117,16 @@ public class SwingGameUI implements GameUI {
 
     @Override
     public char getInputChar() {
-        synchronized (key) {
+        synchronized (lock) {
             try {
-                key.wait();
+                while (keyRead)
+                    lock.wait();
+                keyRead = true;
+                return key;
             } catch (InterruptedException exc) {
                 throw new RuntimeException(exc);
             }
         }
-        return key;
     }
 
     @Override
