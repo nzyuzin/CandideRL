@@ -22,22 +22,22 @@ import game.map.Map;
 import game.utility.*;
 
 public final class MovementGameAction extends AbstractGameAction {
-	
-	private final Position position;
+
+    private final Position position;
     private final Map map;
 
-	public MovementGameAction(GameCharacter subject, Direction there) {
-		super(subject);
-		position = Direction.applyDirection(subject.getPosition(), there);
+    public MovementGameAction(GameCharacter subject, Direction there) {
+        super(subject);
+        position = Direction.applyDirection(subject.getPosition(), there);
         map = subject.getPositionOnMap().getMap();
-	}
-	
-	public boolean canBeExecuted() {
-		return !performer.isDead() && performer.getPosition().distanceTo(position) < 2 
-				&& map.isCellPassable(position) && !map.isSomeoneHere(position);
-	}
-	
-	public void execute() {
-		map.moveGameCharacter(performer, position);
-	}
+    }
+
+    public boolean canBeExecuted() {
+        return !performer.isDead() && performer.getPosition().distanceTo(position) < 2
+                && map.isCellPassable(position) && !map.isSomeoneHere(position);
+    }
+
+    public void execute() {
+        map.moveGameCharacter(performer, position);
+    }
 }

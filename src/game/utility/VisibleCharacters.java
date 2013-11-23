@@ -18,7 +18,7 @@
 package game.utility;
 
 public enum VisibleCharacters {
-	FLOOR('.'), WALL('#'), PLAYER('@');
+    FLOOR('.'), WALL('#'), PLAYER('@');
 
     private char visibleChar;
 

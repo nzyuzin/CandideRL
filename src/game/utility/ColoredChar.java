@@ -25,9 +25,9 @@ public final class ColoredChar {
 
     private static final Map<Character, Map<Color, Map<Color, ColoredChar>>> CACHE = new HashMap<>();
 
-	private final Color background;
-	private final Color foreground;
-	private final char visibleChar;
+    private final Color background;
+    private final Color foreground;
+    private final char visibleChar;
 
     public static final Color RED = Color.RED;
     public static final Color YELLOW = Color.YELLOW;
@@ -36,10 +36,10 @@ public final class ColoredChar {
     public static final Color WHITE = Color.WHITE;
     public static final Color GRAY = Color.GRAY;
 
-	public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
-	public static final Color STANDARD_FOREGROUND_COLOR = Color.white;
+    public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
+    public static final Color STANDARD_FOREGROUND_COLOR = Color.white;
 
-	public static final ColoredChar NIHIL = getColoredChar(' ');
+    public static final ColoredChar NIHIL = getColoredChar(' ');
 
     public static ColoredChar getColoredChar(char c, Color fg, Color bg) {
         ColoredChar result;
@@ -80,27 +80,27 @@ public final class ColoredChar {
         return getColoredChar(c, fg, STANDARD_BACKGROUND_COLOR);
     }
 
-	private ColoredChar(char c, Color fg, Color bg) {
-		this.background = bg;
-		this.foreground = fg;
-		this.visibleChar = c;
-	}
+    private ColoredChar(char c, Color fg, Color bg) {
+        this.background = bg;
+        this.foreground = fg;
+        this.visibleChar = c;
+    }
 
-	public char getChar() {
-		return this.visibleChar;
-	}
+    public char getChar() {
+        return this.visibleChar;
+    }
 
-	public Color getBackground() {
-		return this.background;
-	}
+    public Color getBackground() {
+        return this.background;
+    }
 
-	public Color getForeground() {
-		return this.foreground;
-	}
+    public Color getForeground() {
+        return this.foreground;
+    }
 
-	public String toString() {
-		return String.format("Char: '%c', FG Color: '%s', BG Color: '%s'", visibleChar, foreground, background);
-	}
+    public String toString() {
+        return String.format("Char: '%c', FG Color: '%s', BG Color: '%s'", visibleChar, foreground, background);
+    }
 
     public static Color getColor(String rgb) {
         return Color.decode(rgb);
@@ -114,7 +114,7 @@ public final class ColoredChar {
         ColoredChar that = (ColoredChar) o;
 
         return background == that.background && foreground == that.foreground
-               &&  visibleChar == that.visibleChar;
+                &&  visibleChar == that.visibleChar;
 
     }
 

@@ -21,9 +21,9 @@ import game.utility.ColoredChar;
 
 public class NPC extends GameCharacter {
 
-	public NPC(String name, String description, ColoredChar onMap) {
-		super(name, description, 100);
-		this.charOnMap = onMap;
-	}
+    public NPC(String name, String description, ColoredChar onMap) {
+        super(name, description, 100);
+        this.charOnMap = onMap;
+    }
 
 }

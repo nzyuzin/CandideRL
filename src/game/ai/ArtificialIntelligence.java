@@ -25,45 +25,45 @@ import game.utility.Direction;
 
 public class ArtificialIntelligence {
 
-	private final GameCharacter target;
-	private final int distanceLimit;
-	private PathFinder path;
+    private final GameCharacter target;
+    private final int distanceLimit;
+    private PathFinder path;
 
-	public ArtificialIntelligence(GameCharacter t, int distance) {
+    public ArtificialIntelligence(GameCharacter t, int distance) {
         distanceLimit = distance;
         target = t;
     }
 
-	public void chooseAction(GameCharacter mob) {
-		if (target.isDead()) return;
-		if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
-			mob.hit(target.getPosition());
+    public void chooseAction(GameCharacter mob) {
+        if (target.isDead()) return;
+        if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
+            mob.hit(target.getPosition());
         } else {
-			moveToTarget(mob);
-		}
-	}
+            moveToTarget(mob);
+        }
+    }
 
-	public void chooseActionInDirection(GameCharacter mob, Direction there) {
-		MovementGameAction move = new MovementGameAction(mob, there);
+    public void chooseActionInDirection(GameCharacter mob, Direction there) {
+        MovementGameAction move = new MovementGameAction(mob, there);
 
-		if (move.canBeExecuted()) {
-			mob.addAction(move);
-			return;
-		}
+        if (move.canBeExecuted()) {
+            mob.addAction(move);
+            return;
+        }
 
-		HitGameAction hit = new HitGameAction(mob, Direction .applyDirection(mob.getPosition(), there));
+        HitGameAction hit = new HitGameAction(mob, Direction .applyDirection(mob.getPosition(), there));
 
-		if (hit.canBeExecuted()) mob.addAction(hit);
-	}
+        if (hit.canBeExecuted()) mob.addAction(hit);
+    }
 
-	private void moveToTarget(GameCharacter mob) {
+    private void moveToTarget(GameCharacter mob) {
         // TODO: whole implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
-		if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit)
-			return;
+        if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit)
+            return;
 
-		if (target.getPositionOnMap().getLastPos() != target.getPosition())
-			path = new PathFinder(target.getPosition(), distanceLimit, target.getPositionOnMap().getMap());
-		mob.move(path.chooseQuickestWay(mob.getPosition()));
-	}
+        if (target.getPositionOnMap().getLastPos() != target.getPosition())
+            path = new PathFinder(target.getPosition(), distanceLimit, target.getPositionOnMap().getMap());
+        mob.move(path.chooseQuickestWay(mob.getPosition()));
+    }
 
 }

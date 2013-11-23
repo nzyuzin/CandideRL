@@ -98,7 +98,9 @@ public class GameConfig {
             }
         }
 
-        private static final Path pathToConfig = Paths.get("game_configuration.properties");
+        private static final String CONFIGURATION_FILE_HEADER = "CandideRL Configuration File";
+
+        private static final Path pathToConfig = Paths.get("config.properties");
         private static Properties configuration;
 
         public static void read() throws ConfigurationException {
@@ -116,7 +118,7 @@ public class GameConfig {
                 } else {
                     configuration = defaultConfiguration;
                     try (OutputStream outputStream = Files.newOutputStream(pathToConfig)) {
-                        configuration.store(outputStream, "Game configuration file");
+                        configuration.store(outputStream, CONFIGURATION_FILE_HEADER);
                     }
                 }
             } catch (IOException e) {
@@ -126,7 +128,7 @@ public class GameConfig {
 
         public static void write() {
             try (OutputStream outputStream = Files.newOutputStream(pathToConfig)) {
-                configuration.store(outputStream, "Game configuration file");
+                configuration.store(outputStream, CONFIGURATION_FILE_HEADER);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

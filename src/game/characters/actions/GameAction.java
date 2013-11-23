@@ -19,12 +19,12 @@ package game.characters.actions;
 
 public interface GameAction {
 
-	  void execute();
+    void execute();
 
-	  boolean canBeExecuted();
+    boolean canBeExecuted();
 
-	  int actionPointsLeft();
+    int actionPointsLeft();
 
-	  void setActionPointsLeft(int points);
+    void setActionPointsLeft(int points);
 
 }

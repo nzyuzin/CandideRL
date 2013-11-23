@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 public final class Position {
 
-	private final int x;
+    private final int x;
     private final int y;
 
     // TODO: find library that handles caching properly
@@ -42,12 +42,12 @@ public final class Position {
         return x;
     }
 
-	private Position(int x, int y) {
-		this.x = x;
+    private Position(int x, int y) {
+        this.x = x;
         this.y = y;
     }
 
-	public static Position getPosition(int x, int y) throws IllegalArgumentException {
+    public static Position getPosition(int x, int y) throws IllegalArgumentException {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
         }
@@ -75,26 +75,26 @@ public final class Position {
             }
             return pos;
         }
-	}
+    }
 
-	public double distanceTo(int x, int y) {
-		return Math.sqrt((double) ((x - this.x) * (x - this.x))
-				+ ((y - this.y) * (y - this.y)));
-	}
+    public double distanceTo(int x, int y) {
+        return Math.sqrt((double) ((x - this.x) * (x - this.x))
+                + ((y - this.y) * (y - this.y)));
+    }
 
-	public double distanceTo(Position that) {
-		return distanceTo(that.x, that.y);
-	}
+    public double distanceTo(Position that) {
+        return distanceTo(that.x, that.y);
+    }
 
-	public Position chooseClosest(Position first, Position second) {
-		return this.distanceTo(first) < this.distanceTo(second) ? first
-				: second;
-	}
+    public Position chooseClosest(Position first, Position second) {
+        return this.distanceTo(first) < this.distanceTo(second) ? first
+                : second;
+    }
 
-	@Override
-	public String toString() {
-		return "(" + x + ", " + y + ")";
-	}
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 
     @Override
     public boolean equals(Object object) {

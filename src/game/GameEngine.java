@@ -39,7 +39,7 @@ public final class GameEngine implements AutoCloseable {
 
     private static final Logger log = Logger.getRootLogger();
 
-	public static void main(String args[]) {
+    public static void main(String args[]) {
         try (GameEngine engine = getGameEngine()) {
             engine.play();
         } catch (Exception ex) {
@@ -47,10 +47,10 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-	private Player player;
-	private ArrayList<NPC> npcs;
-	private MessageLog messageLog;
-	private int currentTurn = 0;
+    private Player player;
+    private ArrayList<NPC> npcs;
+    private MessageLog messageLog;
+    private int currentTurn = 0;
     private GameUI UI;
     private ArtificialIntelligence ai;
 
@@ -58,7 +58,7 @@ public final class GameEngine implements AutoCloseable {
         return new GameEngine();
     }
 
-	private GameEngine() {
+    private GameEngine() {
 
         initLog();
 
@@ -102,78 +102,78 @@ public final class GameEngine implements AutoCloseable {
         log.setLevel(Level.OFF);
     }
 
-	private void processActions() {
-		player.performAction();
-		for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
-			if (npc.isDead()) {
-				npcs.remove(npc);
-				continue;
-			}
-			else ai.chooseAction(npc);
-			if (npc.canPerformAction())
-				npc.performAction();
-			else npc.removeCurrentAction();
-		}
-	}
+    private void processActions() {
+        player.performAction();
+        for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
+            if (npc.isDead()) {
+                npcs.remove(npc);
+                continue;
+            }
+            else ai.chooseAction(npc);
+            if (npc.canPerformAction())
+                npc.performAction();
+            else npc.removeCurrentAction();
+        }
+    }
 
-	private void advanceTime() {
+    private void advanceTime() {
         if (log.isTraceEnabled()) {
             log.trace("advanceTime begin");
         }
-		currentTurn++;
-		processActions();
-		drawMap();
-		showStats();
+        currentTurn++;
+        processActions();
+        drawMap();
+        showStats();
         if (log.isTraceEnabled()) {
             log.trace(String.format("advanceTime end :: currentTurn = %d", currentTurn));
         }
-	}
+    }
 
-	private void handleInput() throws GameClosedException {
-		char input = UI.getInputChar();
+    private void handleInput() throws GameClosedException {
+        char input = UI.getInputChar();
         if (log.isDebugEnabled()) {
             log.debug(String.format("handleInput input = %s", input));
         }
-		if (KeyDefinitions.isDirectionKey(input)) {
-			ai.chooseActionInDirection(player, Direction.getDirection(input));
+        if (KeyDefinitions.isDirectionKey(input)) {
+            ai.chooseActionInDirection(player, Direction.getDirection(input));
             return;
         }
-		if (KeyDefinitions.isSkipTurnChar(input)) {
-			advanceTime();
+        if (KeyDefinitions.isSkipTurnChar(input)) {
+            advanceTime();
             return;
         }
         if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
         }
-	}
+    }
 
-	public void close() {
-		UI.showAnnouncement("You're leaving the game.");
+    public void close() {
+        UI.showAnnouncement("You're leaving the game.");
         try {
-		    UI.close();
+            UI.close();
         } catch (Exception ex) {
             throw new RuntimeException("Game closing exception");
         }
-	}
+    }
 
-	private void drawMap() {
+    private void drawMap() {
         long initTime = 0;
         if (log.isTraceEnabled()) {
             log.trace("drawMap start");
             initTime = System.currentTimeMillis();
         }
         if (!player.isDead()) {
-			UI.drawMap(player.getVisibleMap());
-		}
+            UI.drawMap(player.getVisibleMap());
+        }
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawMap end :: time=%d", System.currentTimeMillis() - initTime));
         }
     }
 
-	private void showStats() {
-		UI.showStats(player.getStats() + "Current turn: "
-					+ currentTurn + "\n");
-	}
+    private void showStats() {
+        UI.showStats(player.getStats() + "Current turn: "
+                    + currentTurn + "\n");
+    }
 
     public void play() {
         if (log.isTraceEnabled()) {

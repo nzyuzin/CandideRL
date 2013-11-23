@@ -21,8 +21,8 @@ import game.GameConfig;
 
 public final class MapFactory {
 
-	private int screenWidth;
-	private int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
 
     private int mapWidth = GameConfig.DEFAULT_MAP_SIZE;
     private int mapHeight = GameConfig.DEFAULT_MAP_SIZE;
@@ -36,22 +36,22 @@ public final class MapFactory {
     }
 
     public static MapFactory getInstance() {
-		return new MapFactory();
-	}
+        return new MapFactory();
+    }
 
     public void setMapSize(int width, int height) {
         mapWidth = width;
         mapHeight = height;
     }
 
-	public void setScreenSize(int width, int height) {
-		this.screenWidth = width;
-		this.screenHeight = height;
-	}
+    public void setScreenSize(int width, int height) {
+        this.screenWidth = width;
+        this.screenHeight = height;
+    }
 
-	public Map getMap() {
+    public Map getMap() {
         return Map.buildRandomizedMap(mapWidth, mapHeight, screenWidth, screenHeight, 0.25);
-	}
+    }
 
     public Map getEmptyMap() {
         return Map.buildEmptyMap(mapWidth, mapHeight, screenWidth, screenHeight);

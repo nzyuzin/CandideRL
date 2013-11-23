@@ -32,67 +32,67 @@ import java.util.Queue;
 
 public abstract class GameCharacter extends GameObject implements Movable, Damageable, Visible  {
 
-	protected final class Attributes {
-		public short strength;
-		public short dexterity;
-		public short intelligence;
-		public short armor;
+    protected final class Attributes {
+        public short strength;
+        public short dexterity;
+        public short intelligence;
+        public short armor;
 
-		public Attributes() {
-			this.strength = 8;
-			this.armor = 0;
-			this.dexterity = 8;
-			this.intelligence = 8;
-		}
-	}
+        public Attributes() {
+            this.strength = 8;
+            this.armor = 0;
+            this.dexterity = 8;
+            this.intelligence = 8;
+        }
+    }
 
-	protected Queue<GameAction> gameActions = null;
+    protected Queue<GameAction> gameActions = null;
 
-	protected PositionOnMap position;
-	protected ColoredChar charOnMap = null;
+    protected PositionOnMap position;
+    protected ColoredChar charOnMap = null;
 
-	protected int currentHP;
-	protected int maxHP;
-	protected double speed = 1;
+    protected int currentHP;
+    protected int maxHP;
+    protected double speed = 1;
 
-	protected double attackRate;
-	protected Attributes attributes;
-	protected boolean canTakeDamage;
-	protected int actionPointsOnCon;    //
-	protected int currentActionPoints;  // Those three fields are of no use for now.
-	protected int maximumActionPoints;  //
-
-
-	GameCharacter(String name, String description, int HP) {
-		super(name, description);
-		maxHP = HP;
-		currentHP = HP;
-		this.canTakeDamage = true;
-		this.attackRate = 1.0;
-		attributes = new Attributes();
-		gameActions = new ArrayDeque<>();
-	}
+    protected double attackRate;
+    protected Attributes attributes;
+    protected boolean canTakeDamage;
+    protected int actionPointsOnCon;    //
+    protected int currentActionPoints;  // Those three fields are of no use for now.
+    protected int maximumActionPoints;  //
 
 
-	public boolean hasAction() {
-		return !gameActions.isEmpty();
-	}
+    GameCharacter(String name, String description, int HP) {
+        super(name, description);
+        maxHP = HP;
+        currentHP = HP;
+        this.canTakeDamage = true;
+        this.attackRate = 1.0;
+        attributes = new Attributes();
+        gameActions = new ArrayDeque<>();
+    }
 
-	public void addAction(GameAction action) {
-		gameActions.add(action);
-	}
 
-	public void removeCurrentAction() {
-		gameActions.poll();
-	}
+    public boolean hasAction() {
+        return !gameActions.isEmpty();
+    }
 
-	public boolean isDead() {
-		return currentHP <= 0;
-	}
+    public void addAction(GameAction action) {
+        gameActions.add(action);
+    }
 
-	public Position getPosition() {
-		return position.getPosition();
-	}
+    public void removeCurrentAction() {
+        gameActions.poll();
+    }
+
+    public boolean isDead() {
+        return currentHP <= 0;
+    }
+
+    public Position getPosition() {
+        return position.getPosition();
+    }
 
     public PositionOnMap getPositionOnMap() {
         return position;
@@ -102,62 +102,62 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
         this.position = position;
     }
 
-	public int getCurrentHP() {
-		return currentHP;
-	}
+    public int getCurrentHP() {
+        return currentHP;
+    }
 
-	public int getMaxHP() {
-		return maxHP;
-	}
+    public int getMaxHP() {
+        return maxHP;
+    }
 
-	public boolean canPerformAction() {
-		return hasAction() && gameActions.peek().canBeExecuted();
-	}
+    public boolean canPerformAction() {
+        return hasAction() && gameActions.peek().canBeExecuted();
+    }
 
-	public void performAction() {
-		// TODO make use of action points
-		if (gameActions.isEmpty()) return;
-		gameActions.poll().execute();
-	}
+    public void performAction() {
+        // TODO make use of action points
+        if (gameActions.isEmpty()) return;
+        gameActions.poll().execute();
+    }
 
-	public void breakActionQueue() {
-		gameActions = new ArrayDeque<GameAction>();
-	}
+    public void breakActionQueue() {
+        gameActions = new ArrayDeque<GameAction>();
+    }
 
-	public void hit(Position pos) {
-		addAction(new HitGameAction(this, pos));
-	}
+    public void hit(Position pos) {
+        addAction(new HitGameAction(this, pos));
+    }
 
-	public int roleDamageDice() {
-		Random dice = new Random();
-		return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
-	}
+    public int roleDamageDice() {
+        Random dice = new Random();
+        return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
+    }
 
-	public void move(Direction there) {
-		if (there != null)
-			addAction(new MovementGameAction(this, there));
-	}
+    public void move(Direction there) {
+        if (there != null)
+            addAction(new MovementGameAction(this, there));
+    }
 
-	public boolean canTakeDamage() {
-		return canTakeDamage;
-	}
+    public boolean canTakeDamage() {
+        return canTakeDamage;
+    }
 
-	public void takeDamage(int damage) {
+    public void takeDamage(int damage) {
 	/* TODO
 	 * if takes 0 as arguments - attacker missed,
 	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.
 	 */
-		currentHP -= damage;
-	}
+        currentHP -= damage;
+    }
 
-	public MiscItem getCorpse() {
-		return new MiscItem("Corpse of " + this.getName(),
-				ColoredChar.getColoredChar(this.charOnMap.getChar(),
-						this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
-	}
+    public MiscItem getCorpse() {
+        return new MiscItem("Corpse of " + this.getName(),
+                ColoredChar.getColoredChar(this.charOnMap.getChar(),
+                        this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
+    }
 
-	public ColoredChar getChar() {
-		return this.charOnMap;
-	}
+    public ColoredChar getChar() {
+        return this.charOnMap;
+    }
 
 }

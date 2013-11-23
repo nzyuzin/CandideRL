@@ -30,9 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public final class FieldOfView {
-	private final GameCharacter watcher;
-	private boolean[][] seen;
-	private int viewDistance;
+    private final GameCharacter watcher;
+    private boolean[][] seen;
+    private int viewDistance;
     private Map map;
 
     private static final Log log = LogFactory.getLog(FieldOfView.class);
@@ -79,36 +79,36 @@ public final class FieldOfView {
         return resultMap;
     }
 
-	private void updateFOV() {
+    private void updateFOV() {
 
-		Queue<Position> positionsQueue = new ArrayDeque<>();
+        Queue<Position> positionsQueue = new ArrayDeque<>();
 
-		Position pos;
-		boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
-		seen = new boolean[transparent.length][transparent[0].length];
-		boolean[][] marked = new boolean[transparent.length][transparent[0].length];
-		Direction[] directions = Direction.values();
+        Position pos;
+        boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
+        seen = new boolean[transparent.length][transparent[0].length];
+        boolean[][] marked = new boolean[transparent.length][transparent[0].length];
+        Direction[] directions = Direction.values();
 
         // TODO: Why -1 ?
-		Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
+        Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
 
-		seen[watcherPos.getX()][watcherPos.getY()] = true;
+        seen[watcherPos.getX()][watcherPos.getY()] = true;
 
-		for (int i = 0; i < directions.length; i++) {
-			positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
+        for (int i = 0; i < directions.length; i++) {
+            positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
 
-			while (!positionsQueue.isEmpty()) {
-				pos = positionsQueue.poll();
+            while (!positionsQueue.isEmpty()) {
+                pos = positionsQueue.poll();
 
-				if (!isInsideSeenArray(pos)
+                if (!isInsideSeenArray(pos)
                         || watcherPos.distanceTo(pos) > viewDistance
                         || marked[pos.getX()][pos.getY()])
-					continue;
+                    continue;
 
-				marked[pos.getX()][pos.getY()] = true;
-				seen[pos.getX()][pos.getY()] = true;
+                marked[pos.getX()][pos.getY()] = true;
+                seen[pos.getX()][pos.getY()] = true;
 
-				if (transparent[pos.getX()][pos.getY()]) {
+                if (transparent[pos.getX()][pos.getY()]) {
                     for (int j = i - 1; j <= i + 1; j++) {
                         try {
                             positionsQueue.add(Direction
@@ -119,26 +119,26 @@ public final class FieldOfView {
                             }
                         }
                     }
-				} else {
-					pos = Direction.applyDirection(pos, directions[i]);
-					while (isInsideSeenArray(pos)) {
-						seen[pos.getX()][pos.getY()] = false;
-						marked[pos.getX()][pos.getY()] = true;
+                } else {
+                    pos = Direction.applyDirection(pos, directions[i]);
+                    while (isInsideSeenArray(pos)) {
+                        seen[pos.getX()][pos.getY()] = false;
+                        marked[pos.getX()][pos.getY()] = true;
                         try {
-						    pos = Direction.applyDirection(pos, directions[i]);
+                            pos = Direction.applyDirection(pos, directions[i]);
                         } catch (IllegalArgumentException e) {
                             if (log.isErrorEnabled()) {
                                 log.error(e);
                             }
                             break;
                         }
-					}
-				}
-			}
-		}
-	}
+                    }
+                }
+            }
+        }
+    }
 
-	private boolean isInsideSeenArray(Position pos) {
-		return pos.getX() < seen.length && pos.getX() >= 0 && pos.getY() < seen[0].length && pos.getY() >= 0;
-	}
+    private boolean isInsideSeenArray(Position pos) {
+        return pos.getX() < seen.length && pos.getX() >= 0 && pos.getY() < seen[0].length && pos.getY() >= 0;
+    }
 }

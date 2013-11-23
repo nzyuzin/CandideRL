@@ -25,90 +25,90 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class PathFinder {
-	private int[][] distance;
+    private int[][] distance;
 
-	// BFS won't go on further distance than this limit
-	private int distanceLimit;
+    // BFS won't go on further distance than this limit
+    private int distanceLimit;
     private final Map map;
 
-	Position target = null;
+    Position target = null;
 
-	public PathFinder(Position targetPos, int distLimit, Map map) {
-		distanceLimit = distLimit;
-		target = targetPos;
+    public PathFinder(Position targetPos, int distLimit, Map map) {
+        distanceLimit = distLimit;
+        target = targetPos;
         this.map = map;
-		calculateDistances(target);
-	}
+        calculateDistances(target);
+    }
 
-	/**
-	 * Fills distance array up using breadth-first-search
+    /**
+     * Fills distance array up using breadth-first-search
      *
      * @param position position to calculate distances from
-	 */
-	private void calculateDistances(Position position) {
-		Queue<Position> positionsToProcess = new ArrayDeque<>();
+     */
+    private void calculateDistances(Position position) {
+        Queue<Position> positionsToProcess = new ArrayDeque<>();
 
-		distance = new int[map.getWidth()][map.getHeight()];
-		boolean[][] checked = new boolean[distance.length][distance[0].length];
+        distance = new int[map.getWidth()][map.getHeight()];
+        boolean[][] checked = new boolean[distance.length][distance[0].length];
 
-		for (int i = 0; i < distance.length; i++)
-			for (int j = 0; j < distance[0].length; j++)
-				distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
+        for (int i = 0; i < distance.length; i++)
+            for (int j = 0; j < distance[0].length; j++)
+                distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 
-		checked[position.getX()][position.getY()] = true;
-		distance[position.getX()][position.getY()] = 0;
+        checked[position.getX()][position.getY()] = true;
+        distance[position.getX()][position.getY()] = 0;
 
-		Position p;
+        Position p;
 
-		while (position != null) {
+        while (position != null) {
 
-			if ( distance[position.getX()][position.getY()] >= distanceLimit ) {
-				position = positionsToProcess.poll();
-				continue;
-			}
+            if ( distance[position.getX()][position.getY()] >= distanceLimit ) {
+                position = positionsToProcess.poll();
+                continue;
+            }
 
-			for (int i = position.getX() - 1; i <= position.getX() + 1; i++)
-				for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
-					if ( insideArray(i, j) && !checked[i][j] ) {
-						p = Position.getPosition(i, j);
-						if (map.isCellPassable(p)) {
-							positionsToProcess.add(p);
-							distance[i][j] = distance[position.getX()][position.getY()] + 1;
-							checked[i][j] = true;
-						}
-					}
+            for (int i = position.getX() - 1; i <= position.getX() + 1; i++)
+                for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
+                    if ( insideArray(i, j) && !checked[i][j] ) {
+                        p = Position.getPosition(i, j);
+                        if (map.isCellPassable(p)) {
+                            positionsToProcess.add(p);
+                            distance[i][j] = distance[position.getX()][position.getY()] + 1;
+                            checked[i][j] = true;
+                        }
+                    }
 
-			position = positionsToProcess.poll();
-		}
-	}
+            position = positionsToProcess.poll();
+        }
+    }
 
-	private boolean insideArray(int x, int y) {
-		return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
-	}
+    private boolean insideArray(int x, int y) {
+        return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
+    }
 
-	public Direction chooseQuickestWay(Position from) {
+    public Direction chooseQuickestWay(Position from) {
 
-		Position best = from;
+        Position best = from;
 
-		Position p;
+        Position p;
 
-		for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
-			for (int y = from.getY() - 1; y <= from.getY() + 1; y++) {
+        for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
+            for (int y = from.getY() - 1; y <= from.getY() + 1; y++) {
 
-				if (!insideArray(x, y))
-					continue;
+                if (!insideArray(x, y))
+                    continue;
 
-				p = Position.getPosition(x, y);
+                p = Position.getPosition(x, y);
 
-				if (!map.isSomeoneHere(p)
+                if (!map.isSomeoneHere(p)
                         && (distance[x][y] < distance[best.getX()][best.getY()]
                             || (distance[x][y] == distance[best.getX()][best.getY()]
                                  && p == target.chooseClosest(p, best))))
-					best = p;
-			}
+                    best = p;
+            }
 
-		return Direction.getDirection(from, best);
+        return Direction.getDirection(from, best);
 
-	}
+    }
 
 }

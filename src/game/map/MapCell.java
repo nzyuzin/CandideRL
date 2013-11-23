@@ -28,65 +28,65 @@ import java.util.ArrayList;
 import java.util.List;
 
 abstract class MapCell extends GameObject implements Visible {
-	protected final ColoredChar charOnMap;
-	protected final boolean transparent;
-	protected final boolean canBePassed;
+    protected final ColoredChar charOnMap;
+    protected final boolean transparent;
+    protected final boolean canBePassed;
 
     protected ColoredChar visibleChar;
 
-	protected GameCharacter gameCharacter = null;
-	protected List<GameItem> gameItems = null;
+    protected GameCharacter gameCharacter = null;
+    protected List<GameItem> gameItems = null;
 
-	protected MapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
-		super(name, desc);
-		this.canBePassed = canBePassed;
-		this.charOnMap = onMap;
-		this.visibleChar = onMap;
-		this.gameItems = new ArrayList<>();
-		this.transparent = transp;
-	}
+    protected MapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
+        super(name, desc);
+        this.canBePassed = canBePassed;
+        this.charOnMap = onMap;
+        this.visibleChar = onMap;
+        this.gameItems = new ArrayList<>();
+        this.transparent = transp;
+    }
 
-	@Override
-	public ColoredChar getChar() {
-		return visibleChar;
-	}
+    @Override
+    public ColoredChar getChar() {
+        return visibleChar;
+    }
 
     protected ColoredChar getDefaultChar() {
         return charOnMap;
     }
 
-	protected void chooseCharOnMap() {
-		if (gameCharacter != null)
-			visibleChar = gameCharacter.getChar();
-		else if (!gameItems.isEmpty())
-			visibleChar = gameItems.get(0).getChar();
-		else
-			visibleChar = charOnMap;
-	}
+    protected void chooseCharOnMap() {
+        if (gameCharacter != null)
+            visibleChar = gameCharacter.getChar();
+        else if (!gameItems.isEmpty())
+            visibleChar = gameItems.get(0).getChar();
+        else
+            visibleChar = charOnMap;
+    }
 
-	protected MapCell setGameCharacter(GameCharacter mob) {
-		this.gameCharacter = mob;
-		chooseCharOnMap();
-		return this;
-	}
+    protected MapCell setGameCharacter(GameCharacter mob) {
+        this.gameCharacter = mob;
+        chooseCharOnMap();
+        return this;
+    }
 
-	protected GameCharacter getGameCharacter() {
-		return gameCharacter;
-	}
+    protected GameCharacter getGameCharacter() {
+        return gameCharacter;
+    }
 
-	protected void putItem(GameItem item) {
-		gameItems.add(item);
-	}
+    protected void putItem(GameItem item) {
+        gameItems.add(item);
+    }
 
-	protected void removeItem(GameItem item) {
-		gameItems.remove(item);
-	}
+    protected void removeItem(GameItem item) {
+        gameItems.remove(item);
+    }
 
-	protected List<GameItem> getListOfItems() {
+    protected List<GameItem> getListOfItems() {
         ArrayList<GameItem> result = new ArrayList<>();
         result.addAll(gameItems);
-		return result;
-	}
+        return result;
+    }
 
     @Override
     public boolean equals(Object object) {
@@ -102,14 +102,14 @@ abstract class MapCell extends GameObject implements Visible {
 
 class Wall extends MapCell {
     private final static Wall instance = new Wall();
-	private Wall() {
-		super("Wall",
+    private Wall() {
+        super("Wall",
                 "A regular rock wall.",
                 ColoredChar.getColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
                 false,
                 false
         );
-	}
+    }
 
     static Wall getWall() {
         return instance;
@@ -122,14 +122,14 @@ class Wall extends MapCell {
 }
 
 class Floor extends MapCell {
-	private Floor() {
-		super("Floor",
+    private Floor() {
+        super("Floor",
                 "Rough rock floor.",
                 ColoredChar.getColoredChar(VisibleCharacters.FLOOR.getVisibleChar()),
                 true,
                 true
         );
-	}
+    }
 
     static Floor getFloor() {
         return new Floor();
