@@ -113,6 +113,10 @@ public final class Map {
         map[pos.getX()][pos.getY()] = cell;
     }
 
+    ColoredChar getCellChar(Position pos) {
+        return getCell(pos).getDefaultChar();
+    }
+
 	ColoredChar getChar(Position pos) {
 		return getCell(pos).getChar();
 	}

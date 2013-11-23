@@ -42,9 +42,10 @@ public class PathFinder {
 
 	/**
 	 * Fills distance array up using breadth-first-search
-	 * Takes initial position as argument
+     *
+     * @param position position to calculate distances from
 	 */
-	private void calculateDistances(Position current) {
+	private void calculateDistances(Position position) {
 		Queue<Position> positionsToProcess = new ArrayDeque<>();
 
 		distance = new int[map.getWidth()][map.getHeight()];
@@ -54,30 +55,30 @@ public class PathFinder {
 			for (int j = 0; j < distance[0].length; j++)
 				distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 
-		checked[current.getX()][current.getY()] = true;
-		distance[current.getX()][current.getY()] = 0;
+		checked[position.getX()][position.getY()] = true;
+		distance[position.getX()][position.getY()] = 0;
 
 		Position p;
 
-		while (current != null) {
+		while (position != null) {
 
-			if ( distance[current.getX()][current.getY()] >= distanceLimit ) {
-				current = positionsToProcess.poll();
+			if ( distance[position.getX()][position.getY()] >= distanceLimit ) {
+				position = positionsToProcess.poll();
 				continue;
 			}
 
-			for (int i = current.getX() - 1; i <= current.getX() + 1; i++)
-				for (int j = current.getY() - 1; j <= current.getY() + 1; j++)
+			for (int i = position.getX() - 1; i <= position.getX() + 1; i++)
+				for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
 					if ( insideArray(i, j) && !checked[i][j] ) {
 						p = Position.getPosition(i, j);
 						if (map.isCellPassable(p)) {
 							positionsToProcess.add(p);
-							distance[i][j] = distance[current.getX()][current.getY()] + 1;
+							distance[i][j] = distance[position.getX()][position.getY()] + 1;
 							checked[i][j] = true;
 						}
 					}
 
-			current = positionsToProcess.poll();
+			position = positionsToProcess.poll();
 		}
 	}
 

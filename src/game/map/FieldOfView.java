@@ -17,8 +17,11 @@
 
 package game.map;
 
+import game.GameConfig;
 import game.characters.GameCharacter;
-import game.utility.*;
+import game.utility.ColoredChar;
+import game.utility.Direction;
+import game.utility.Position;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -53,15 +56,22 @@ public final class FieldOfView {
             log.trace("toColoredCharArray start");
         }
 
+        map = watcher.getPositionOnMap().getMap();
+
+        if (!GameConfig.CALCULATE_FIELD_OF_VIEW) {
+            return map.getVisibleChars(watcher.getPosition());
+        }
+
         updateFOV();
 
         ColoredChar[][] resultMap = map.getVisibleChars(watcher.getPosition());
 
-        for (int x = 0; x < resultMap.length; x++)
+        for (int x = 0; x < resultMap.length; x++) {
             for (int y = 0; y < resultMap[0].length; y++) {
                 if (!seen[x][y])
                     resultMap[x][y] = ColoredChar.NIHIL;
             }
+        }
 
         if (log.isTraceEnabled()) {
             log.trace(String.format("toColoredCharArray end :: %dms", System.currentTimeMillis() - startTime));
@@ -71,15 +81,15 @@ public final class FieldOfView {
 
 	private void updateFOV() {
 
-        map = watcher.getPositionOnMap().getMap();
-
-		Queue<Position> positionsQueue = new ArrayDeque<Position>();
+		Queue<Position> positionsQueue = new ArrayDeque<>();
 
 		Position pos;
 		boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
 		seen = new boolean[transparent.length][transparent[0].length];
 		boolean[][] marked = new boolean[transparent.length][transparent[0].length];
 		Direction[] directions = Direction.values();
+
+        // TODO: Why -1 ?
 		Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
 
 		seen[watcherPos.getX()][watcherPos.getY()] = true;
@@ -90,28 +100,38 @@ public final class FieldOfView {
 			while (!positionsQueue.isEmpty()) {
 				pos = positionsQueue.poll();
 
-				if (!isInsideSeenArray(pos) || watcherPos.distanceTo(pos) > viewDistance)
-					continue;
-
-				if (marked[pos.getX()][pos.getY()])
+				if (!isInsideSeenArray(pos)
+                        || watcherPos.distanceTo(pos) > viewDistance
+                        || marked[pos.getX()][pos.getY()])
 					continue;
 
 				marked[pos.getX()][pos.getY()] = true;
 				seen[pos.getX()][pos.getY()] = true;
 
 				if (transparent[pos.getX()][pos.getY()]) {
-					positionsQueue.add(Direction
-							.applyDirection(pos, directions[(i - 1 + directions.length)  % directions.length]));
-					positionsQueue.add(Direction
-							.applyDirection(pos, directions[i]));
-					positionsQueue.add(Direction
-							.applyDirection(pos, directions[(i + 1) % directions.length]));
+                    for (int j = i - 1; j <= i + 1; j++) {
+                        try {
+                            positionsQueue.add(Direction
+                                    .applyDirection(pos, directions[(j + directions.length)  % directions.length]));
+                        } catch (IllegalArgumentException e) {
+                            if (log.isErrorEnabled()) {
+                                log.error(e);
+                            }
+                        }
+                    }
 				} else {
 					pos = Direction.applyDirection(pos, directions[i]);
 					while (isInsideSeenArray(pos)) {
 						seen[pos.getX()][pos.getY()] = false;
 						marked[pos.getX()][pos.getY()] = true;
-						pos = Direction.applyDirection(pos, directions[i]);
+                        try {
+						    pos = Direction.applyDirection(pos, directions[i]);
+                        } catch (IllegalArgumentException e) {
+                            if (log.isErrorEnabled()) {
+                                log.error(e);
+                            }
+                            break;
+                        }
 					}
 				}
 			}

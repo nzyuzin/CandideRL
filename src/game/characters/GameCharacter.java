@@ -152,7 +152,7 @@ public abstract class GameCharacter extends GameObject implements Movable, Damag
 
 	public MiscItem getCorpse() {
 		return new MiscItem("Corpse of " + this.getName(),
-				new ColoredChar(this.charOnMap.getChar(),
+				ColoredChar.getColoredChar(this.charOnMap.getChar(),
 						this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
 	}
 

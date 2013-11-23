@@ -17,6 +17,7 @@
 
 package game.ui.swing;
 
+import game.GameConfig;
 import game.ui.GameUI;
 import game.utility.ColoredChar;
 
@@ -31,19 +32,10 @@ import java.awt.event.KeyListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/*
-    TODO
-        Implement menu to configure game options. Another way would be to
-        read all currently hardcoded constants from some file
-        Second way is preferable.
- */
-
 public class SwingGameUI implements GameUI {
 
     private JFrame mainWindow;
     private TextWindow mapWindow;
-    private final int DEFAULT_MAP_WIDTH = 80;
-    private final int DEFAULT_MAP_HEIGHT = 25;
 
     private Character key = ' ';
     private boolean keyRead;
@@ -64,7 +56,8 @@ public class SwingGameUI implements GameUI {
 
         mainWindow = new JFrame("CandideRL");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        mapWindow = TextWindow.getTextWindow(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT, screenSize);
+        mapWindow = TextWindow
+                .getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT, screenSize);
 
         if (log.isTraceEnabled()) {
             log.trace(String.format("Created console :: %dms", System.currentTimeMillis() - initTime));
@@ -155,21 +148,21 @@ public class SwingGameUI implements GameUI {
 
     @Override
     public int getScreenWidth() {
-        return DEFAULT_MAP_WIDTH;
+        return GameConfig.DEFAULT_MAP_WINDOW_WIDTH;
     }
 
     @Override
     public int getScreenHeight() {
-        return DEFAULT_MAP_HEIGHT;
+        return GameConfig.DEFAULT_MAP_WINDOW_HEIGHT;
     }
 
     @Override
     public int getMapWidth() {
-        return DEFAULT_MAP_WIDTH;
+        return GameConfig.DEFAULT_MAP_WINDOW_WIDTH;
     }
 
     @Override
     public int getMapHeight() {
-        return DEFAULT_MAP_HEIGHT;
+        return GameConfig.DEFAULT_MAP_WINDOW_HEIGHT;
     }
 }

@@ -51,6 +51,10 @@ abstract class MapCell extends GameObject implements Visible {
 		return visibleChar;
 	}
 
+    protected ColoredChar getDefaultChar() {
+        return charOnMap;
+    }
+
 	protected void chooseCharOnMap() {
 		if (gameCharacter != null)
 			visibleChar = gameCharacter.getChar();
@@ -94,16 +98,17 @@ abstract class MapCell extends GameObject implements Visible {
                 && this.transparent == cell.transparent
                 && this.canBePassed == cell.canBePassed;
     }
-
-
-
 }
 
 class Wall extends MapCell {
     private final static Wall instance = new Wall();
 	private Wall() {
-		super("Wall", "A regular rock wall.", new ColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
-                false, false);
+		super("Wall",
+                "A regular rock wall.",
+                ColoredChar.getColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
+                false,
+                false
+        );
 	}
 
     static Wall getWall() {
@@ -118,8 +123,12 @@ class Wall extends MapCell {
 
 class Floor extends MapCell {
 	private Floor() {
-		super("Floor", "Rough rock floor.", new ColoredChar(
-				VisibleCharacters.FLOOR.getVisibleChar()), true, true);
+		super("Floor",
+                "Rough rock floor.",
+                ColoredChar.getColoredChar(VisibleCharacters.FLOOR.getVisibleChar()),
+                true,
+                true
+        );
 	}
 
     static Floor getFloor() {

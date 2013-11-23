@@ -23,7 +23,9 @@ import game.map.Map;
 import game.map.MapFactory;
 import game.ui.GameUI;
 import game.ui.swing.SwingGameUI;
-import game.utility.*;
+import game.utility.ColoredChar;
+import game.utility.Direction;
+import game.utility.KeyDefinitions;
 import game.utility.exceptions.GameClosedException;
 
 import org.apache.log4j.Logger;
@@ -49,7 +51,6 @@ public final class GameEngine implements AutoCloseable {
 	private ArrayList<NPC> npcs;
 	private MessageLog messageLog;
 	private int currentTurn = 0;
-    private Map currentMap;
     private GameUI UI;
     private ArtificialIntelligence ai;
 
@@ -65,7 +66,7 @@ public final class GameEngine implements AutoCloseable {
         MapFactory mapFactory = MapFactory.getInstance();
         mapFactory.setScreenSize(UI.getScreenWidth(), UI.getScreenHeight());
         mapFactory.setMapSize(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
-        currentMap = mapFactory.getMap();
+        Map currentMap = mapFactory.getMap();
 
         if (log.isTraceEnabled()) {
             log.trace("mapFactory done");
@@ -73,16 +74,21 @@ public final class GameEngine implements AutoCloseable {
 
         npcs = new ArrayList<>();
 
-        // To be implemented
-        messageLog = new MessageLog(500);
-
         player = Player.getInstance();
 
-        //Some magic constants here
+        // Some magic constants here
         ai = new ArtificialIntelligence(player, (UI.getMapWidth() + UI.getMapHeight()) / 2 + 100);
 
-        npcs.add(new NPC("troll", "A furious beast with sharp claws.",new ColoredChar('t', ColoredChar.RED)));
-        npcs.add(new NPC("goblin", "A regular goblin.",new ColoredChar('g', ColoredChar.GREEN)));
+        npcs.add(new NPC(
+                "troll",
+                "A furious beast with sharp claws.",
+                ColoredChar.getColoredChar('t', ColoredChar.RED))
+        );
+        npcs.add(new NPC(
+                "goblin",
+                "A regular goblin.",
+                ColoredChar.getColoredChar('g', ColoredChar.GREEN))
+        );
 
         for (NPC mob : npcs)
             currentMap.putGameCharacter(mob, currentMap.getRandomFreePosition());
@@ -188,6 +194,7 @@ public final class GameEngine implements AutoCloseable {
             }
         } finally {
             close();
+            GameConfig.write();
         }
         if (npcs.isEmpty()) UI.showAnnouncement("All mobs are dead!");
         if (player.isDead()) UI.showAnnouncement("You're dead!");

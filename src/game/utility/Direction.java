@@ -19,37 +19,33 @@ package game.utility;
 
 public enum Direction {
 	NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
-	
-	public static Position applyDirection(Position pos, Direction there) {
-		try {
-		switch (there) {
-		
-		case NORTH:
-			return Position.getPosition(pos.getX(), pos.getY() + 1);
-		case SOUTH:
-			return Position.getPosition(pos.getX(), pos.getY() - 1);
-		case WEST:
-			return Position.getPosition(pos.getX() - 1, pos.getY());
-		case EAST:
-			return Position.getPosition(pos.getX() + 1, pos.getY());
-		case NORTHEAST:
-			return Position.getPosition(pos.getX() + 1, pos.getY() + 1);
-		case SOUTHEAST:
-			return Position.getPosition(pos.getX() + 1, pos.getY() - 1);
-		case SOUTHWEST:
-			return Position.getPosition(pos.getX() - 1, pos.getY() - 1);
-		case NORTHWEST:
-			return Position.getPosition(pos.getX() - 1, pos.getY() + 1);
-			
-		default:
-			return null;
-			
-		}
-        } catch (AssertionError ex) {
-            return pos;
+
+    public static Position applyDirection(Position pos, Direction there) throws IllegalArgumentException {
+        switch (there) {
+
+            case NORTH:
+                return Position.getPosition(pos.getX(), pos.getY() + 1);
+            case SOUTH:
+                return Position.getPosition(pos.getX(), pos.getY() - 1);
+            case WEST:
+                return Position.getPosition(pos.getX() - 1, pos.getY());
+            case EAST:
+                return Position.getPosition(pos.getX() + 1, pos.getY());
+            case NORTHEAST:
+                return Position.getPosition(pos.getX() + 1, pos.getY() + 1);
+            case SOUTHEAST:
+                return Position.getPosition(pos.getX() + 1, pos.getY() - 1);
+            case SOUTHWEST:
+                return Position.getPosition(pos.getX() - 1, pos.getY() - 1);
+            case NORTHWEST:
+                return Position.getPosition(pos.getX() - 1, pos.getY() + 1);
+
+            default:
+                return null;
+
         }
-	}
-	
+    }
+
 	public static Direction getDirection(Position from, Position to) {
 		if(from.getX() == to.getX() && from.getY() > to.getY())
 			return Direction.SOUTH;
@@ -67,10 +63,10 @@ public enum Direction {
 			return Direction.SOUTHWEST;
 		if(from.getX() < to.getX() && from.getY() > to.getY())
 			return Direction.SOUTHEAST;
-		
+
 		return null;
 	}
-	
+
 	public static Direction getDirection(char key) {
 
 		if(key == KeyDefinitions.DIRECTION_KEYS[0])

@@ -18,12 +18,15 @@
 package game.utility;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class ColoredChar {
 
+    private static final Map<Character, Map<Color, Map<Color, ColoredChar>>> CACHE = new HashMap<>();
+
 	private final Color background;
 	private final Color foreground;
-	private final boolean highlight;
 	private final char visibleChar;
 
     public static final Color RED = Color.RED;
@@ -31,45 +34,56 @@ public final class ColoredChar {
     public static final Color MAGENTA = Color.MAGENTA;
     public static final Color GREEN = Color.GREEN;
     public static final Color WHITE = Color.WHITE;
+    public static final Color GRAY = Color.GRAY;
 
 	public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
 	public static final Color STANDARD_FOREGROUND_COLOR = Color.white;
 
-	public static final ColoredChar NIHIL = new ColoredChar(' ');
+	public static final ColoredChar NIHIL = getColoredChar(' ');
 
-	public ColoredChar (char c) {
-		this.background = STANDARD_BACKGROUND_COLOR;
-		this.foreground = STANDARD_FOREGROUND_COLOR;
-		this.highlight = false;
-		this.visibleChar = c;
-	}
+    public static ColoredChar getColoredChar(char c, Color fg, Color bg) {
+        ColoredChar result;
+        Map<Color, Map<Color, ColoredChar>> charContainer;
+        Map<Color, ColoredChar> fgContainer;
+        if (CACHE.containsKey(c)) {
+            charContainer = CACHE.get(c);
+            if (charContainer.containsKey(fg)) {
+                fgContainer = charContainer.get(fg);
+                if (fgContainer.containsKey(bg)) {
+                    result = fgContainer.get(bg);
+                } else {
+                    result = new ColoredChar(c, fg, bg);
+                    fgContainer.put(bg, result);
+                }
+            } else {
+                fgContainer = new HashMap<>();
+                result = new ColoredChar(c, fg, bg);
+                fgContainer.put(bg, result);
+                charContainer.put(fg, fgContainer);
+            }
+        } else {
+            fgContainer = new HashMap<>();
+            charContainer = new HashMap<>();
+            result = new ColoredChar(c, fg, bg);
+            fgContainer.put(bg, result);
+            charContainer.put(fg, fgContainer);
+            CACHE.put(c, charContainer);
+        }
+        return result;
+    }
 
-	public ColoredChar (char c, Color fg) {
-		this.foreground = fg;
-		this.background = STANDARD_BACKGROUND_COLOR;
-		this.highlight = false;
-		this.visibleChar = c;
-	}
+    public static ColoredChar getColoredChar(char c) {
+        return getColoredChar(c, STANDARD_FOREGROUND_COLOR, STANDARD_BACKGROUND_COLOR);
+    }
 
-	public ColoredChar(char c, Color fg, Color bg) {
+    public static ColoredChar getColoredChar(char c, Color fg) {
+        return getColoredChar(c, fg, STANDARD_BACKGROUND_COLOR);
+    }
+
+	private ColoredChar(char c, Color fg, Color bg) {
 		this.background = bg;
 		this.foreground = fg;
-		this.highlight = false;
 		this.visibleChar = c;
-	}
-
-	public ColoredChar(char c, Color fg, Color bg, boolean highlight) {
-		this.background = bg;
-		this.foreground = fg;
-		this.highlight = highlight;
-		this.visibleChar = c;
-	}
-
-	public ColoredChar( ColoredChar c ) {
-		this.background = c.background;
-		this.foreground = c.foreground;
-		this.highlight = c.highlight;
-		this.visibleChar = c.visibleChar;
 	}
 
 	public char getChar() {
@@ -84,14 +98,8 @@ public final class ColoredChar {
 		return this.foreground;
 	}
 
-	public boolean equals( ColoredChar col ) {
-		return (this.background == col.background &&
-				this.foreground == col.foreground &&
-				this.highlight == col.highlight);
-	}
-
 	public String toString() {
-		return visibleChar + "";
+		return String.format("Char: '%c', FG Color: '%s', BG Color: '%s'", visibleChar, foreground, background);
 	}
 
     public static Color getColor(String rgb) {
@@ -106,7 +114,7 @@ public final class ColoredChar {
         ColoredChar that = (ColoredChar) o;
 
         return background == that.background && foreground == that.foreground
-               && highlight == that.highlight && visibleChar == that.visibleChar;
+               &&  visibleChar == that.visibleChar;
 
     }
 
@@ -114,7 +122,6 @@ public final class ColoredChar {
     public int hashCode() {
         int result = background.hashCode();
         result = 31 * result + foreground.hashCode();
-        result = 31 * result + (highlight ? 1 : 0);
         result = 31 * result + (int) visibleChar;
         return result;
     }

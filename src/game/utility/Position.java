@@ -47,7 +47,10 @@ public final class Position {
         this.y = y;
     }
 
-	public static Position getPosition(int x, int y) {
+	public static Position getPosition(int x, int y) throws IllegalArgumentException {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
+        }
         if (CACHE.containsKey(x)) {
             Map<Integer, Position> y2Position= CACHE.get(x);
             if (y2Position.containsKey(y)) {
