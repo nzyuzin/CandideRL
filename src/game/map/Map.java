@@ -24,7 +24,6 @@ import game.items.GameItem;
 import game.utility.PositionOnMap;
 
 import java.util.Random;
-import java.lang.StringBuilder;
 import java.util.Formatter;
 
 import org.apache.commons.logging.Log;
@@ -170,38 +169,37 @@ public final class Map {
         return pos;
     }
 
-    public String toString(Position pos) {
+    private MapCell[][] getPartOfMap(int lX, int uX, int lY, int uY) {
+        // l stands for lower bound and u stands for upper
+        MapCell[][] result = new MapCell[uX - lX][uY - lY];
 
-        MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen,
-                mapHeightOnScreen);
-
-        StringBuilder buffer = new StringBuilder();
-
-        for (int y = partOfMap[0].length - 1; y >= 0; y--)
-            for (int x = 0; x < partOfMap.length; x++) {
-                if (partOfMap[x][y] != null)
-                    buffer.append(partOfMap[x][y].visibleChar);
+        for (int x = lX; x < uX; x++)
+            for (int y = lY; y < uY; y++) {
+                if (x < mapWidth && x >= 0 && y < mapHeight && y >= 0)
+                    result[x - lX][y - lY] = map[x][y];
                 else
-                    buffer.append(" ");
+                    result[x - lX][y - lY] = null;
             }
 
-        return buffer.toString();
+        return result;
     }
 
     private MapCell[][] getPartOfMap(Position pos, int width, int height) {
-        return getPartOfMap(pos.getX() - (int) (width / 2.0), pos.getX()
-                + (int) (width / 2.0), pos.getY() - (int) (height / 2.0), pos.getY()
-                + (int) (height / 2.0));
+        return getPartOfMap(
+                pos.getX() - (int) Math.floor(width / 2.0),
+                pos.getX() + (int) Math.ceil(width / 2.0),
+                pos.getY() - (int) Math.floor(height / 2.0),
+                pos.getY() + (int) Math.ceil(height / 2.0)
+        );
     }
 
-    boolean[][] getTransparentCells(Position pos) {
+    boolean[][] getTransparentCells(Position pos, int width, int height) {
 
-        MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen,
-                mapHeightOnScreen);
+        MapCell[][] partOfMap = getPartOfMap(pos, width, height);
 
         boolean[][] array = new boolean[partOfMap.length][partOfMap[0].length];
 
-        for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
+        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
             for (int x = 0, j = 0; x < partOfMap.length; x++, j++)
                 if (partOfMap[x][y] != null)
                     array[j][i] = partOfMap[x][y].transparent;
@@ -209,33 +207,18 @@ public final class Map {
         return array;
     }
 
-    ColoredChar[][] getVisibleChars(Position pos) {
-        MapCell[][] partOfMap = getPartOfMap(pos, mapWidthOnScreen,
-                mapHeightOnScreen);
+    ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
+
+        MapCell[][] partOfMap = getPartOfMap(pos, width, height);
 
         ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
 
-        for (int y = partOfMap[0].length - 1, i = 0; y >= 0; y--, i++)
+        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
             for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
                 if (partOfMap[x][y] != null)
                     result[j][i] = partOfMap[x][y].visibleChar;
                 else
                     result[j][i] = ColoredChar.NIHIL;
-            }
-
-        return result;
-    }
-
-    private MapCell[][] getPartOfMap(int lX, int uX, int lY, int uY) {
-        // l stands for lower bound and u stands for upper
-        MapCell[][] result = new MapCell[uX - lX][uY - lY];
-
-        for (int x = lX, i = 0; x < uX; x++, i++)
-            for (int y = lY, j = 0; y < uY; y++, j++) {
-                if (x < mapWidth && x >= 0 && y < mapHeight && y >= 0)
-                    result[i][j] = map[x][y];
-                else
-                    result[i][j] = null;
             }
 
         return result;

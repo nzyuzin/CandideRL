@@ -29,7 +29,9 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 /**
- * GameConfig is intended for holding configuration option
+ * GameConfig is intended for holding configuration options.
+ *
+ * In order to get access to configuration options through configuration file add them to internal enum.
  */
 public class GameConfig {
 
@@ -58,11 +60,13 @@ public class GameConfig {
             Integer.parseInt(ConfigHelper.DEFAULT_MAP_WINDOW_HEIGHT.getValue());
     public static final boolean CALCULATE_FIELD_OF_VIEW =
             Boolean.parseBoolean(ConfigHelper.CALCULATE_FIELD_OF_VIEW.getValue());
+    public static final boolean RANDOM_MAP = Boolean.parseBoolean(ConfigHelper.RANDOM_MAP.getValue());
 
     public static void write() {
+        // Runtime configuration is planned so this method will be used in future
+        // to save configuration between sessions.
         ConfigHelper.write();
     }
-
 
     private enum ConfigHelper {
         DEFAULT_FONT("default_font", "DejaVu Sans Mono"),
@@ -72,7 +76,8 @@ public class GameConfig {
         VIEW_DISTANCE_LIMIT("view_distance_limit", "10"),
         DEFAULT_MAP_WINDOW_WIDTH("default_map_window_width", "80"),
         DEFAULT_MAP_WINDOW_HEIGHT("default_map_window_height", "25"),
-        CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true");
+        CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true"),
+        RANDOM_MAP("random_map", "true");
 
         private String property;
         private String defValue;
@@ -80,10 +85,6 @@ public class GameConfig {
         private ConfigHelper(String property, String defValue) {
             this.property = property;
             this.defValue = defValue;
-        }
-
-        public String getDefaultValue() {
-            return this.defValue;
         }
 
         public String getValue() {
@@ -135,6 +136,7 @@ public class GameConfig {
         }
 
         private static boolean validateConfigurationProperties() throws ConfigurationException {
+            // TODO: include check for type of values specified, e.g. check that boolean property has boolean value
             for (String propertyName : configuration.stringPropertyNames()) {
                 if (!defaultConfiguration.containsKey(propertyName)) {
                     throw new ConfigurationException(String.format("Wrong configuration property:%n%s=%s",

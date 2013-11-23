@@ -50,7 +50,9 @@ public final class MapFactory {
     }
 
     public Map getMap() {
-        return Map.buildRandomizedMap(mapWidth, mapHeight, screenWidth, screenHeight, 0.25);
+        if (GameConfig.RANDOM_MAP)
+            return Map.buildRandomizedMap(mapWidth, mapHeight, screenWidth, screenHeight, 0.25);
+        return getEmptyMap();
     }
 
     public Map getEmptyMap() {

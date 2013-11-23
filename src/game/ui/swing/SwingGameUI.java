@@ -96,7 +96,10 @@ public class SwingGameUI implements GameUI {
             log.trace("drawMap begin");
         }
         ColoredChar c;
-        for (int i = 0; i < charMap[0].length; i++) {
+
+        // draw map on screen taking in mind that drawing begins in left upper corner
+        // map passed as argument has (0, 0) as lower left point
+        for (int i = charMap[0].length - 1; i >= 0; i--) {
             for (int j = 0; j < charMap.length; j++) {
                 c = charMap[j][i];
                 mapWindow.write(c.getChar(), c.getForeground(), c.getBackground());

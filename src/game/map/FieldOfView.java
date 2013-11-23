@@ -37,18 +37,33 @@ public final class FieldOfView {
 
     private static final Log log = LogFactory.getLog(FieldOfView.class);
 
-    public FieldOfView(GameCharacter c, int viewDistance) {
+    /**
+     * Builds field of view using GameCharacter as watcher for whom field of view is calculated
+     *
+     * @param watcher GameCharacter for whom field of view is calculated
+     * @param viewDistance watcher won't be able to see tiles further than this distance
+     */
+    public FieldOfView(GameCharacter watcher, int viewDistance) {
         this.viewDistance = viewDistance;
-        this.watcher = c;
+        this.watcher = watcher;
     }
 
     public boolean isSeen(Position mapPos) {
-        int x = seen.length + mapPos.getX() - watcher.getPosition().getX();
-        int y = seen[0].length + mapPos.getY() - watcher.getPosition().getY();
-
-        return isInsideSeenArray(Position.getPosition(x, y)) && seen[x][y];
+        // was never tested, probably bugged
+        // intended to be used in future
+        throw new UnsupportedOperationException();
+//        int x = seen.length / 2 + mapPos.getX() - watcher.getPosition().getX();
+//        int y = seen[0].length / 2 + mapPos.getY() - watcher.getPosition().getY();
+//
+//        return isInsideSeenArray(Position.getPosition(x, y)) && seen[x][y];
     }
 
+
+    /**
+     * Method converts field of view into printable array calculating it in process
+     *
+     * @return array of printable chars corresponding to watchers field of view
+     */
     public ColoredChar[][] toColoredCharArray() {
         long startTime = 0;
         if (log.isTraceEnabled()) {
@@ -59,16 +74,21 @@ public final class FieldOfView {
         map = watcher.getPositionOnMap().getMap();
 
         if (!GameConfig.CALCULATE_FIELD_OF_VIEW) {
-            return map.getVisibleChars(watcher.getPosition());
+            return map.getVisibleChars(watcher.getPosition(), map.getWidthOnScreen(), map.getHeightOnScreen());
         }
 
         updateFOV();
 
-        ColoredChar[][] resultMap = map.getVisibleChars(watcher.getPosition());
+        ColoredChar[][] resultMap =
+                map.getVisibleChars(watcher.getPosition(), map.getWidthOnScreen(), map.getHeightOnScreen());
+
+        // TODO: explain how it works
+        int xSeenShift = resultMap.length / 2 - seen.length / 2;
+        int ySeenShift = resultMap[0].length / 2 - seen[0].length / 2;
 
         for (int x = 0; x < resultMap.length; x++) {
             for (int y = 0; y < resultMap[0].length; y++) {
-                if (!seen[x][y])
+                if (!isInsideSeenArray(x - xSeenShift, y - ySeenShift) || !seen[x - xSeenShift][y - ySeenShift])
                     resultMap[x][y] = ColoredChar.NIHIL;
             }
         }
@@ -84,13 +104,22 @@ public final class FieldOfView {
         Queue<Position> positionsQueue = new ArrayDeque<>();
 
         Position pos;
-        boolean[][] transparent = map.getTransparentCells(watcher.getPosition());
+
+        // viewDistance * 2 + 1 stands here because view distance calculates
+        // from watchers tile in every direction not including tile he's standing on
+        // so we multiply by two for each side and add one for the watcher himself
+        boolean[][] transparent = map.getTransparentCells(
+                watcher.getPosition(),
+                viewDistance * 2 + 1,
+                viewDistance * 2 + 1
+        );
+
         seen = new boolean[transparent.length][transparent[0].length];
         boolean[][] marked = new boolean[transparent.length][transparent[0].length];
         Direction[] directions = Direction.values();
 
-        // TODO: Why -1 ?
-        Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2 - 1);
+        // watcher is supposed to be in center of seen array
+        Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2);
 
         seen[watcherPos.getX()][watcherPos.getY()] = true;
 
@@ -109,10 +138,10 @@ public final class FieldOfView {
                 seen[pos.getX()][pos.getY()] = true;
 
                 if (transparent[pos.getX()][pos.getY()]) {
-                    for (int j = i - 1; j <= i + 1; j++) {
+                    for (int j = i - 1 + directions.length; j <= i + 1 + directions.length; j++) {
                         try {
                             positionsQueue.add(Direction
-                                    .applyDirection(pos, directions[(j + directions.length)  % directions.length]));
+                                    .applyDirection(pos, directions[j % directions.length]));
                         } catch (IllegalArgumentException e) {
                             if (log.isErrorEnabled()) {
                                 log.error(e);
@@ -120,18 +149,16 @@ public final class FieldOfView {
                         }
                     }
                 } else {
-                    pos = Direction.applyDirection(pos, directions[i]);
-                    while (isInsideSeenArray(pos)) {
-                        seen[pos.getX()][pos.getY()] = false;
-                        marked[pos.getX()][pos.getY()] = true;
+                    while (true) {
                         try {
                             pos = Direction.applyDirection(pos, directions[i]);
                         } catch (IllegalArgumentException e) {
-                            if (log.isErrorEnabled()) {
-                                log.error(e);
-                            }
                             break;
                         }
+                        if (!isInsideSeenArray(pos))
+                            break;
+                        seen[pos.getX()][pos.getY()] = false;
+                        marked[pos.getX()][pos.getY()] = true;
                     }
                 }
             }
@@ -139,6 +166,10 @@ public final class FieldOfView {
     }
 
     private boolean isInsideSeenArray(Position pos) {
-        return pos.getX() < seen.length && pos.getX() >= 0 && pos.getY() < seen[0].length && pos.getY() >= 0;
+        return isInsideSeenArray(pos.getX(), pos.getY());
+    }
+
+    private boolean isInsideSeenArray(int x, int y) {
+        return x < seen.length && x >= 0 && y < seen[0].length && y >= 0;
     }
 }

@@ -75,9 +75,7 @@ public class TextWindow extends JComponent {
         fontYOffset = -(int) charBounds.getMinY() - fontHeight;
 
         int windowWidth = data.getColumns() * fontWidth;
-
-        // TODO: find out where did this magical constant come from and figure out how to get rid of it
-        int windowHeight = data.getRows() * fontHeight - (fontYOffset + fontHeight) * 2;
+        int windowHeight = data.getRows() * fontHeight;
         Dimension windowSize = new Dimension(windowWidth, windowHeight);
 
         if (GameConfig.FIT_TO_SCREEN) {
@@ -156,16 +154,17 @@ public class TextWindow extends JComponent {
 
                 //  place between col1 and col2 is filled with same color
                 g.setBackground(bgColor);
-                g.clearRect(fontWidth * col1, (row - 1) * fontHeight, fontWidth * (col2 - col1), fontHeight);
+                g.clearRect(fontWidth * col1, row * fontHeight, fontWidth * (col2 - col1), fontHeight);
 
                 g.setColor(fgColor);
 
+                // row + 1 because drawing system puts images above Y coordinate
                 g.drawChars(
                         data.getRow(row),
                         col1,
                         col2 - col1,
                         col1 * fontWidth,
-                        row * fontHeight + fontYOffset
+                        (row + 1) * fontHeight + fontYOffset
                 );
             }
         }
@@ -226,11 +225,10 @@ public class TextWindow extends JComponent {
             cursorColumn = 0;
             cursorRow++;
         }
-        if (cursorRow + 1 >= data.getRows()) {
+        if (cursorRow >= data.getRows()) {
             cursorRow = 0;
             cursorColumn = 0;
         }
-
     }
 
 }
