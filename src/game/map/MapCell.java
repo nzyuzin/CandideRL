@@ -17,7 +17,7 @@
 
 package game.map;
 
-import game.GameObject;
+import game.AbstractGameObject;
 import game.characters.GameCharacter;
 import game.utility.ColoredChar;
 import game.utility.VisibleCharacters;
@@ -27,7 +27,7 @@ import game.utility.interfaces.Visible;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class MapCell extends GameObject implements Visible {
+abstract class MapCell extends AbstractGameObject implements Visible {
     protected final ColoredChar charOnMap;
     protected final boolean transparent;
     protected final boolean canBePassed;

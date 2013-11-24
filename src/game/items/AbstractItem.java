@@ -17,10 +17,10 @@
 
 package game.items;
 
-import game.GameObject;
+import game.AbstractGameObject;
 import game.utility.ColoredChar;
 
-public abstract class AbstractItem extends GameObject implements GameItem {
+public abstract class AbstractItem extends AbstractGameObject implements GameItem {
 
 	protected final ColoredChar charOnMap;
 	protected final int weight;

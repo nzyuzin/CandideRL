@@ -25,7 +25,7 @@ import game.GameConfig;
 import java.util.Map;
 import java.util.HashMap;
 
-public final class Player extends GameCharacter {
+public final class Player extends AbstractGameCharacter {
 
     private FieldOfVision fov = null;
     private final static Player PLAYER = new Player();

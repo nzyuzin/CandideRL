@@ -1,163 +1,70 @@
 /*
- *  This file is part of CandideRL.
+ * This file is part of CandideRL.
  *
- *  CandideRL is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * CandideRL is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *  CandideRL is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * CandideRL is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package game.characters;
 
-import game.characters.actions.*;
+import game.GameObject;
+import game.utility.interfaces.Damageable;
+import game.utility.interfaces.Movable;
+import game.utility.interfaces.Visible;
 import game.utility.Direction;
 import game.utility.Position;
-import game.utility.ColoredChar;
 import game.utility.PositionOnMap;
-import game.utility.interfaces.*;
-import game.items.MiscItem;
-import game.GameObject;
+import game.utility.ColoredChar;
+import game.items.GameItem;
+import game.characters.actions.GameAction;
 
-import java.util.Random;
-import java.util.ArrayDeque;
-import java.util.Queue;
+public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
 
-public abstract class GameCharacter extends GameObject implements Movable, Damageable, Visible  {
+    public boolean hasAction();
 
-    protected final class Attributes {
-        public short strength;
-        public short dexterity;
-        public short intelligence;
-        public short armor;
+    public void addAction(GameAction action);
 
-        public Attributes() {
-            this.strength = 8;
-            this.armor = 0;
-            this.dexterity = 8;
-            this.intelligence = 8;
-        }
-    }
+    public void removeCurrentAction();
 
-    protected Queue<GameAction> gameActions = null;
+    public boolean isDead();
 
-    protected PositionOnMap position;
-    protected ColoredChar charOnMap = null;
+    public Position getPosition();
 
-    protected int currentHP;
-    protected int maxHP;
-    protected double speed = 1;
+    public PositionOnMap getPositionOnMap();
 
-    protected double attackRate;
-    protected Attributes attributes;
-    protected boolean canTakeDamage;
-    protected int actionPointsOnCon;    //
-    protected int currentActionPoints;  // Those three fields are of no use for now.
-    protected int maximumActionPoints;  //
+    public void setPositionOnMap(PositionOnMap position);
 
+    public int getCurrentHP();
 
-    GameCharacter(String name, String description, int HP) {
-        super(name, description);
-        maxHP = HP;
-        currentHP = HP;
-        this.canTakeDamage = true;
-        this.attackRate = 1.0;
-        attributes = new Attributes();
-        gameActions = new ArrayDeque<>();
-    }
+    public int getMaxHP();
 
+    public boolean canPerformAction();
 
-    public boolean hasAction() {
-        return !gameActions.isEmpty();
-    }
+    public void performAction();
 
-    public void addAction(GameAction action) {
-        gameActions.add(action);
-    }
+    public void breakActionQueue();
 
-    public void removeCurrentAction() {
-        gameActions.poll();
-    }
+    public void hit(Position pos);
 
-    public boolean isDead() {
-        return currentHP <= 0;
-    }
+    public int roleDamageDice();
 
-    public Position getPosition() {
-        return position.getPosition();
-    }
+    public void move(Direction there);
 
-    public PositionOnMap getPositionOnMap() {
-        return position;
-    }
+    public boolean canTakeDamage();
 
-    public void setPositionOnMap(PositionOnMap position) {
-        this.position = position;
-    }
+    public void takeDamage(int damage);
 
-    public int getCurrentHP() {
-        return currentHP;
-    }
+    public GameItem getCorpse();
 
-    public int getMaxHP() {
-        return maxHP;
-    }
-
-    public boolean canPerformAction() {
-        return hasAction() && gameActions.peek().canBeExecuted();
-    }
-
-    public void performAction() {
-        // TODO make use of action points
-        if (gameActions.isEmpty()) return;
-        gameActions.poll().execute();
-    }
-
-    public void breakActionQueue() {
-        gameActions = new ArrayDeque<GameAction>();
-    }
-
-    public void hit(Position pos) {
-        addAction(new HitGameAction(this, pos));
-    }
-
-    public int roleDamageDice() {
-        Random dice = new Random();
-        return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
-    }
-
-    public void move(Direction there) {
-        if (there != null)
-            addAction(new MovementGameAction(this, there));
-    }
-
-    public boolean canTakeDamage() {
-        return canTakeDamage;
-    }
-
-    public void takeDamage(int damage) {
-	/* TODO
-	 * if takes 0 as arguments - attacker missed,
-	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.
-	 */
-        currentHP -= damage;
-    }
-
-    public MiscItem getCorpse() {
-        return new MiscItem("Corpse of " + this.getName(),
-                ColoredChar.getColoredChar(this.charOnMap.getChar(),
-                        this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
-    }
-
-    public ColoredChar getChar() {
-        return this.charOnMap;
-    }
-
+    public ColoredChar getChar();
 }

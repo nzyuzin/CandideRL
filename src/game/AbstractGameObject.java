@@ -15,15 +15,23 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.characters;
+package game;
 
-import game.utility.ColoredChar;
+public abstract class AbstractGameObject implements GameObject {
 
-public class NPC extends AbstractGameCharacter {
+    protected String name;
+    protected String description;
 
-    public NPC(String name, String description, ColoredChar onMap) {
-        super(name, description, 100);
-        this.charOnMap = onMap;
+    public AbstractGameObject(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
