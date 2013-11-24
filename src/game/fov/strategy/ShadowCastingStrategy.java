@@ -17,20 +17,20 @@
 
 package game.fov.strategy;
 
-import game.utility.Position;
 import game.utility.Direction;
-
-import java.util.Queue;
-import java.util.ArrayDeque;
-
+import game.utility.Position;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class ShadowCastingStrategy implements FOVStrategy {
 
     private final static Log log = LogFactory.getLog(ShadowCastingStrategy.class);
 
-    public ShadowCastingStrategy() { }
+    public ShadowCastingStrategy() {
+    }
 
     private Boolean[][] seen;
 
@@ -61,10 +61,9 @@ public class ShadowCastingStrategy implements FOVStrategy {
                     continue;
 
                 marked[pos.getX()][pos.getY()] = true;
-//                seen[pos.getX()][pos.getY()] = true;
                 Position cellBetweenWatcher = Direction.applyDirection(pos, Direction.getDirection(pos, watcherPos));
-                if ((seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
-                        && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()])
+                if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                        && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
                         && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
                     seen[pos.getX()][pos.getY()] = false;
                 } else {
@@ -85,16 +84,16 @@ public class ShadowCastingStrategy implements FOVStrategy {
                 } else {
                     while (true) {
                         try {
-                            pos = Direction.applyDirection(pos, directions[i]);
+                            pos = Direction.applyDirection(pos, Direction.getDirection(watcherPos, pos));
                         } catch (IllegalArgumentException e) {
                             break;
                         }
                         if (!isInsideSeenArray(pos))
                             break;
                         cellBetweenWatcher = Direction.applyDirection(pos, Direction.getDirection(pos, watcherPos));
-                        if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
-                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
-                                && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
+                        if ((seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()])
+                                || !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
                             seen[pos.getX()][pos.getY()] = false;
                         }
                         marked[pos.getX()][pos.getY()] = true;

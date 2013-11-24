@@ -18,15 +18,13 @@
 package game.characters;
 
 import game.GameObject;
+import game.characters.actions.GameAction;
+import game.items.GameItem;
+import game.utility.Position;
+import game.utility.PositionOnMap;
 import game.utility.interfaces.Damageable;
 import game.utility.interfaces.Movable;
 import game.utility.interfaces.Visible;
-import game.utility.Direction;
-import game.utility.Position;
-import game.utility.PositionOnMap;
-import game.utility.ColoredChar;
-import game.items.GameItem;
-import game.characters.actions.GameAction;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
 
@@ -58,13 +56,5 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
 
     public int roleDamageDice();
 
-    public void move(Direction there);
-
-    public boolean canTakeDamage();
-
-    public void takeDamage(int damage);
-
     public GameItem getCorpse();
-
-    public ColoredChar getChar();
 }

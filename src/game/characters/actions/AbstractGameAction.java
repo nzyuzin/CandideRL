@@ -22,7 +22,7 @@ import game.characters.GameCharacter;
 // GameActions connect GameCharacters and classes from another packages,
 // such as Map, so GameCharacters will only operate with highly abstract methods.
 
-public abstract class AbstractGameAction implements GameAction {
+abstract class AbstractGameAction implements GameAction {
 
     protected final GameCharacter performer; // The one who performs an action
 
@@ -38,7 +38,7 @@ public abstract class AbstractGameAction implements GameAction {
     }
 
     public int actionPointsLeft() {  // Not implemented yet.
-        return ( this.actionPointsLeft < 0 ? 0 : this.actionPointsLeft );
+        return (this.actionPointsLeft < 0 ? 0 : this.actionPointsLeft);
     }
 
     public void setActionPointsLeft(int points) {  // Not implemented yet.

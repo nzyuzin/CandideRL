@@ -18,19 +18,21 @@
 package game.characters;
 
 import game.AbstractGameObject;
-import game.characters.actions.*;
+import game.characters.actions.GameAction;
+import game.characters.actions.HitGameAction;
+import game.characters.actions.MovementGameAction;
 import game.items.GameItem;
+import game.items.MiscItem;
+import game.utility.ColoredChar;
 import game.utility.Direction;
 import game.utility.Position;
-import game.utility.ColoredChar;
 import game.utility.PositionOnMap;
-import game.items.MiscItem;
 
-import java.util.Random;
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.Random;
 
-public abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter  {
+abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
     protected final class Attributes {
         public short strength;
@@ -143,7 +145,7 @@ public abstract class AbstractGameCharacter extends AbstractGameObject implement
     }
 
     public void takeDamage(int damage) {
-	/* TODO
+    /* TODO
 	 * if takes 0 as arguments - attacker missed,
 	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.
 	 */
