@@ -17,7 +17,8 @@
 
 package game.characters;
 
-import game.map.FieldOfView;
+import game.fov.FOVFactory;
+import game.fov.FieldOfVision;
 import game.utility.ColoredChar;
 import game.GameConfig;
 
@@ -26,7 +27,7 @@ import java.util.HashMap;
 
 public final class Player extends GameCharacter {
 
-    private FieldOfView fov = null;
+    private FieldOfVision fov = null;
     private final static Player PLAYER = new Player();
 
     private final static int PLAYER_INITIAL_MAX_HP = 100;
@@ -35,11 +36,11 @@ public final class Player extends GameCharacter {
         super("Player", "It's you.", PLAYER_INITIAL_MAX_HP);
         this.charOnMap = ColoredChar
                 .getColoredChar(game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
-        fov = new FieldOfView(this, GameConfig.VIEW_DISTANCE_LIMIT);
+        fov = FOVFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }
 
     public Map<String, String> getStats() {
-        HashMap<String, String> stats = new HashMap<String, String>();
+        HashMap<String, String> stats = new HashMap<>();
         stats.put("HP", String.valueOf(currentHP));
         stats.put("maxHP", String.valueOf(maxHP));
         stats.put("str", String.valueOf(attributes.strength));
@@ -47,7 +48,7 @@ public final class Player extends GameCharacter {
     }
 
     public ColoredChar[][] getVisibleMap() {
-        return fov.toColoredCharArray();
+        return fov.getVisibleCells();
     }
 
     public static Player getInstance() {

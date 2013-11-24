@@ -61,6 +61,7 @@ public class GameConfig {
     public static final boolean CALCULATE_FIELD_OF_VIEW =
             Boolean.parseBoolean(ConfigHelper.CALCULATE_FIELD_OF_VIEW.getValue());
     public static final boolean RANDOM_MAP = Boolean.parseBoolean(ConfigHelper.RANDOM_MAP.getValue());
+    public static final boolean SPAWN_MOBS = Boolean.parseBoolean(ConfigHelper.SPAWN_MOBS.getValue());
 
     public static void write() {
         // Runtime configuration is planned so this method will be used in future
@@ -77,7 +78,8 @@ public class GameConfig {
         DEFAULT_MAP_WINDOW_WIDTH("default_map_window_width", "80"),
         DEFAULT_MAP_WINDOW_HEIGHT("default_map_window_height", "25"),
         CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true"),
-        RANDOM_MAP("random_map", "true");
+        RANDOM_MAP("random_map", "true"),
+        SPAWN_MOBS("spawn_mobs", "true");
 
         private String property;
         private String defValue;

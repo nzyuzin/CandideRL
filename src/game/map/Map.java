@@ -193,7 +193,7 @@ public final class Map {
         );
     }
 
-    boolean[][] getTransparentCells(Position pos, int width, int height) {
+    public boolean[][] getTransparentCells(Position pos, int width, int height) {
 
         MapCell[][] partOfMap = getPartOfMap(pos, width, height);
 
@@ -207,7 +207,7 @@ public final class Map {
         return array;
     }
 
-    ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
+    public ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
 
         MapCell[][] partOfMap = getPartOfMap(pos, width, height);
 

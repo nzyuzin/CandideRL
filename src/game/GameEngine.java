@@ -79,19 +79,20 @@ public final class GameEngine implements AutoCloseable {
         // Some magic constants here
         ai = new ArtificialIntelligence(player, (UI.getMapWidth() + UI.getMapHeight()) / 2 + 100);
 
-        npcs.add(new NPC(
-                "troll",
-                "A furious beast with sharp claws.",
-                ColoredChar.getColoredChar('t', ColoredChar.RED))
-        );
-        npcs.add(new NPC(
-                "goblin",
-                "A regular goblin.",
-                ColoredChar.getColoredChar('g', ColoredChar.GREEN))
-        );
-
-        for (NPC mob : npcs)
-            currentMap.putGameCharacter(mob, currentMap.getRandomFreePosition());
+        if (GameConfig.SPAWN_MOBS) {
+            npcs.add(new NPC(
+                    "troll",
+                    "A furious beast with sharp claws.",
+                    ColoredChar.getColoredChar('t', ColoredChar.RED))
+            );
+            npcs.add(new NPC(
+                    "goblin",
+                    "A regular goblin.",
+                    ColoredChar.getColoredChar('g', ColoredChar.GREEN))
+            );
+            for (NPC mob : npcs)
+                currentMap.putGameCharacter(mob, currentMap.getRandomFreePosition());
+        }
         currentMap.putGameCharacter(player, currentMap.getRandomFreePosition());
 
         currentTurn = 0;
