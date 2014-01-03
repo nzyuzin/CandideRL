@@ -17,11 +17,11 @@
 
 package game.utility;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Position {
 
@@ -48,9 +48,18 @@ public final class Position {
     }
 
     public static Position getPosition(int x, int y) throws IllegalArgumentException {
+        return getPosition(x, y, true);
+    }
+
+    public static Position getPosition(int x, int y, boolean fromCache) throws IllegalArgumentException {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
         }
+
+        if (!fromCache) {
+            return new Position(x, y);
+        }
+
         if (CACHE.containsKey(x)) {
             Map<Integer, Position> y2Position= CACHE.get(x);
             if (y2Position.containsKey(y)) {

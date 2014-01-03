@@ -18,16 +18,15 @@
 package game.map;
 
 import game.characters.GameCharacter;
+import game.items.GameItem;
 import game.utility.ColoredChar;
 import game.utility.Position;
-import game.items.GameItem;
 import game.utility.PositionOnMap;
-
-import java.util.Random;
-import java.util.Formatter;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.Formatter;
+import java.util.Random;
 
 public final class Map {
 
@@ -69,15 +68,15 @@ public final class Map {
 
         for (int i = 1; i < width - 1; i++)
             for (int j = 1; j < height - 1; j++)
-                instance.setCell(Position.getPosition(i, j), Floor.getFloor());
+                instance.setCell(Position.getPosition(i, j, false), Floor.getFloor());
         for (int i = 0; i < height; i++) {
-            instance.setCell(Position.getPosition(0, i), wall);
-            instance.setCell(Position.getPosition(width - 1, i), wall);
+            instance.setCell(Position.getPosition(0, i, false), wall);
+            instance.setCell(Position.getPosition(width - 1, i, false), wall);
         }
 
         for (int i = 0; i < width; i++) {
-            instance.setCell(Position.getPosition(i, 0), wall);
-            instance.setCell(Position.getPosition(i, height - 1), wall);
+            instance.setCell(Position.getPosition(i, 0, false), wall);
+            instance.setCell(Position.getPosition(i, height - 1, false), wall);
         }
 
         if (log.isTraceEnabled()) {
