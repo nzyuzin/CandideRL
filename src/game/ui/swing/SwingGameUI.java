@@ -20,17 +20,13 @@ package game.ui.swing;
 import game.GameConfig;
 import game.ui.GameUI;
 import game.utility.ColoredChar;
-
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-
-import java.awt.Toolkit;
-import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class SwingGameUI implements GameUI {
 
@@ -69,15 +65,16 @@ public class SwingGameUI implements GameUI {
         mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         KeyListener kl = new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {
                 synchronized (lock) {
                     lock.notify();
                     key = e.getKeyChar();
                     keyRead = false;
                 }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
             }
 
             @Override

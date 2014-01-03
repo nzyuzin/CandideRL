@@ -18,7 +18,8 @@
 package game;
 
 import game.ai.ArtificialIntelligence;
-import game.characters.*;
+import game.characters.NPC;
+import game.characters.Player;
 import game.map.Map;
 import game.map.MapFactory;
 import game.ui.GameUI;
@@ -27,10 +28,9 @@ import game.utility.ColoredChar;
 import game.utility.Direction;
 import game.utility.KeyDefinitions;
 import game.utility.exceptions.GameClosedException;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public final class GameEngine implements AutoCloseable {
         try {
             UI.close();
         } catch (Exception ex) {
-            throw new RuntimeException("Game closing exception");
+            throw new RuntimeException("Exception during attempt to close the game");
         }
     }
 
@@ -172,8 +172,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void showStats() {
-        UI.showStats(player.getStats() + "Current turn: "
-                    + currentTurn + "\n");
+        UI.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
     }
 
     public void play() {
