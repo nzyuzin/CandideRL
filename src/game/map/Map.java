@@ -25,7 +25,6 @@ import game.utility.PositionOnMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.Formatter;
 import java.util.Random;
 
 public final class Map {
@@ -56,7 +55,7 @@ public final class Map {
         Map instance = new Map(width, height, screenWidth, screenHeight);
 
         if (log.isTraceEnabled()) {
-            log.trace(new Formatter().format("Map construction start :: passed arguments: %d %d %d %d%nTotal Map size = %d",
+            log.trace(String.format("Map construction start :: passed arguments: %d %d %d %d%nTotal Map size = %d",
                     width, height, screenWidth, screenHeight, width * height));
         }
 
