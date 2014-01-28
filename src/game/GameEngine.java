@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public final class GameEngine implements AutoCloseable {
 
@@ -105,12 +106,24 @@ public final class GameEngine implements AutoCloseable {
 
     private void processActions() {
         player.performAction();
-        for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
+/*        for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
             if (npc.isDead()) {
                 npcs.remove(npc);
                 continue;
             }
             else ai.chooseAction(npc);
+            if (npc.canPerformAction())
+                npc.performAction();
+            else npc.removeCurrentAction();
+        }*/
+
+        NPC npc;
+        for (Iterator<NPC> iterator = npcs.iterator(); iterator.hasNext(); ) {
+            npc = iterator.next();
+            if (npc.isDead()) {
+                iterator.remove();
+                continue;
+            } else ai.chooseAction(npc);
             if (npc.canPerformAction())
                 npc.performAction();
             else npc.removeCurrentAction();
@@ -185,7 +198,7 @@ public final class GameEngine implements AutoCloseable {
         try {
             while (!player.isDead()) {
                 handleInput();
-                if (player.hasAction())
+                if (player.canPerformAction())
                     advanceTime();
             }
         } catch (GameClosedException gameClosedException) {
