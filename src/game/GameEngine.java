@@ -25,7 +25,6 @@ import game.map.MapFactory;
 import game.ui.GameUI;
 import game.ui.swing.SwingGameUI;
 import game.utility.ColoredChar;
-import game.utility.Direction;
 import game.utility.KeyDefinitions;
 import game.utility.exceptions.GameClosedException;
 import org.apache.log4j.ConsoleAppender;
@@ -106,16 +105,6 @@ public final class GameEngine implements AutoCloseable {
 
     private void processActions() {
         player.performAction();
-/*        for (NPC npc : npcs.toArray(new NPC[npcs.size()])) {
-            if (npc.isDead()) {
-                npcs.remove(npc);
-                continue;
-            }
-            else ai.chooseAction(npc);
-            if (npc.canPerformAction())
-                npc.performAction();
-            else npc.removeCurrentAction();
-        }*/
 
         NPC npc;
         for (Iterator<NPC> iterator = npcs.iterator(); iterator.hasNext(); ) {
@@ -149,7 +138,7 @@ public final class GameEngine implements AutoCloseable {
             log.debug(String.format("handleInput input = %s", input));
         }
         if (KeyDefinitions.isDirectionKey(input)) {
-            ai.chooseActionInDirection(player, Direction.getDirection(input));
+            ai.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
             return;
         }
         if (KeyDefinitions.isSkipTurnChar(input)) {

@@ -17,13 +17,13 @@
 
 package game.utility;
 
-import java.awt.Color;
-import java.util.HashMap;
+import java.awt.*;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public final class ColoredChar {
 
-    private static final Map<Character, Map<Color, Map<Color, ColoredChar>>> CACHE = new HashMap<>();
+    private static final Map<Character, Map<Color, Map<Color, ColoredChar>>> CACHE = new WeakHashMap<>();
 
     private final Color background;
     private final Color foreground;
@@ -56,14 +56,14 @@ public final class ColoredChar {
                     fgContainer.put(bg, result);
                 }
             } else {
-                fgContainer = new HashMap<>();
+                fgContainer = new WeakHashMap<>();
                 result = new ColoredChar(c, fg, bg);
                 fgContainer.put(bg, result);
                 charContainer.put(fg, fgContainer);
             }
         } else {
-            fgContainer = new HashMap<>();
-            charContainer = new HashMap<>();
+            fgContainer = new WeakHashMap<>();
+            charContainer = new WeakHashMap<>();
             result = new ColoredChar(c, fg, bg);
             fgContainer.put(bg, result);
             charContainer.put(fg, fgContainer);

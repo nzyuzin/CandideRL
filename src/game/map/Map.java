@@ -19,6 +19,9 @@ package game.map;
 
 import game.characters.GameCharacter;
 import game.items.GameItem;
+import game.map.cells.Floor;
+import game.map.cells.MapCell;
+import game.map.cells.Wall;
 import game.utility.ColoredChar;
 import game.utility.Position;
 import game.utility.PositionOnMap;
@@ -134,11 +137,11 @@ public final class Map {
     }
 
     public boolean isCellPassable(Position pos) {
-        return getCell(pos).canBePassed;
+        return getCell(pos).isPassable();
     }
 
     public boolean isCellTransparent(Position pos) {
-        return getCell(pos).transparent;
+        return getCell(pos).isTransparent();
     }
 
     public void moveGameCharacter(GameCharacter mob, Position pos) {
@@ -147,11 +150,11 @@ public final class Map {
     }
 
     public boolean isSomeoneHere(Position pos) {
-        return getCell(pos).gameCharacter != null;
+        return getCell(pos).getGameCharacter() != null;
     }
 
     public GameCharacter getGameCharacter(Position pos) {
-        return getCell(pos).gameCharacter;
+        return getCell(pos).getGameCharacter();
     }
 
     /**
@@ -200,7 +203,7 @@ public final class Map {
         for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
             for (int x = 0, j = 0; x < partOfMap.length; x++, j++)
                 if (partOfMap[x][y] != null)
-                    array[j][i] = partOfMap[x][y].transparent;
+                    array[j][i] = partOfMap[x][y].isTransparent();
 
         return array;
     }
@@ -214,7 +217,7 @@ public final class Map {
         for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
             for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
                 if (partOfMap[x][y] != null)
-                    result[j][i] = partOfMap[x][y].visibleChar;
+                    result[j][i] = partOfMap[x][y].getChar();
                 else
                     result[j][i] = ColoredChar.NIHIL;
             }

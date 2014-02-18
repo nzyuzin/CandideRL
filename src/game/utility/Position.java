@@ -20,8 +20,8 @@ package game.utility;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 public final class Position {
 
@@ -29,7 +29,7 @@ public final class Position {
     private final int y;
 
     // TODO: find library that handles caching properly
-    private static final HashMap<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
+    private static final Map<Integer, Map<Integer, Position>> CACHE = new WeakHashMap<>();
 
     private static final Log log = LogFactory.getLog(Position.class);
     private static int cacheSize = 0;
@@ -75,7 +75,7 @@ public final class Position {
             }
         } else {
             Position pos = new Position(x, y);
-            Map<Integer, Position> y2Position = new HashMap<>();
+            Map<Integer, Position> y2Position = new WeakHashMap<>();
             y2Position.put(y,pos);
             CACHE.put(x, y2Position);
             if (log.isTraceEnabled()) {

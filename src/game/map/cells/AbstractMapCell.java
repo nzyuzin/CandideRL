@@ -15,19 +15,17 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package game.map;
+package game.map.cells;
 
 import game.AbstractGameObject;
 import game.characters.GameCharacter;
-import game.utility.ColoredChar;
-import game.utility.VisibleCharacters;
 import game.items.GameItem;
-import game.utility.interfaces.Visible;
+import game.utility.ColoredChar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class MapCell extends AbstractGameObject implements Visible {
+abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
     protected final ColoredChar charOnMap;
     protected final boolean transparent;
     protected final boolean canBePassed;
@@ -37,7 +35,7 @@ abstract class MapCell extends AbstractGameObject implements Visible {
     protected GameCharacter gameCharacter = null;
     protected List<GameItem> gameItems = null;
 
-    protected MapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
+    protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
         super(name, desc);
         this.canBePassed = canBePassed;
         this.charOnMap = onMap;
@@ -51,11 +49,13 @@ abstract class MapCell extends AbstractGameObject implements Visible {
         return visibleChar;
     }
 
-    protected ColoredChar getDefaultChar() {
+    @Override
+    public ColoredChar getDefaultChar() {
         return charOnMap;
     }
 
-    protected void chooseCharOnMap() {
+    @Override
+    public void chooseCharOnMap() {
         if (gameCharacter != null)
             visibleChar = gameCharacter.getChar();
         else if (!gameItems.isEmpty())
@@ -64,25 +64,40 @@ abstract class MapCell extends AbstractGameObject implements Visible {
             visibleChar = charOnMap;
     }
 
-    protected MapCell setGameCharacter(GameCharacter mob) {
+    @Override
+    public boolean isTransparent() {
+        return this.transparent;
+    }
+
+    @Override
+    public boolean isPassable() {
+        return this.canBePassed;
+    }
+
+    @Override
+    public MapCell setGameCharacter(GameCharacter mob) {
         this.gameCharacter = mob;
         chooseCharOnMap();
         return this;
     }
 
-    protected GameCharacter getGameCharacter() {
+    @Override
+    public GameCharacter getGameCharacter() {
         return gameCharacter;
     }
 
-    protected void putItem(GameItem item) {
+    @Override
+    public void putItem(GameItem item) {
         gameItems.add(item);
     }
 
-    protected void removeItem(GameItem item) {
+    @Override
+    public void removeItem(GameItem item) {
         gameItems.remove(item);
     }
 
-    protected List<GameItem> getListOfItems() {
+    @Override
+    public List<GameItem> getListOfItems() {
         ArrayList<GameItem> result = new ArrayList<>();
         result.addAll(gameItems);
         return result;
@@ -94,49 +109,9 @@ abstract class MapCell extends AbstractGameObject implements Visible {
             return false;
         MapCell cell = (MapCell) object;
         return this.name.equals(cell.getName())
-                && this.charOnMap.equals(cell.charOnMap)
-                && this.transparent == cell.transparent
-                && this.canBePassed == cell.canBePassed;
+                && this.charOnMap.equals(cell.getDefaultChar())
+                && this.transparent == cell.isTransparent()
+                && this.canBePassed == cell.isPassable();
     }
 }
 
-class Wall extends MapCell {
-    private final static Wall instance = new Wall();
-    private Wall() {
-        super("Wall",
-                "A regular rock wall.",
-                ColoredChar.getColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
-                false,
-                false
-        );
-    }
-
-    static Wall getWall() {
-        return instance;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof Wall && super.equals(object);
-    }
-}
-
-class Floor extends MapCell {
-    private Floor() {
-        super("Floor",
-                "Rough rock floor.",
-                ColoredChar.getColoredChar(VisibleCharacters.FLOOR.getVisibleChar()),
-                true,
-                true
-        );
-    }
-
-    static Floor getFloor() {
-        return new Floor();
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof Floor && super.equals(object);
-    }
-}

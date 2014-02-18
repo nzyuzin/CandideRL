@@ -17,49 +17,72 @@
 
 package game.utility;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public final class KeyDefinitions {
 
-    /**
-     * DIRECTION_KEYS - array of char elements of that array are processed into
-     * SOUTH, NORTH, WEST, EAST, NORTHWEST, NORTHEAST, SOUTHWEST and SOUTHEAST
-     * Directions respectively.
-     */
-
-    final static char[] DIRECTION_KEYS = { 'j', 'k', 'h', 'l', 'y', 'u', 'b', 'n' };
+    private KeyDefinitions() {
+    }
 
     /**
-     * EXIT_CHARS, EXIT_CODES - arrays of char and int codes respectively which are meant to shutdown the game.
+     * Map of keys corresponding to directions
      */
 
-    private final static char[] EXIT_CHARS = { 'q' };
-    private final static int[] EXIT_CODES = { };
+    private static final Map<Character, Direction> DIRECTION_KEYS = new HashMap<>();
 
-    private final static char[] SKIP_TURN_CHARS = { 's' };
+    static {
+        DIRECTION_KEYS.put('j', Direction.SOUTH);
+        DIRECTION_KEYS.put('k', Direction.NORTH);
+        DIRECTION_KEYS.put('h', Direction.WEST);
+        DIRECTION_KEYS.put('l', Direction.EAST);
+        DIRECTION_KEYS.put('y', Direction.NORTHWEST);
+        DIRECTION_KEYS.put('u', Direction.NORTHEAST);
+        DIRECTION_KEYS.put('b', Direction.SOUTHWEST);
+        DIRECTION_KEYS.put('n', Direction.SOUTHEAST);
+    }
 
-    private KeyDefinitions() {	}
+    /**
+     * EXIT_CHARS, EXIT_CODES - sets of char and int codes respectively which are meant to shutdown the game.
+     */
+
+    private static final Set<Character> EXIT_CHARS = new HashSet<>();
+
+    static {
+        EXIT_CHARS.add('q');
+    }
+
+    private static final Set<Integer> EXIT_CODES = new HashSet<>();
+
+    private static final Set<Character> SKIP_TURN_CHARS = new HashSet<>();
+
+    static {
+        SKIP_TURN_CHARS.add('s');
+    }
 
     public static boolean isExitCode(int code) {
-        for (int s : EXIT_CODES)
-            if (code == s) return true;
-        return false;
+        return EXIT_CODES.contains(code);
     }
 
     public static boolean isExitChar(char c) {
-        for (char s : EXIT_CHARS)
-            if (c == s) return true;
-        return false;
+        return EXIT_CHARS.contains(c);
     }
 
     public static boolean isDirectionKey(char key) {
-        for (char s : DIRECTION_KEYS)
-            if (key == s) return true;
-        return false;
+        return DIRECTION_KEYS.containsKey(key);
     }
 
     public static boolean isSkipTurnChar(char c) {
-        for (char s : SKIP_TURN_CHARS)
-            if (c == s) return true;
-        return false;
+        return SKIP_TURN_CHARS.contains(c);
+    }
+
+    public static Direction getDirectionFromKey(char key) {
+        if (!DIRECTION_KEYS.containsKey(key)) {
+            throw new IllegalArgumentException(key + " is not a direction key");
+        }
+        return DIRECTION_KEYS.get(key);
     }
 
 }

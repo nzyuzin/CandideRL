@@ -47,45 +47,24 @@ public enum Direction {
     }
 
     public static Direction getDirection(Position from, Position to) {
-        if(from.getX() == to.getX() && from.getY() > to.getY())
+        if (from.getX() == to.getX() && from.getY() > to.getY())
             return Direction.SOUTH;
-        if(from.getX() == to.getX() && from.getY() < to.getY())
+        if (from.getX() == to.getX() && from.getY() < to.getY())
             return Direction.NORTH;
-        if(from.getX() > to.getX() && from.getY() == to.getY())
+        if (from.getX() > to.getX() && from.getY() == to.getY())
             return Direction.WEST;
-        if(from.getX() < to.getX() && from.getY() == to.getY())
+        if (from.getX() < to.getX() && from.getY() == to.getY())
             return Direction.EAST;
-        if(from.getX() > to.getX() && from.getY() < to.getY())
+        if (from.getX() > to.getX() && from.getY() < to.getY())
             return Direction.NORTHWEST;
-        if(from.getX() < to.getX() && from.getY() < to.getY())
+        if (from.getX() < to.getX() && from.getY() < to.getY())
             return Direction.NORTHEAST;
-        if(from.getX() > to.getX() && from.getY() > to.getY())
+        if (from.getX() > to.getX() && from.getY() > to.getY())
             return Direction.SOUTHWEST;
-        if(from.getX() < to.getX() && from.getY() > to.getY())
+        if (from.getX() < to.getX() && from.getY() > to.getY())
             return Direction.SOUTHEAST;
 
         return null;
     }
 
-    public static Direction getDirection(char key) {
-
-        if(key == KeyDefinitions.DIRECTION_KEYS[0])
-            return Direction.SOUTH;
-        if(key == KeyDefinitions.DIRECTION_KEYS[1])
-            return Direction.NORTH;
-        if(key == KeyDefinitions.DIRECTION_KEYS[2])
-            return Direction.WEST;
-        if(key == KeyDefinitions.DIRECTION_KEYS[3])
-            return Direction.EAST;
-        if(key == KeyDefinitions.DIRECTION_KEYS[4])
-            return Direction.NORTHWEST;
-        if(key == KeyDefinitions.DIRECTION_KEYS[5])
-            return Direction.NORTHEAST;
-        if(key == KeyDefinitions.DIRECTION_KEYS[6])
-            return Direction.SOUTHWEST;
-        if(key == KeyDefinitions.DIRECTION_KEYS[7])
-            return Direction.SOUTHEAST;
-
-        return null;
-    }
 }
