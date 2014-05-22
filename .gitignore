@@ -1,0 +1,9 @@
+.classpath
+.idea
+.project
+bin
+*.iml
+*.xml
+!log4j2.xml
+*.properties
+target
