@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.HashMap;
 
 public final class Position {
 
@@ -29,7 +30,7 @@ public final class Position {
     private final int y;
 
     // TODO: find library that handles caching properly
-    private static final Map<Integer, Map<Integer, Position>> CACHE = new WeakHashMap<>();
+    private static final Map<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
 
     private static final Log log = LogFactory.getLog(Position.class);
     private static int cacheSize = 0;
