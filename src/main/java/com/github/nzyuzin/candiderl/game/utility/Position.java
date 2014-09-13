@@ -76,7 +76,7 @@ public final class Position {
             }
         } else {
             Position pos = new Position(x, y);
-            Map<Integer, Position> y2Position = new WeakHashMap<>();
+            Map<Integer, Position> y2Position = new HashMap<>();
             y2Position.put(y,pos);
             CACHE.put(x, y2Position);
             if (log.isTraceEnabled()) {
