@@ -18,12 +18,8 @@
 package com.github.nzyuzin.candiderl.game.utility;
 
 import java.awt.*;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 public final class ColoredChar {
-
-    private static final Map<Character, Map<Color, Map<Color, ColoredChar>>> CACHE = new WeakHashMap<>();
 
     private final Color background;
     private final Color foreground;
@@ -42,34 +38,7 @@ public final class ColoredChar {
     public static final ColoredChar NIHIL = getColoredChar(' ');
 
     public static ColoredChar getColoredChar(char c, Color fg, Color bg) {
-        ColoredChar result;
-        Map<Color, Map<Color, ColoredChar>> charContainer;
-        Map<Color, ColoredChar> fgContainer;
-        if (CACHE.containsKey(c)) {
-            charContainer = CACHE.get(c);
-            if (charContainer.containsKey(fg)) {
-                fgContainer = charContainer.get(fg);
-                if (fgContainer.containsKey(bg)) {
-                    result = fgContainer.get(bg);
-                } else {
-                    result = new ColoredChar(c, fg, bg);
-                    fgContainer.put(bg, result);
-                }
-            } else {
-                fgContainer = new WeakHashMap<>();
-                result = new ColoredChar(c, fg, bg);
-                fgContainer.put(bg, result);
-                charContainer.put(fg, fgContainer);
-            }
-        } else {
-            fgContainer = new WeakHashMap<>();
-            charContainer = new WeakHashMap<>();
-            result = new ColoredChar(c, fg, bg);
-            fgContainer.put(bg, result);
-            charContainer.put(fg, fgContainer);
-            CACHE.put(c, charContainer);
-        }
-        return result;
+        return new ColoredChar(c, fg, bg);
     }
 
     public static ColoredChar getColoredChar(char c) {

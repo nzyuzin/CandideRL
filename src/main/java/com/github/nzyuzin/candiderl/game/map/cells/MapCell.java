@@ -21,7 +21,7 @@ import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 
 import java.util.List;
 

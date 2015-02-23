@@ -21,14 +21,10 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.*;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
 public final class HitGameAction extends AbstractGameAction {
 
     private GameCharacter target;
     private Map map;
-    private static final Log log = LogFactory.getLog(HitGameAction.class);
 
     public HitGameAction(GameCharacter performer, Position pos) {
         super(performer);
@@ -37,28 +33,16 @@ public final class HitGameAction extends AbstractGameAction {
     }
 
     public boolean canBeExecuted() {
-        return target != null && !target.isDead() && !performer.isDead()
-                && target.getPosition().distanceTo(performer.getPosition()) < 2;
+        return target != null && !target.isDead() && !getPerformer().isDead()
+                && target.getPosition().distanceTo(getPerformer().getPosition()) < 2;
     }
 
     public void execute() {
-        if (log.isTraceEnabled()) {
-            log.trace("execute begins");
-        }
-        int damage = performer.roleDamageDice();
-        if (log.isTraceEnabled()) {
-            log.trace("Target \"" + target.getName() + "\" is taking " + damage + " damage");
-        }
+        int damage = getPerformer().roleDamageDice();
         target.takeDamage(damage);
         if (target.isDead()) {
-            if (log.isTraceEnabled()) {
-                log.trace("Target \"" + target.getName() + "\" died");
-            }
             map.putItem(target.getCorpse(), target.getPosition());
             map.removeGameCharacter(target);
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("execute ends");
         }
     }
 }

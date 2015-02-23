@@ -23,6 +23,6 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 public interface FieldOfVision {
 
     boolean isSeen(Position p);
-    ColoredChar[][] getVisibleCells();
+    ColoredChar[][] getVisibleCells(int width, int height);
 
 }

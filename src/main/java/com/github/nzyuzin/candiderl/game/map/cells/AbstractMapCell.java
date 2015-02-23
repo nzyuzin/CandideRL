@@ -105,13 +105,12 @@ abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof MapCell))
-            return false;
-        MapCell cell = (MapCell) object;
-        return this.name.equals(cell.getName())
-                && this.charOnMap.equals(cell.getDefaultChar())
-                && this.transparent == cell.isTransparent()
-                && this.canBePassed == cell.isPassable();
+        return super.equals(object);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
 

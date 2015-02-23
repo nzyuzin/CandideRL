@@ -17,23 +17,10 @@
 
 package com.github.nzyuzin.candiderl.game.utility;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.HashMap;
-
 public final class Position {
 
     private final int x;
     private final int y;
-
-    // TODO: find library that handles caching properly
-    private static final Map<Integer, Map<Integer, Position>> CACHE = new HashMap<>();
-
-    private static final Log log = LogFactory.getLog(Position.class);
-    private static int cacheSize = 0;
 
     public int getY() {
         return y;
@@ -48,43 +35,11 @@ public final class Position {
         this.y = y;
     }
 
-    public static Position getPosition(int x, int y) throws IllegalArgumentException {
-        return getPosition(x, y, true);
-    }
-
-    public static Position getPosition(int x, int y, boolean fromCache) throws IllegalArgumentException {
+    public static Position getPosition(int x, int y) {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
         }
-
-        if (!fromCache) {
-            return new Position(x, y);
-        }
-
-        if (CACHE.containsKey(x)) {
-            Map<Integer, Position> y2Position= CACHE.get(x);
-            if (y2Position.containsKey(y)) {
-                return y2Position.get(y);
-            } else {
-                Position pos = new Position(x, y);
-                y2Position.put(y, pos);
-                if (log.isTraceEnabled()) {
-                    cacheSize++;
-                    log.trace(String.format("created new Position: %s%nTotal size of CACHE is %d", pos, cacheSize));
-                }
-                return pos;
-            }
-        } else {
-            Position pos = new Position(x, y);
-            Map<Integer, Position> y2Position = new HashMap<>();
-            y2Position.put(y,pos);
-            CACHE.put(x, y2Position);
-            if (log.isTraceEnabled()) {
-                cacheSize++;
-                log.trace(String.format("created new Position: %s%nTotal size of CACHE is %d", pos, cacheSize));
-            }
-            return pos;
-        }
+        return new Position(x, y);
     }
 
     public double distanceTo(int x, int y) {

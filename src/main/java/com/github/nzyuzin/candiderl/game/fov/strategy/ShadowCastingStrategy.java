@@ -19,15 +19,11 @@ package com.github.nzyuzin.candiderl.game.fov.strategy;
 
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class ShadowCastingStrategy implements FOVStrategy {
-
-    private final static Log log = LogFactory.getLog(ShadowCastingStrategy.class);
 
     public ShadowCastingStrategy() {
     }

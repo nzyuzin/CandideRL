@@ -17,8 +17,6 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import com.github.nzyuzin.candiderl.game.utility.exceptions.ConfigurationException;
-
 import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +39,7 @@ public class GameConfig {
         try {
             ConfigHelper.read();
         } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error reading configuration", e);
         }
     }
 
@@ -60,6 +58,7 @@ public class GameConfig {
     public static final boolean CALCULATE_FIELD_OF_VIEW =
             Boolean.parseBoolean(ConfigHelper.CALCULATE_FIELD_OF_VIEW.getValue());
     public static final boolean RANDOM_MAP = Boolean.parseBoolean(ConfigHelper.RANDOM_MAP.getValue());
+    public static final boolean BUILD_MAP_FROM_FILE = Boolean.parseBoolean(ConfigHelper.BUILD_MAP_FROM_FILE.getValue());
     public static final boolean SPAWN_MOBS = Boolean.parseBoolean(ConfigHelper.SPAWN_MOBS.getValue());
 
     public static void write() {
@@ -78,6 +77,7 @@ public class GameConfig {
         DEFAULT_MAP_WINDOW_HEIGHT("default_map_window_height", "25"),
         CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true"),
         RANDOM_MAP("random_map", "true"),
+        BUILD_MAP_FROM_FILE("build_map_from_file", "false"),
         SPAWN_MOBS("spawn_mobs", "true");
 
         private String property;
@@ -132,7 +132,7 @@ public class GameConfig {
             try (OutputStream outputStream = Files.newOutputStream(pathToConfig)) {
                 configuration.store(outputStream, CONFIGURATION_FILE_HEADER);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Error writing configuration", e);
             }
         }
 

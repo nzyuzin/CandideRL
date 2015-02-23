@@ -19,8 +19,8 @@ package com.github.nzyuzin.candiderl.game;
 
 public interface GameObject {
 
-    public String getName();
+     String getName();
 
-    public String getDescription();
+     String getDescription();
 
 }

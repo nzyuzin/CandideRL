@@ -26,12 +26,12 @@ import com.github.nzyuzin.candiderl.game.ui.GameUI;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUI;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
-import com.github.nzyuzin.candiderl.game.utility.exceptions.GameClosedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public final class GameEngine implements AutoCloseable {
 
@@ -41,40 +41,32 @@ public final class GameEngine implements AutoCloseable {
         try (GameEngine engine = getGameEngine()) {
             engine.play();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            log.error(ex);
+            throw ex;
         }
     }
 
     private Player player;
-    private ArrayList<NPC> npcs;
+    private List<NPC> npcs;
     private MessageLog messageLog;
     private int currentTurn = 0;
-    private GameUI UI;
+    private GameUI ui;
     private ArtificialIntelligence ai;
 
     public static GameEngine getGameEngine() {
-        return new GameEngine();
+        MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
+        return new GameEngine(SwingGameUI.getUI(), mapFactory.getMap());
     }
 
-    private GameEngine() {
-
-        UI = SwingGameUI.getUI();
-        MapFactory mapFactory = MapFactory.getInstance();
-        mapFactory.setScreenSize(UI.getScreenWidth(), UI.getScreenHeight());
-        mapFactory.setMapSize(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
-        Map currentMap = mapFactory.getMap();
-
+    private GameEngine(GameUI ui, Map map) {
         if (log.isTraceEnabled()) {
             log.trace("mapFactory done");
         }
-
+        this.ui = ui;
         npcs = new ArrayList<>();
-
         player = Player.getInstance();
-
         // Some magic constants here
-        ai = new ArtificialIntelligence(player, (UI.getMapWidth() + UI.getMapHeight()) / 2 + 100);
-
+        ai = new ArtificialIntelligence(player, (this.ui.getMapWidth() + this.ui.getMapHeight()) / 2 + 100);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new NPC(
                     "troll",
@@ -87,19 +79,16 @@ public final class GameEngine implements AutoCloseable {
                     ColoredChar.getColoredChar('g', ColoredChar.GREEN))
             );
             for (NPC mob : npcs)
-                currentMap.putGameCharacter(mob, currentMap.getRandomFreePosition());
+                map.putGameCharacter(mob, map.getRandomFreePosition());
         }
-        currentMap.putGameCharacter(player, currentMap.getRandomFreePosition());
-
+        map.putGameCharacter(player, map.getRandomFreePosition());
         currentTurn = 0;
     }
 
     private void processActions() {
         player.performAction();
-
-        NPC npc;
         for (Iterator<NPC> iterator = npcs.iterator(); iterator.hasNext(); ) {
-            npc = iterator.next();
+            NPC npc = iterator.next();
             if (npc.isDead()) {
                 iterator.remove();
                 continue;
@@ -124,7 +113,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void handleInput() throws GameClosedException {
-        char input = UI.getInputChar();
+        char input = ui.getInputChar();
         if (log.isDebugEnabled()) {
             log.debug(String.format("handleInput input = %s", input));
         }
@@ -142,11 +131,11 @@ public final class GameEngine implements AutoCloseable {
     }
 
     public void close() {
-        UI.showAnnouncement("You're leaving the game.");
+        ui.showAnnouncement("You're leaving the game.");
         try {
-            UI.close();
+            ui.close();
         } catch (Exception ex) {
-            throw new RuntimeException("Exception during attempt to close the game");
+            throw new RuntimeException("Exception during attempt to close the game", ex);
         }
     }
 
@@ -157,7 +146,7 @@ public final class GameEngine implements AutoCloseable {
             initTime = System.currentTimeMillis();
         }
         if (!player.isDead()) {
-            UI.drawMap(player.getVisibleMap());
+            ui.drawMap(player.getVisibleMap(ui.getMapWidth(), ui.getMapHeight()));
         }
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawMap end :: time=%d", System.currentTimeMillis() - initTime));
@@ -165,14 +154,14 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void showStats() {
-        UI.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
+        ui.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
     }
 
     public void play() {
         if (log.isInfoEnabled()) {
             log.info("Game starts");
         }
-        UI.showMessage("Prepare to play!");
+        ui.showMessage("Prepare to play!");
         drawMap();
         showStats();
         try {
@@ -189,8 +178,8 @@ public final class GameEngine implements AutoCloseable {
             close();
             GameConfig.write();
         }
-        if (npcs.isEmpty()) UI.showAnnouncement("All mobs are dead!");
-        if (player.isDead()) UI.showAnnouncement("You're dead!");
+        if (npcs.isEmpty()) ui.showAnnouncement("All mobs are dead!");
+        if (player.isDead()) ui.showAnnouncement("You're dead!");
         if (log.isInfoEnabled()) {
             log.info("Game ends");
         }

@@ -23,7 +23,7 @@ public interface GameAction {
 
     boolean canBeExecuted();
 
-    int actionPointsLeft();
+    int getActionPointsLeft();
 
     void setActionPointsLeft(int points);
 

@@ -20,7 +20,7 @@ package com.github.nzyuzin.candiderl.game.utility;
 public enum Direction {
     NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
 
-    public static Position applyDirection(Position pos, Direction there) throws IllegalArgumentException {
+    public static Position applyDirection(Position pos, Direction there) {
         switch (there) {
 
             case NORTH:

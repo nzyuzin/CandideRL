@@ -24,9 +24,13 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 
 abstract class AbstractGameAction implements GameAction {
 
-    protected final GameCharacter performer; // The one who performs an action
+    private final GameCharacter performer; // The one who performs an action
 
-    protected int actionPointsLeft = 0;  // Not implemented yet.
+    private int actionPointsLeft = 0;  // Not implemented yet.
+
+    protected GameCharacter getPerformer() {
+        return performer;
+    }
 
     public abstract boolean canBeExecuted();
 
@@ -37,11 +41,11 @@ abstract class AbstractGameAction implements GameAction {
         this.performer = subject;
     }
 
-    public int actionPointsLeft() {  // Not implemented yet.
+    public int getActionPointsLeft() {
         return (this.actionPointsLeft < 0 ? 0 : this.actionPointsLeft);
     }
 
-    public void setActionPointsLeft(int points) {  // Not implemented yet.
+    public void setActionPointsLeft(int points) {
         this.actionPointsLeft = points;
     }
 

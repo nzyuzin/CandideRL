@@ -22,7 +22,7 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 public class NPC extends AbstractGameCharacter {
 
     public NPC(String name, String description, ColoredChar onMap) {
-        super(name, description, 100);
+        super(name, description, DEFAULT_HP);
         this.charOnMap = onMap;
     }
 

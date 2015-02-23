@@ -15,20 +15,10 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.utility.exceptions;
+package com.github.nzyuzin.candiderl.game;
 
-public class ConfigurationException extends Exception {
+public interface GameConstants {
 
-    public ConfigurationException() {
-        super();
-    }
-
-    public ConfigurationException(Exception e) {
-        super(e);
-    }
-
-    public ConfigurationException(String s) {
-        super(s);
-    }
+    String MAP_FILENAME = "gamemap.map";
 
 }

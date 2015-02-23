@@ -15,14 +15,7 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.map.generator;
-import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
+package com.github.nzyuzin.candiderl.game;
 
-public class DungeonBuilder {
-
-    public Map buildMap(int width, int height) {
-        return null;
-    }
-
+public class GameClosedException extends Exception {
 }

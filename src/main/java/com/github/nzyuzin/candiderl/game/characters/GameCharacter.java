@@ -22,39 +22,39 @@ import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
-import com.github.nzyuzin.candiderl.game.utility.interfaces.Damageable;
-import com.github.nzyuzin.candiderl.game.utility.interfaces.Movable;
-import com.github.nzyuzin.candiderl.game.utility.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
 
-    public boolean hasAction();
+     boolean hasAction();
 
-    public void addAction(GameAction action);
+     void addAction(GameAction action);
 
-    public void removeCurrentAction();
+     void removeCurrentAction();
 
-    public boolean isDead();
+     boolean isDead();
 
-    public Position getPosition();
+     Position getPosition();
 
-    public PositionOnMap getPositionOnMap();
+     PositionOnMap getPositionOnMap();
 
-    public void setPositionOnMap(PositionOnMap position);
+     void setPositionOnMap(PositionOnMap position);
 
-    public int getCurrentHP();
+     int getCurrentHP();
 
-    public int getMaxHP();
+     int getMaxHP();
 
-    public boolean canPerformAction();
+     boolean canPerformAction();
 
-    public void performAction();
+     void performAction();
 
-    public void breakActionQueue();
+     void breakActionQueue();
 
-    public void hit(Position pos);
+     void hit(Position pos);
 
-    public int roleDamageDice();
+     int roleDamageDice();
 
-    public GameItem getCorpse();
+     GameItem getCorpse();
 }

@@ -18,45 +18,61 @@
 package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.GameConstants;
+import com.google.common.io.LineReader;
+
+import java.io.*;
+import java.util.ArrayList;
 
 public final class MapFactory {
-
-    private int screenWidth;
-    private int screenHeight;
 
     private int mapWidth = GameConfig.DEFAULT_MAP_SIZE;
     private int mapHeight = GameConfig.DEFAULT_MAP_SIZE;
 
-    public int getScreenWidth() {
-        return screenWidth;
+    private MapFactory(int mapWidth, int mapHeight) {
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
     }
 
-    public int getScreenHeight() {
-        return screenHeight;
-    }
-
-    public static MapFactory getInstance() {
-        return new MapFactory();
-    }
-
-    public void setMapSize(int width, int height) {
-        mapWidth = width;
-        mapHeight = height;
-    }
-
-    public void setScreenSize(int width, int height) {
-        this.screenWidth = width;
-        this.screenHeight = height;
+    public static MapFactory getInstance(int mapWidth, int mapHeight) {
+        return new MapFactory(mapWidth, mapHeight);
     }
 
     public Map getMap() {
-        if (GameConfig.RANDOM_MAP)
-            return Map.buildRandomizedMap(mapWidth, mapHeight, screenWidth, screenHeight, 0.25);
-        return getEmptyMap();
+        if (GameConfig.BUILD_MAP_FROM_FILE) {
+            try {
+                return getMapFrom(readMap());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read map file", e);
+            }
+        } else if (GameConfig.RANDOM_MAP) {
+            return getRandomMap();
+        } else {
+            return getEmptyMap();
+        }
     }
 
     public Map getEmptyMap() {
-        return Map.buildEmptyMap(mapWidth, mapHeight, screenWidth, screenHeight);
+        return Map.buildEmptyMap(mapWidth, mapHeight);
+    }
+
+    public Map getRandomMap() {
+        return Map.buildRandomizedMap(mapWidth, mapHeight, 0.25);
+    }
+
+    public static Map getMapFrom(char[][] array) {
+        return Map.buildMapFrom(array);
+    }
+
+    private char[][] readMap() throws IOException {
+        File mapFile = new File(GameConstants.MAP_FILENAME);
+        LineReader lineReader = new LineReader(new FileReader(mapFile));
+        ArrayList<char[]> result = new ArrayList<>();
+        String line;
+        while ((line = lineReader.readLine()) != null) {
+            result.add(line.replaceAll(System.lineSeparator(), "").toCharArray());
+        }
+        return result.toArray(new char[result.size()][]);
     }
 
 }

@@ -30,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 final class FieldOfVisionImpl implements FieldOfVision {
     private final GameCharacter watcher;
     private int viewDistance;
-    private Map map;
     private FOVStrategy strategy;
 
     private static final Log log = LogFactory.getLog(FieldOfVisionImpl.class);
@@ -57,19 +56,17 @@ final class FieldOfVisionImpl implements FieldOfVision {
      *
      * @return array of printable chars corresponding to watchers field of view
      */
-    public ColoredChar[][] getVisibleCells() {
+    @Override
+    public ColoredChar[][] getVisibleCells(int width, int height) {
         long startTime = 0;
         if (log.isTraceEnabled()) {
             startTime = System.currentTimeMillis();
             log.trace("toColoredCharArray start");
         }
-
-        map = watcher.getPositionOnMap().getMap();
-
+        Map map = watcher.getPositionOnMap().getMap();
         if (!GameConfig.CALCULATE_FIELD_OF_VIEW) {
-            return map.getVisibleChars(watcher.getPosition(), map.getWidthOnScreen(), map.getHeightOnScreen());
+            return map.getVisibleChars(watcher.getPosition(), width, height);
         }
-
         // viewDistance * 2 + 1 stands here because view distance calculates
         // from watchers tile in every direction not including tile he's standing on
         // so we multiply by two for each side and add one for the watcher himself
@@ -78,16 +75,12 @@ final class FieldOfVisionImpl implements FieldOfVision {
                 viewDistance * 2 + 1,
                 viewDistance * 2 + 1
         ), viewDistance);
-
         ColoredChar[][] resultMap =
-                map.getVisibleChars(watcher.getPosition(), map.getWidthOnScreen(), map.getHeightOnScreen());
-
+                map.getVisibleChars(watcher.getPosition(), width, height);
         int xSeenOffset = resultMap.length / 2 - seen.length / 2;
         int ySeenOffset = resultMap[0].length / 2 - seen[0].length / 2;
-
         int xInSeen;
         int yInSeen;
-
         for (int x = 0; x < resultMap.length; x++) {
             for (int y = 0; y < resultMap[0].length; y++) {
                 xInSeen = x - xSeenOffset;
@@ -98,7 +91,6 @@ final class FieldOfVisionImpl implements FieldOfVision {
                     resultMap[x][y] = ColoredChar.NIHIL;
             }
         }
-
         if (log.isTraceEnabled()) {
             log.trace(String.format("toColoredCharArray end :: %dms", System.currentTimeMillis() - startTime));
         }

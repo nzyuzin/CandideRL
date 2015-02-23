@@ -30,10 +30,8 @@ public final class Player extends AbstractGameCharacter {
     private FieldOfVision fov = null;
     private final static Player PLAYER = new Player();
 
-    private final static int PLAYER_INITIAL_MAX_HP = 100;
-
     private Player() {
-        super("Player", "It's you.", PLAYER_INITIAL_MAX_HP);
+        super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP);
         this.charOnMap = ColoredChar
                 .getColoredChar(com.github.nzyuzin.candiderl.game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
         fov = FOVFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
@@ -47,8 +45,8 @@ public final class Player extends AbstractGameCharacter {
         return stats;
     }
 
-    public ColoredChar[][] getVisibleMap() {
-        return fov.getVisibleCells();
+    public ColoredChar[][] getVisibleMap(int width, int height) {
+        return fov.getVisibleCells(width, height);
     }
 
     public static Player getInstance() {

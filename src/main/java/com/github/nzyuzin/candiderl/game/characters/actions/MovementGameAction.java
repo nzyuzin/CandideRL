@@ -33,11 +33,11 @@ public final class MovementGameAction extends AbstractGameAction {
     }
 
     public boolean canBeExecuted() {
-        return !performer.isDead() && performer.getPosition().distanceTo(position) < 2
+        return !getPerformer().isDead() && getPerformer().getPosition().distanceTo(position) < 2
                 && map.isCellPassable(position) && !map.isSomeoneHere(position);
     }
 
     public void execute() {
-        map.moveGameCharacter(performer, position);
+        map.moveGameCharacter(getPerformer(), position);
     }
 }

@@ -33,9 +33,4 @@ public class Floor extends AbstractMapCell {
     public static Floor getFloor() {
         return new Floor();
     }
-
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof Floor && super.equals(object);
-    }
 }

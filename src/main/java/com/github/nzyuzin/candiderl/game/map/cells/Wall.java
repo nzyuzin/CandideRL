@@ -36,8 +36,4 @@ public class Wall extends AbstractMapCell {
         return instance;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof Wall && super.equals(object);
-    }
 }

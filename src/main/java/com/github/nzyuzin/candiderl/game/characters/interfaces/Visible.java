@@ -15,7 +15,7 @@
  *  along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.utility.interfaces;
+package com.github.nzyuzin.candiderl.game.characters.interfaces;
 
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 

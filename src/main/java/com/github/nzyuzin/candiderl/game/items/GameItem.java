@@ -17,14 +17,14 @@
 
 package com.github.nzyuzin.candiderl.game.items;
 
-import com.github.nzyuzin.candiderl.game.utility.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 
 public interface GameItem extends Visible {
 
-	public int getQuantity();
+	 int getQuantity();
 
-	public int getWeight();
+	 int getWeight();
 
-	public int getSize();
+	 int getSize();
 
 }

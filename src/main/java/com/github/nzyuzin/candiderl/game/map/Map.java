@@ -25,6 +25,7 @@ import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.base.Preconditions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,88 +38,74 @@ public final class Map {
     private final int mapWidth;
     private final int mapHeight;
 
-    private final int mapHeightOnScreen;
-    private final int mapWidthOnScreen;
-
     private final MapCell[][] map;
 
-    private Map(int width, int height, int screenWidth, int screenHeight) {
-        assert width > 0 && height > 0 && screenHeight > 0 && screenWidth > 0;
-
+    private Map(int width, int height) {
+        Preconditions.checkArgument(width > 0 && height > 0);
         map = new MapCell[width][height];
-
         mapWidth = width;
         mapHeight = height;
-
-        mapWidthOnScreen = screenWidth;
-        mapHeightOnScreen = screenHeight;
     }
 
-    static Map buildEmptyMap(int width, int height, int screenWidth, int screenHeight) {
-        Map instance = new Map(width, height, screenWidth, screenHeight);
-
+    static Map buildEmptyMap(int width, int height) {
+        Map instance = new Map(width, height);
         if (log.isTraceEnabled()) {
-            log.trace(String.format("Map construction start :: passed arguments: %d %d %d %d%nTotal Map size = %d",
-                    width, height, screenWidth, screenHeight, width * height));
+            log.trace(String.format("Map construction start :: passed arguments: %d %d%nTotal Map size = %d",
+                    width, height, width * height));
         }
-
-
-        // Wall is of no use now, so it's meaningless to create more
-        // than one wall to fill space on map
-        Wall wall = Wall.getWall();
-
-
         for (int i = 1; i < width - 1; i++)
             for (int j = 1; j < height - 1; j++)
-                instance.setCell(Position.getPosition(i, j, false), Floor.getFloor());
+                instance.setCell(i, j, Floor.getFloor());
         for (int i = 0; i < height; i++) {
-            instance.setCell(Position.getPosition(0, i, false), wall);
-            instance.setCell(Position.getPosition(width - 1, i, false), wall);
+            instance.setCell(0, i, Wall.getWall());
+            instance.setCell(width - 1, i, Wall.getWall());
         }
-
         for (int i = 0; i < width; i++) {
-            instance.setCell(Position.getPosition(i, 0, false), wall);
-            instance.setCell(Position.getPosition(i, height - 1, false), wall);
+            instance.setCell(i, 0, Wall.getWall());
+            instance.setCell(i, height - 1, Wall.getWall());
         }
-
         if (log.isTraceEnabled()) {
             log.trace("Map construction end");
         }
-
         return instance;
     }
 
-    static Map buildRandomizedMap(int width, int height, int screenWidth, int screenHeight, double filledCells) {
-
-        assert filledCells < 1 && filledCells > 0;
-
-        Map instance = buildEmptyMap(width, height, screenWidth, screenHeight);
-
+    static Map buildRandomizedMap(int width, int height, double filledCells) {
+        Preconditions.checkArgument(filledCells < 1 && filledCells > 0);
+        Map instance = buildEmptyMap(width, height);
         for (int i = 0; i < instance.mapHeight * instance.mapWidth * filledCells; i++) {
             instance.setCell(instance.getRandomFreePosition(), Wall.getWall());
         }
+        return instance;
+    }
 
+    static Map buildMapFrom(char[][] array) {
+        Map instance = buildEmptyMap(array[0].length, array.length);
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                char c = array[i][j];
+                Preconditions.checkArgument(c == '#' || c == ' ', "Map char array can only contain '#' and ' ' :: " +
+                        "given \'" + c + "\'");
+                MapCell cell = c == '#' ? Wall.getWall() : Floor.getFloor();
+                instance.setCell(j, array.length - 1 - i, cell);
+            }
+        }
         return instance;
     }
 
     MapCell getCell(Position pos) {
-        assert pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
-                && pos.getY() >= 0;
+        Preconditions.checkArgument(pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
+                && pos.getY() >= 0);
         return map[pos.getX()][pos.getY()];
     }
 
     void setCell(Position pos, MapCell cell) {
-        assert pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
-                && pos.getY() >= 0;
-        map[pos.getX()][pos.getY()] = cell;
+        setCell(pos.getX(), pos.getY(), cell);
     }
 
-    ColoredChar getCellChar(Position pos) {
-        return getCell(pos).getDefaultChar();
-    }
-
-    ColoredChar getChar(Position pos) {
-        return getCell(pos).getChar();
+    private void setCell(int x, int y, MapCell cell) {
+        Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0);
+        map[x][y] = cell;
     }
 
     public void removeGameCharacter(GameCharacter mob) {
@@ -138,10 +125,6 @@ public final class Map {
 
     public boolean isCellPassable(Position pos) {
         return getCell(pos).isPassable();
-    }
-
-    public boolean isCellTransparent(Position pos) {
-        return getCell(pos).isTransparent();
     }
 
     public void moveGameCharacter(GameCharacter mob, Position pos) {
@@ -165,23 +148,24 @@ public final class Map {
      */
     public Position getRandomFreePosition() {
         Position pos = getRandomPositionInsideMap();
-        while (isSomeoneHere(pos) || !isCellPassable(pos))
+        while (isSomeoneHere(pos) || !isCellPassable(pos)) {
             pos = getRandomPositionInsideMap();
+        }
         return pos;
     }
 
     private MapCell[][] getPartOfMap(int lX, int uX, int lY, int uY) {
         // l stands for lower bound and u stands for upper
         MapCell[][] result = new MapCell[uX - lX][uY - lY];
-
-        for (int x = lX; x < uX; x++)
+        for (int x = lX; x < uX; x++) {
             for (int y = lY; y < uY; y++) {
-                if (x < mapWidth && x >= 0 && y < mapHeight && y >= 0)
+                if (x < mapWidth && x >= 0 && y < mapHeight && y >= 0) {
                     result[x - lX][y - lY] = map[x][y];
-                else
+                } else {
                     result[x - lX][y - lY] = null;
+                }
             }
-
+        }
         return result;
     }
 
@@ -195,33 +179,29 @@ public final class Map {
     }
 
     public boolean[][] getTransparentCells(Position pos, int width, int height) {
-
         MapCell[][] partOfMap = getPartOfMap(pos, width, height);
-
         boolean[][] array = new boolean[partOfMap.length][partOfMap[0].length];
-
-        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
-            for (int x = 0, j = 0; x < partOfMap.length; x++, j++)
-                if (partOfMap[x][y] != null)
+        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++) {
+            for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
+                if (partOfMap[x][y] != null) {
                     array[j][i] = partOfMap[x][y].isTransparent();
-
+                }
+            }
+        }
         return array;
     }
 
     public ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
-
         MapCell[][] partOfMap = getPartOfMap(pos, width, height);
-
         ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
-
-        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++)
+        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++) {
             for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
                 if (partOfMap[x][y] != null)
                     result[j][i] = partOfMap[x][y].getChar();
                 else
                     result[j][i] = ColoredChar.NIHIL;
             }
-
+        }
         return result;
     }
 
@@ -231,24 +211,6 @@ public final class Map {
 
     public int getHeight() {
         return mapHeight;
-    }
-
-    public int getWidthOnScreen() {
-        return mapWidthOnScreen;
-    }
-
-    public int getHeightOnScreen() {
-        return mapHeightOnScreen;
-    }
-
-    public boolean isInsideMap(Position pos) {
-        return pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
-                && pos.getY() >= 0;
-    }
-
-    public boolean isInsideMapScreen(Position pos) {
-        return pos.getX() < mapWidthOnScreen && pos.getX() >= 0
-                && pos.getY() < mapHeightOnScreen && pos.getY() >= 0;
     }
 
     private Position getRandomPositionInsideMap() {

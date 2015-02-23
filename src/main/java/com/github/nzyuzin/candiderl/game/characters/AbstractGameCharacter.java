@@ -34,7 +34,9 @@ import java.util.Random;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
-    protected final class Attributes {
+    protected static final int DEFAULT_HP = 100;
+
+    protected static final class Attributes {
         public short strength;
         public short dexterity;
         public short intelligence;
@@ -55,15 +57,10 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     protected int currentHP;
     protected int maxHP;
-    protected double speed = 1;
 
     protected double attackRate;
     protected Attributes attributes;
     protected boolean canTakeDamage;
-    protected int actionPointsOnCon;    //
-    protected int currentActionPoints;  // Those three fields are of no use for now.
-    protected int maximumActionPoints;  //
-
 
     AbstractGameCharacter(String name, String description, int HP) {
         super(name, description);
@@ -75,89 +72,102 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         gameActions = new ArrayDeque<>();
     }
 
-
+    @Override
     public boolean hasAction() {
         return !gameActions.isEmpty();
     }
 
+    @Override
     public void addAction(GameAction action) {
         gameActions.add(action);
     }
 
+    @Override
     public void removeCurrentAction() {
         gameActions.poll();
     }
 
+    @Override
     public boolean isDead() {
         return currentHP <= 0;
     }
 
+    @Override
     public Position getPosition() {
         return position.getPosition();
     }
 
+    @Override
     public PositionOnMap getPositionOnMap() {
         return position;
     }
 
+    @Override
     public void setPositionOnMap(PositionOnMap position) {
         this.position = position;
     }
 
+    @Override
     public int getCurrentHP() {
         return currentHP;
     }
 
+    @Override
     public int getMaxHP() {
         return maxHP;
     }
 
+    @Override
     public boolean canPerformAction() {
         return hasAction() && gameActions.peek().canBeExecuted();
     }
 
+    @Override
     public void performAction() {
         // TODO make use of action points
         if (gameActions.isEmpty()) return;
         gameActions.poll().execute();
     }
 
+    @Override
     public void breakActionQueue() {
         gameActions = new ArrayDeque<GameAction>();
     }
 
+    @Override
     public void hit(Position pos) {
         addAction(new HitGameAction(this, pos));
     }
 
+    @Override
     public int roleDamageDice() {
         Random dice = new Random();
         return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
     }
 
+    @Override
     public void move(Direction there) {
         if (there != null)
             addAction(new MovementGameAction(this, there));
     }
 
-    public boolean canTakeDamage() {
-        return canTakeDamage;
-    }
-
+    @Override
     public void takeDamage(int damage) {
     /* TODO
 	 * if takes 0 as arguments - attacker missed,
-	 * otherwise it should apply armor coefficient to damage and then subtract it from currenthp.
+	 * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
 	 */
         currentHP -= damage;
     }
 
+    @Override
     public GameItem getCorpse() {
-        return new MiscItem("Corpse of " + this.getName(),
+        return new MiscItem("Corpse of " + this.getName(), "A corpse",
                 ColoredChar.getColoredChar(this.charOnMap.getChar(),
                         this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
     }
 
+    @Override
     public ColoredChar getChar() {
         return this.charOnMap;
     }

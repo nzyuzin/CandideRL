@@ -49,18 +49,15 @@ public class SwingGameUI implements GameUI {
             log.trace("SwingGameUI creation start");
             initTime = System.currentTimeMillis();
         }
-
         mainWindow = new JFrame("CandideRL");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mapWindow = TextWindow
                 .getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT, screenSize);
-
         if (log.isTraceEnabled()) {
             log.trace(String.format("Created console :: %dms", System.currentTimeMillis() - initTime));
             log.trace(String.format("mapWindow preferred = %s%n mapWindow minimum = %s%n mapWindow maximum = %s",
                     mapWindow.getPreferredSize(), mapWindow.getMinimumSize(), mapWindow.getMaximumSize()));
         }
-
         mainWindow.getContentPane().add(mapWindow);
         mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         KeyListener kl = new KeyListener() {
@@ -92,13 +89,11 @@ public class SwingGameUI implements GameUI {
         if (log.isTraceEnabled()) {
             log.trace("drawMap begin");
         }
-        ColoredChar c;
-
         // draw map on screen taking in mind that drawing begins in left upper corner
         // map passed as argument has (0, 0) as lower left point
         for (int i = charMap[0].length - 1; i >= 0; i--) {
             for (int j = 0; j < charMap.length; j++) {
-                c = charMap[j][i];
+                ColoredChar c = charMap[j][i];
                 mapWindow.write(c.getChar(), c.getForeground(), c.getBackground());
             }
         }
@@ -123,27 +118,18 @@ public class SwingGameUI implements GameUI {
     }
 
     @Override
-    public void showAnnouncement(String msg) {
-    }
+    public void showAnnouncement(String msg) { }
 
     @Override
-    public void showMessage(String msg) {
-    }
+    public void showMessage(String msg) { }
 
     @Override
-    public void showStats(String stats) {
-    }
+    public void showStats(String stats) { }
 
     @Override
     public void close() {
-        if (log.isTraceEnabled()) {
-            log.trace("SwingGameUI close begin");
-        }
         mainWindow.setVisible(false);
         mainWindow.dispose();
-        if (log.isTraceEnabled()) {
-            log.trace("SwingGameUI close end");
-        }
     }
 
     @Override

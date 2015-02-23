@@ -47,7 +47,6 @@ public class TextWindow extends JComponent {
 
     private int cursorColumn = 0;
     private int cursorRow = 0;
-    private Font mainFont = null;
     private Color currentForeground = DEFAULT_FOREGROUND;
     private Color currentBackground = DEFAULT_BACKGROUND;
 
@@ -62,7 +61,7 @@ public class TextWindow extends JComponent {
     /**
      * Internal class to hold TextWindow data
      */
-    private final class TextWindowContent {
+    private static final class TextWindowContent {
         private int capacity = 0;
         private int rows;
         private int columns;
@@ -166,44 +165,38 @@ public class TextWindow extends JComponent {
 
     private void init(int columns, int rows, Dimension screenSize) {
         data = new TextWindowContent(columns, rows);
-
         data.fillText(' ');
         data.fillBackground(DEFAULT_BACKGROUND);
         data.fillForeground(DEFAULT_FOREGROUND);
 
-        mainFont = GameConfig.DEFAULT_FONT;
-
+        Font mainFont = GameConfig.DEFAULT_FONT;
         FontRenderContext fontRenderContext = new FontRenderContext(mainFont.getTransform(), true, false);
         Rectangle2D charBounds = mainFont.getStringBounds("X", fontRenderContext);
         fontWidth = (int) charBounds.getWidth();
         fontHeight = (int) charBounds.getHeight();
         fontYOffset = -(int) charBounds.getMinY() - fontHeight;
-
         int windowWidth = data.getColumns() * fontWidth;
         int windowHeight = data.getRows() * fontHeight;
         Dimension windowSize = new Dimension(windowWidth, windowHeight);
-
         if (GameConfig.FIT_TO_SCREEN) {
             // TODO: think about real implementation, current one is crap
-            float k = ((float) screenSize.width / (float) windowWidth + screenSize.height / windowHeight) / 2;
+            float k = ((float) screenSize.width / (float) windowWidth
+                    + (float) screenSize.height / (float)  windowHeight) / 2;
             mainFont = mainFont.deriveFont(k * mainFont.getSize2D());
             charBounds = mainFont.getStringBounds("X", fontRenderContext);
             fontWidth = (int) charBounds.getWidth();
             fontHeight = (int) charBounds.getHeight();
             fontYOffset = -(int) charBounds.getMinY() - fontHeight;
         }
-
         if (log.isDebugEnabled()) {
             log.debug(String.format("fontWidth = %d fontHeight = %d fontYOffset = %d",
                     fontWidth, fontHeight, fontYOffset)
             );
             log.debug(String.format("screenSize = %s", windowSize));
         }
-
         setMinimumSize(windowSize);
         setPreferredSize(windowSize);
         setMaximumSize(windowSize);
-
         setFont(mainFont);
         repaint();
 
@@ -240,29 +233,18 @@ public class TextWindow extends JComponent {
     @Override
     public void paintComponent(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
-        Color fgColor;
-        Color bgColor;
-        int row;
-        int col1;
-        int col2;
-
-        for (row = 0; row < data.getRows(); row++) {
-            for (col1 = 0, col2 = col1 + 1; col1 < data.getColumns(); col1 = col2, col2 = col1 + 1) {
-
-                fgColor = data.getForegroundAt(col1, row);
-                bgColor = data.getBackgroundAt(col1, row);
-
+        for (int row = 0; row < data.getRows(); row++) {
+            for (int col1 = 0, col2 = col1 + 1; col1 < data.getColumns(); col1 = col2, col2 = col1 + 1) {
+                Color fgColor = data.getForegroundAt(col1, row);
+                Color bgColor = data.getBackgroundAt(col1, row);
                 while (col2 < data.getColumns() && fgColor == data.getForegroundAt(col2, row)
                         && bgColor == data.getBackgroundAt(col2, row)) {
                     col2++;
                 }
-
                 //  place between col1 and col2 is filled with same color
                 g.setBackground(bgColor);
                 g.clearRect(fontWidth * col1, row * fontHeight, fontWidth * (col2 - col1), fontHeight);
-
                 g.setColor(fgColor);
-
                 // row + 1 because drawing system puts images above Y coordinate
                 g.drawChars(
                         data.getRow(row),
