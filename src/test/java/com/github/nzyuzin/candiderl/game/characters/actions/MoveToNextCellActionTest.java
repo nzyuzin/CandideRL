@@ -38,7 +38,7 @@ public class MoveToNextCellActionTest {
     @Mock
     private Map map;
 
-    @Test
+    @Test(expected = ActionAlreadyExecutedException.class)
     public void testExecute() throws Exception {
         when(character.getMap()).thenReturn(map);
         when(character.isDead()).thenReturn(false);
@@ -55,5 +55,7 @@ public class MoveToNextCellActionTest {
         action.execute();
 
         verify(map).moveGameCharacter(character, targetPosition);
+
+        action.execute();
     }
 }

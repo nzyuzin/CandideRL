@@ -55,7 +55,7 @@ public class HitInMeleeActionTest {
         when(performer.getMap()).thenReturn(map);
     }
 
-    @Test
+    @Test(expected = ActionAlreadyExecutedException.class)
     public void testExecute() throws Exception {
         HitInMeleeAction action = new HitInMeleeAction(performer, target);
 
@@ -65,5 +65,7 @@ public class HitInMeleeActionTest {
 
         verify(performer).rollDamageDice();
         verify(target).takeDamage(anyInt());
+
+        action.execute();
     }
 }
