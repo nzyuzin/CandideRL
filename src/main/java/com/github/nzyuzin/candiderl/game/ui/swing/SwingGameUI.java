@@ -20,8 +20,8 @@ package com.github.nzyuzin.candiderl.game.ui.swing;
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.ui.GameUI;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class SwingGameUI implements GameUI {
     private boolean keyRead;
     private final Object lock = new Object();
 
-    private final Log log = LogFactory.getLog(SwingGameUI.class);
+    private final Logger log = LoggerFactory.getLogger(SwingGameUI.class);
 
     public static GameUI getUI() {
         return new SwingGameUI();

@@ -6,4 +6,5 @@ bin
 *.xml
 !log4j2.xml
 *.properties
-target
+build
+.gradle

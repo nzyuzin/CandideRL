@@ -18,9 +18,8 @@
 package com.github.nzyuzin.candiderl.game.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,7 +34,7 @@ import java.util.Arrays;
 
 public class TextWindow extends JComponent {
 
-    private static final Log log = LogFactory.getLog(TextWindow.class);
+    private static final Logger log = LoggerFactory.getLogger(TextWindow.class);
 
     private static final Color DEFAULT_FOREGROUND = Color.LIGHT_GRAY;
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;

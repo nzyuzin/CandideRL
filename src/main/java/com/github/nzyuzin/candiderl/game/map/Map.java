@@ -26,14 +26,14 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
 public final class Map {
 
-    private final static Log log = LogFactory.getLog(Map.class);
+    private final static Logger log = LoggerFactory.getLogger(Map.class);
 
     private final int mapWidth;
     private final int mapHeight;

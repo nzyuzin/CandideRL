@@ -23,16 +23,15 @@ import com.github.nzyuzin.candiderl.game.fov.strategy.FOVStrategy;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class FieldOfVisionImpl implements FieldOfVision {
     private final GameCharacter watcher;
     private int viewDistance;
     private FOVStrategy strategy;
 
-    private static final Log log = LogFactory.getLog(FieldOfVisionImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(FieldOfVisionImpl.class);
 
     /**
      * Builds field of view using GameCharacter as watcher for whom field of view is calculated
