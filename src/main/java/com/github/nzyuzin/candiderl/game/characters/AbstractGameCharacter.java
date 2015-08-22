@@ -132,13 +132,18 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public void performAction() {
         // TODO make use of action points
-        if (gameActions.isEmpty()) return;
+        if (gameActions.isEmpty()) {
+            return;
+        }
         gameActions.poll().execute();
     }
 
     @Override
     public void hit(Position pos) {
-        addAction(new HitInMeleeAction(this, getMap().getGameCharacter(pos)));
+        GameCharacter target = getMap().getGameCharacter(pos);
+        if (target != null) {
+            addAction(new HitInMeleeAction(this, target));
+        }
     }
 
     @Override
