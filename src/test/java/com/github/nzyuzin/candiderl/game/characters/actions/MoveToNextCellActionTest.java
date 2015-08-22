@@ -1,0 +1,59 @@
+/*
+ * This file is part of CandideRL.
+ *
+ * CandideRL is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * CandideRL is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.github.nzyuzin.candiderl.game.characters.actions;
+
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.utility.Position;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public class MoveToNextCellActionTest {
+
+    @Mock
+    private GameCharacter character;
+
+    @Mock
+    private Map map;
+
+    @Test
+    public void testExecute() throws Exception {
+        when(character.getMap()).thenReturn(map);
+        when(character.isDead()).thenReturn(false);
+
+        Position characterPosition = Position.getInstance(0, 1);
+        Position targetPosition = Position.getInstance(0, 0);
+        when(character.getPosition()).thenReturn(characterPosition);
+        when(map.isCellPassable(targetPosition)).thenReturn(true);
+        when(map.isSomeoneHere(targetPosition)).thenReturn(false);
+
+        MoveToNextCellAction action = new MoveToNextCellAction(character, map, targetPosition);
+
+        assertTrue(action.canBeExecuted());
+        action.execute();
+
+        verify(map).moveGameCharacter(character, targetPosition);
+    }
+}

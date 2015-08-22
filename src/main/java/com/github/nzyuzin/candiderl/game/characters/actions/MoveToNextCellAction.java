@@ -19,25 +19,30 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.utility.*;
+import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.google.common.base.Preconditions;
 
-public final class MovementGameAction extends AbstractGameAction {
+public final class MoveToNextCellAction extends AbstractGameAction {
 
     private final Position position;
     private final Map map;
 
-    public MovementGameAction(GameCharacter subject, Direction there) {
+    public MoveToNextCellAction(GameCharacter subject, Map map, Position position) {
         super(subject);
-        position = Direction.applyDirection(subject.getPosition(), there);
-        map = subject.getPositionOnMap().getMap();
+        Preconditions.checkNotNull(map);
+        Preconditions.checkNotNull(position);
+        Preconditions.checkNotNull(subject);
+        this.map = map;
+        this.position = position;
     }
 
     public boolean canBeExecuted() {
-        return !getPerformer().isDead() && getPerformer().getPosition().distanceTo(position) < 2
+        return !getPerformer().isDead() && map.equals(getPerformer().getMap())
+                && getPerformer().getPosition().isAdjacentTo(position)
                 && map.isCellPassable(position) && !map.isSomeoneHere(position);
     }
 
-    public void execute() {
+    protected void doExecute() {
         map.moveGameCharacter(getPerformer(), position);
     }
 }

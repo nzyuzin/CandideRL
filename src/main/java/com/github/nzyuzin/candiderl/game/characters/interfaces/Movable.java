@@ -17,8 +17,8 @@
 
 package com.github.nzyuzin.candiderl.game.characters.interfaces;
 
-import com.github.nzyuzin.candiderl.game.utility.Direction;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 public interface Movable {
-	void move(Direction there);
+	void move(Position position);
 }

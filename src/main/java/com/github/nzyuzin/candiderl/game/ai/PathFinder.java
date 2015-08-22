@@ -17,9 +17,8 @@
 
 package com.github.nzyuzin.candiderl.game.ai;
 
-import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -70,7 +69,7 @@ public class PathFinder {
             for (int i = position.getX() - 1; i <= position.getX() + 1; i++)
                 for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
                     if ( insideArray(i, j) && !checked[i][j] ) {
-                        p = Position.getPosition(i, j);
+                        p = Position.getInstance(i, j);
                         if (map.isCellPassable(p)) {
                             positionsToProcess.add(p);
                             distance[i][j] = distance[position.getX()][position.getY()] + 1;
@@ -86,29 +85,26 @@ public class PathFinder {
         return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
     }
 
-    public Direction chooseQuickestWay(Position from) {
-
+    public Position chooseQuickestWay(Position from) {
         Position best = from;
-
         Position p;
-
         for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
             for (int y = from.getY() - 1; y <= from.getY() + 1; y++) {
 
-                if (!insideArray(x, y))
+                if (!insideArray(x, y)) {
                     continue;
+                }
 
-                p = Position.getPosition(x, y);
+                p = Position.getInstance(x, y);
 
                 if (!map.isSomeoneHere(p)
                         && (distance[x][y] < distance[best.getX()][best.getY()]
-                            || (distance[x][y] == distance[best.getX()][best.getY()]
-                                 && p == target.chooseClosest(p, best))))
+                        || (distance[x][y] == distance[best.getX()][best.getY()]
+                        && p == target.chooseClosest(p, best)))) {
                     best = p;
+                }
             }
-
-        return Direction.getDirection(from, best);
-
+        return best;
     }
 
 }

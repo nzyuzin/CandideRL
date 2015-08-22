@@ -19,12 +19,12 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.HitGameAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.MovementGameAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
@@ -79,7 +79,9 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void addAction(GameAction action) {
-        gameActions.add(action);
+        if (action.canBeExecuted()) {
+            gameActions.add(action);
+        }
     }
 
     @Override
@@ -95,6 +97,11 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public Position getPosition() {
         return position.getPosition();
+    }
+
+    @Override
+    public Map getMap() {
+        return position.getMap();
     }
 
     @Override
@@ -131,19 +138,18 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void hit(Position pos) {
-        addAction(new HitGameAction(this, pos));
+        addAction(new HitInMeleeAction(this, getMap().getGameCharacter(pos)));
     }
 
     @Override
-    public int roleDamageDice() {
+    public void move(Position pos) {
+        addAction(new MoveToNextCellAction(this, this.getMap(), pos));
+    }
+
+    @Override
+    public int rollDamageDice() {
         Random dice = new Random();
         return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
-    }
-
-    @Override
-    public void move(Direction there) {
-        if (there != null)
-            addAction(new MovementGameAction(this, there));
     }
 
     @Override
@@ -153,10 +159,13 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 	 * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
 	 */
         currentHP -= damage;
+        if (currentHP < 0) {
+            die();
+        }
     }
 
     @Override
-    public GameItem getCorpse() {
+    public GameItem die() {
         return new MiscItem("Corpse of " + this.getName(), "A corpse",
                 ColoredChar.getColoredChar(this.charOnMap.getChar(),
                         this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);

@@ -22,27 +22,24 @@ public enum Direction {
 
     public static Position applyDirection(Position pos, Direction there) {
         switch (there) {
-
             case NORTH:
-                return Position.getPosition(pos.getX(), pos.getY() + 1);
+                return Position.getInstance(pos.getX(), pos.getY() + 1);
             case SOUTH:
-                return Position.getPosition(pos.getX(), pos.getY() - 1);
+                return Position.getInstance(pos.getX(), pos.getY() - 1);
             case WEST:
-                return Position.getPosition(pos.getX() - 1, pos.getY());
+                return Position.getInstance(pos.getX() - 1, pos.getY());
             case EAST:
-                return Position.getPosition(pos.getX() + 1, pos.getY());
+                return Position.getInstance(pos.getX() + 1, pos.getY());
             case NORTHEAST:
-                return Position.getPosition(pos.getX() + 1, pos.getY() + 1);
+                return Position.getInstance(pos.getX() + 1, pos.getY() + 1);
             case SOUTHEAST:
-                return Position.getPosition(pos.getX() + 1, pos.getY() - 1);
+                return Position.getInstance(pos.getX() + 1, pos.getY() - 1);
             case SOUTHWEST:
-                return Position.getPosition(pos.getX() - 1, pos.getY() - 1);
+                return Position.getInstance(pos.getX() - 1, pos.getY() - 1);
             case NORTHWEST:
-                return Position.getPosition(pos.getX() - 1, pos.getY() + 1);
-
+                return Position.getInstance(pos.getX() - 1, pos.getY() + 1);
             default:
-                return null;
-
+                return pos;
         }
     }
 

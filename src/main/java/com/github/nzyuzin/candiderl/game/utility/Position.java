@@ -35,7 +35,7 @@ public final class Position {
         this.y = y;
     }
 
-    public static Position getPosition(int x, int y) {
+    public static Position getInstance(int x, int y) {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
         }
@@ -51,9 +51,17 @@ public final class Position {
         return distanceTo(that.x, that.y);
     }
 
+    public boolean isAdjacentTo(Position that) {
+        return this.distanceTo(that) < 2;
+    }
+
     public Position chooseClosest(Position first, Position second) {
         return this.distanceTo(first) < this.distanceTo(second) ? first
                 : second;
+    }
+
+    public Position apply(Direction direction) {
+        return Direction.applyDirection(this, direction);
     }
 
     @Override

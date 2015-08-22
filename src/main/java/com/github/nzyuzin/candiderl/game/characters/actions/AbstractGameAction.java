@@ -19,10 +19,9 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 
-// GameActions connect GameCharacters and classes from another packages,
-// such as Map, so GameCharacters will only operate with highly abstract methods.
 abstract class AbstractGameAction implements GameAction {
     private final GameCharacter performer;
+    private boolean executed;
 
     public AbstractGameAction(GameCharacter subject) {
         this.performer = subject;
@@ -34,8 +33,17 @@ abstract class AbstractGameAction implements GameAction {
 
     public abstract boolean canBeExecuted();
 
-    /**
-     * Perform an action. Action is not supposed to be used after doing this method once.
-     */
-    public abstract void execute();
+    public final void execute() {
+        if (!executed) {
+            try {
+                doExecute();
+            } finally {
+                executed = true;
+            }
+        } else {
+            throw new ActionAlreadyExecutedException();
+        }
+    }
+
+    protected abstract void doExecute();
 }

@@ -15,26 +15,7 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl.game.characters.actions;
 
-mainClassName = 'com.github.nzyuzin.candiderl.game.GameEngine'
-
-repositories {
-    mavenCentral()
-}
-
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'org.slf4j:slf4j-simple:1.7.0'
-    compile 'com.google.guava:guava:18.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
+public class ActionAlreadyExecutedException extends RuntimeException {
 }

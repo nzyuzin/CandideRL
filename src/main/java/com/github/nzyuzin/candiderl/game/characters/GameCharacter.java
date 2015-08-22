@@ -23,36 +23,29 @@ import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
-
     boolean hasAction();
-
     void addAction(GameAction action);
-
     void removeCurrentAction();
-
     boolean isDead();
-
     Position getPosition();
 
+    Map getMap();
     PositionOnMap getPositionOnMap();
-
     void setPositionOnMap(PositionOnMap position);
-
     int getCurrentHP();
-
     int getMaxHP();
-
     boolean canPerformAction();
-
     void performAction();
-
     void hit(Position pos);
 
-    int roleDamageDice();
+    void move(Position pos);
 
-    GameItem getCorpse();
+    int rollDamageDice();
+
+    GameItem die();
 }

@@ -41,7 +41,7 @@ public class ShadowCastingStrategy implements FovStrategy {
         Direction[] directions = Direction.values();
 
         // watcher is supposed to be in center of seen array
-        Position watcherPos = Position.getPosition(seen.length / 2, seen[0].length / 2);
+        Position watcherPos = Position.getInstance(seen.length / 2, seen[0].length / 2);
 
         seen[watcherPos.getX()][watcherPos.getY()] = true;
 

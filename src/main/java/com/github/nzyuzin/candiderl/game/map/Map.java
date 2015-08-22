@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
-public final class Map {
+public class Map {
 
     private final static Logger log = LoggerFactory.getLogger(Map.class);
 
@@ -109,6 +109,7 @@ public final class Map {
     }
 
     public void removeGameCharacter(GameCharacter mob) {
+        Preconditions.checkState(mob.getMap().equals(this));
         MapCell cell = getCell(mob.getPosition());
         mob.setPositionOnMap(null);
         cell.setGameCharacter(null);
@@ -215,7 +216,7 @@ public final class Map {
 
     private Position getRandomPositionInsideMap() {
         Random rand = new Random();
-        return Position.getPosition(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+        return Position.getInstance(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
     }
 
 }

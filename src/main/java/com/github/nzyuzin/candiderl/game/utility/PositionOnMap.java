@@ -23,9 +23,6 @@ public class PositionOnMap {
     private Position position;
     private Map map;
 
-    private Position lastPos;
-    private Map lastMap;
-
     public PositionOnMap(Position position, Map map) {
         this.position = position;
         this.map = map;
@@ -47,28 +44,6 @@ public class PositionOnMap {
         return position.getY();
     }
 
-    public void setPosition(Position position) {
-        if (position == null)
-            throw new AssertionError();
-        this.lastPos = this.position;
-        this.position = position;
-    }
-
-    public void setMap(Map map) {
-        if (map == null)
-            throw new AssertionError();
-        this.lastMap = this.map;
-        this.map = map;
-    }
-
-    public Position getLastPos() {
-        return lastPos;
-    }
-
-    public Map getLastMap() {
-        return lastMap;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,8 +59,6 @@ public class PositionOnMap {
     public int hashCode() {
         int result = position != null ? position.hashCode() : 0;
         result = 31 * result + (map != null ? map.hashCode() : 0);
-        result = 31 * result + (lastPos != null ? lastPos.hashCode() : 0);
-        result = 31 * result + (lastMap != null ? lastMap.hashCode() : 0);
         return result;
     }
 }

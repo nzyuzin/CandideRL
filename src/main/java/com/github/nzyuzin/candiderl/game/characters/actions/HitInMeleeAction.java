@@ -19,29 +19,32 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.utility.*;
+import com.google.common.base.Preconditions;
 
-public final class HitGameAction extends AbstractGameAction {
+public class HitInMeleeAction extends AbstractGameAction {
 
     private GameCharacter target;
     private Map map;
 
-    public HitGameAction(GameCharacter performer, Position pos) {
+    public HitInMeleeAction(GameCharacter performer, GameCharacter target) {
         super(performer);
-        map = performer.getPositionOnMap().getMap();
-        target = map.getGameCharacter(pos);
+        Preconditions.checkNotNull(performer);
+        Preconditions.checkNotNull(target);
+        this.target = target;
+        this.map = performer.getMap();
     }
 
     public boolean canBeExecuted() {
-        return target != null && !target.isDead() && !getPerformer().isDead()
+        return target != null && map.equals(target.getMap()) && !target.isDead() && !getPerformer().isDead()
                 && target.getPosition().distanceTo(getPerformer().getPosition()) < 2;
     }
 
-    public void execute() {
-        int damage = getPerformer().roleDamageDice();
+    protected void doExecute() {
+        int damage = getPerformer().rollDamageDice();
         target.takeDamage(damage);
+        // TODO: move to GameCharacter
         if (target.isDead()) {
-            map.putItem(target.getCorpse(), target.getPosition());
+            map.putItem(target.die(), target.getPosition());
             map.removeGameCharacter(target);
         }
     }

@@ -18,9 +18,9 @@
 package com.github.nzyuzin.candiderl.game.ai;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.characters.actions.HitGameAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.MovementGameAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 public class NpcController {
 
@@ -42,16 +42,14 @@ public class NpcController {
         }
     }
 
-    public void chooseActionInDirection(GameCharacter mob, Direction there) {
-        MovementGameAction move = new MovementGameAction(mob, there);
+    public void chooseActionInDirection(GameCharacter mob, Direction direction) {
+        Position position = mob.getPosition().apply(direction);
+        MoveToNextCellAction move = new MoveToNextCellAction(mob, mob.getMap(), position);
         if (move.canBeExecuted()) {
             mob.addAction(move);
             return;
         }
-        HitGameAction hit = new HitGameAction(mob, Direction.applyDirection(mob.getPosition(), there));
-        if (hit.canBeExecuted()) {
-            mob.addAction(hit);
-        }
+        mob.hit(Direction.applyDirection(mob.getPosition(), direction));
     }
 
     private void moveToTarget(GameCharacter mob) {
@@ -59,8 +57,7 @@ public class NpcController {
         if (mob.getPosition().distanceTo(target.getPosition()) > opeationalRange)
             return;
 
-        if (target.getPositionOnMap().getLastPos() != target.getPosition())
-            path = new PathFinder(target.getPosition(), opeationalRange, target.getPositionOnMap().getMap());
+        path = new PathFinder(target.getPosition(), opeationalRange, target.getPositionOnMap().getMap());
         mob.move(path.chooseQuickestWay(mob.getPosition()));
     }
 
