@@ -18,7 +18,7 @@
 package com.github.nzyuzin.candiderl.game.fov;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.fov.strategy.FOVStrategy;
+import com.github.nzyuzin.candiderl.game.fov.strategy.FovStrategy;
 import com.github.nzyuzin.candiderl.game.fov.strategy.ShadowCastingStrategy;
 
 public class FovFactory {
@@ -26,13 +26,13 @@ public class FovFactory {
     public enum Strategies {
         SHADOW_CASTING(new ShadowCastingStrategy());
 
-        private FOVStrategy implementation;
+        private FovStrategy implementation;
 
-        private Strategies(FOVStrategy impl) {
+        private Strategies(FovStrategy impl) {
             this.implementation = impl;
         }
 
-        FOVStrategy getImplementation() {
+        FovStrategy getImplementation() {
             return implementation;
         }
     }

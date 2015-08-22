@@ -15,10 +15,24 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.fov.strategy;
+package com.github.nzyuzin.candiderl.game.ui;
 
-public interface FOVStrategy {
+import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
-    Boolean[][] calculateFOV(boolean[][] transparentCells, int viewDistance);
+public interface GameUi extends AutoCloseable {
+
+     void drawMap(ColoredChar[][] charMap);
+
+     char getInputChar();
+
+     void showAnnouncement(String msg);
+
+     void showMessage(String msg);
+
+     void showStats(String stats);
+
+     int getMapWidth();
+
+     int getMapHeight();
 
 }

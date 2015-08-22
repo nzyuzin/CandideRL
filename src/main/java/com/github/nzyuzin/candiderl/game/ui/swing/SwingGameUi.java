@@ -18,7 +18,7 @@
 package com.github.nzyuzin.candiderl.game.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-import com.github.nzyuzin.candiderl.game.ui.GameUI;
+import com.github.nzyuzin.candiderl.game.ui.GameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class SwingGameUI implements GameUI {
+public class SwingGameUi implements GameUi {
 
     private JFrame mainWindow;
     private TextWindow mapWindow;
@@ -37,13 +37,13 @@ public class SwingGameUI implements GameUI {
     private boolean keyRead;
     private final Object lock = new Object();
 
-    private final Logger log = LoggerFactory.getLogger(SwingGameUI.class);
+    private final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
 
-    public static GameUI getUI() {
-        return new SwingGameUI();
+    public static GameUi getUi() {
+        return new SwingGameUi();
     }
 
-    private SwingGameUI() {
+    private SwingGameUi() {
         long initTime = 0;
         if (log.isTraceEnabled()) {
             log.trace("SwingGameUI creation start");
@@ -107,8 +107,9 @@ public class SwingGameUI implements GameUI {
     public char getInputChar() {
         synchronized (lock) {
             try {
-                while (keyRead)
+                while (keyRead) {
                     lock.wait();
+                }
                 keyRead = true;
                 return key;
             } catch (InterruptedException exc) {
@@ -130,16 +131,6 @@ public class SwingGameUI implements GameUI {
     public void close() {
         mainWindow.setVisible(false);
         mainWindow.dispose();
-    }
-
-    @Override
-    public int getScreenWidth() {
-        return GameConfig.DEFAULT_MAP_WINDOW_WIDTH;
-    }
-
-    @Override
-    public int getScreenHeight() {
-        return GameConfig.DEFAULT_MAP_WINDOW_HEIGHT;
     }
 
     @Override

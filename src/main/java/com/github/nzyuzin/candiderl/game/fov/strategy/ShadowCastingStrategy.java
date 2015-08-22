@@ -23,7 +23,7 @@ import com.github.nzyuzin.candiderl.game.utility.Position;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class ShadowCastingStrategy implements FOVStrategy {
+public class ShadowCastingStrategy implements FovStrategy {
 
     public ShadowCastingStrategy() {
     }

@@ -18,12 +18,12 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
-import com.github.nzyuzin.candiderl.game.characters.NPC;
+import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
-import com.github.nzyuzin.candiderl.game.ui.GameUI;
-import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUI;
+import com.github.nzyuzin.candiderl.game.ui.GameUi;
+import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import org.slf4j.Logger;
@@ -47,17 +47,17 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private Player player;
-    private List<NPC> npcs;
+    private List<Npc> npcs;
     private int currentTurn = 0;
-    private GameUI ui;
+    private GameUi ui;
     private NpcController npcController;
 
     public static GameEngine getGameEngine() {
         MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
-        return new GameEngine(SwingGameUI.getUI(), mapFactory.getMap());
+        return new GameEngine(SwingGameUi.getUi(), mapFactory.getMap());
     }
 
-    private GameEngine(GameUI ui, Map map) {
+    private GameEngine(GameUi ui, Map map) {
         if (log.isTraceEnabled()) {
             log.trace("mapFactory done");
         }
@@ -67,17 +67,17 @@ public final class GameEngine implements AutoCloseable {
         int npcOperationalRange = (this.ui.getMapWidth() + this.ui.getMapHeight()) / 2;
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
-            npcs.add(new NPC(
+            npcs.add(new Npc(
                     "troll",
                     "A furious beast with sharp claws.",
                     ColoredChar.getColoredChar('t', ColoredChar.RED))
             );
-            npcs.add(new NPC(
+            npcs.add(new Npc(
                     "goblin",
                     "A regular goblin.",
                     ColoredChar.getColoredChar('g', ColoredChar.GREEN))
             );
-            for (NPC mob : npcs)
+            for (Npc mob : npcs)
                 map.putGameCharacter(mob, map.getRandomFreePosition());
         }
         map.putGameCharacter(player, map.getRandomFreePosition());
@@ -86,8 +86,8 @@ public final class GameEngine implements AutoCloseable {
 
     private void processActions() {
         player.performAction();
-        for (Iterator<NPC> iterator = npcs.iterator(); iterator.hasNext(); ) {
-            NPC npc = iterator.next();
+        for (Iterator<Npc> iterator = npcs.iterator(); iterator.hasNext(); ) {
+            Npc npc = iterator.next();
             if (npc.isDead()) {
                 iterator.remove();
                 continue;

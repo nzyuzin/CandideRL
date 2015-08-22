@@ -19,9 +19,9 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
-public class NPC extends AbstractGameCharacter {
+public class Npc extends AbstractGameCharacter {
 
-    public NPC(String name, String description, ColoredChar onMap) {
+    public Npc(String name, String description, ColoredChar onMap) {
         super(name, description, DEFAULT_HP);
         this.charOnMap = onMap;
     }

@@ -19,7 +19,7 @@ package com.github.nzyuzin.candiderl.game.fov;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.fov.strategy.FOVStrategy;
+import com.github.nzyuzin.candiderl.game.fov.strategy.FovStrategy;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 final class FieldOfVisionImpl implements FieldOfVision {
     private final GameCharacter watcher;
     private int viewDistance;
-    private FOVStrategy strategy;
+    private FovStrategy strategy;
 
     private static final Logger log = LoggerFactory.getLogger(FieldOfVisionImpl.class);
 
@@ -39,7 +39,7 @@ final class FieldOfVisionImpl implements FieldOfVision {
      * @param watcher GameCharacter for whom field of view is calculated
      * @param viewDistance watcher won't be able to see tiles further than this distance
      */
-    public FieldOfVisionImpl(GameCharacter watcher, int viewDistance, FOVStrategy implementation) {
+    public FieldOfVisionImpl(GameCharacter watcher, int viewDistance, FovStrategy implementation) {
         this.viewDistance = viewDistance;
         this.watcher = watcher;
         this.strategy = implementation;
