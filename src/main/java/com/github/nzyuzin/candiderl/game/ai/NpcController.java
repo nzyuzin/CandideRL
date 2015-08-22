@@ -25,11 +25,11 @@ import com.github.nzyuzin.candiderl.game.utility.Position;
 public class NpcController {
 
     private final GameCharacter target;
-    private final int opeationalRange;
+    private final int operationalRange;
     private PathFinder path;
 
     public NpcController(GameCharacter target, int operationalRange) {
-        this.opeationalRange = operationalRange;
+        this.operationalRange = operationalRange;
         this.target = target;
     }
 
@@ -49,16 +49,16 @@ public class NpcController {
             mob.addAction(move);
             return;
         }
-        mob.hit(Direction.applyDirection(mob.getPosition(), direction));
+        mob.hit(mob.getPosition().apply(direction));
     }
 
     private void moveToTarget(GameCharacter mob) {
         // TODO: implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
-        if (mob.getPosition().distanceTo(target.getPosition()) > opeationalRange)
+        if (mob.getPosition().distanceTo(target.getPosition()) > operationalRange)
             return;
 
-        path = new PathFinder(target.getPosition(), opeationalRange, target.getPositionOnMap().getMap());
-        mob.move(path.chooseQuickestWay(mob.getPosition()));
+        path = new PathFinder(target.getPosition(), operationalRange, target.getPositionOnMap().getMap());
+        mob.move(path.findNextMove(mob.getPosition()));
     }
 
 }

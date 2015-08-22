@@ -46,7 +46,7 @@ public class ShadowCastingStrategy implements FovStrategy {
         seen[watcherPos.getX()][watcherPos.getY()] = true;
 
         for (int i = 0; i < directions.length; i++) {
-            positionsQueue.add(Direction.applyDirection(watcherPos, directions[i]));
+            positionsQueue.add(watcherPos.apply(directions[i]));
 
             while (!positionsQueue.isEmpty()) {
                 pos = positionsQueue.poll();
@@ -57,7 +57,7 @@ public class ShadowCastingStrategy implements FovStrategy {
                     continue;
 
                 marked[pos.getX()][pos.getY()] = true;
-                Position cellBetweenWatcher = Direction.applyDirection(pos, Direction.getDirection(pos, watcherPos));
+                Position cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
                 if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
                         && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
                         && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
@@ -68,25 +68,23 @@ public class ShadowCastingStrategy implements FovStrategy {
 
                 if (transparent[pos.getX()][pos.getY()]) {
                     for (int j = i - 1 + directions.length; j <= i + 1 + directions.length; j++) {
-                        try {
-                            positionsQueue.add(Direction
-                                    .applyDirection(pos, directions[j % directions.length]));
-                        } catch (IllegalArgumentException e) {
-                            /* TODO: rethink approach with exception since this check is rather redundant */
+                        Position newPosition = pos.apply(directions[j % directions.length]);
+                        if (newPosition != null) {
+                            positionsQueue.add(newPosition);
                         }
                     }
                 } else {
                     while (true) {
-                        try {
-                            pos = Direction.applyDirection(pos, Direction.getDirection(watcherPos, pos));
-                        } catch (IllegalArgumentException e) {
+                        pos = pos.apply(watcherPos.directionTo(pos));
+                        if (pos == null) {
                             break;
                         }
-                        if (!isInsideSeenArray(pos))
+                        if (!isInsideSeenArray(pos)) {
                             break;
-                        cellBetweenWatcher = Direction.applyDirection(pos, Direction.getDirection(pos, watcherPos));
-                        if ((seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
-                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()])
+                        }
+                        cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
+                        if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
                                 || !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
                             seen[pos.getX()][pos.getY()] = false;
                         }

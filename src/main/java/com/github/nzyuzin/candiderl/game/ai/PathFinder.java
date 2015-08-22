@@ -85,7 +85,7 @@ public class PathFinder {
         return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
     }
 
-    public Position chooseQuickestWay(Position from) {
+    public Position findNextMove(Position from) {
         Position best = from;
         Position p;
         for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
@@ -97,10 +97,9 @@ public class PathFinder {
 
                 p = Position.getInstance(x, y);
 
-                if (!map.isSomeoneHere(p)
-                        && (distance[x][y] < distance[best.getX()][best.getY()]
-                        || (distance[x][y] == distance[best.getX()][best.getY()]
-                        && p == target.chooseClosest(p, best)))) {
+                if (!map.isSomeoneHere(p) && (distance[x][y] < distance[best.getX()][best.getY()]
+                        || distance[x][y] == distance[best.getX()][best.getY()]
+                        && p == target.closest(p, best))) {
                     best = p;
                 }
             }

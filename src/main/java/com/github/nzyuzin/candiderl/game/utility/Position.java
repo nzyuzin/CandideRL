@@ -37,14 +37,14 @@ public final class Position {
 
     public static Position getInstance(int x, int y) {
         if (x < 0 || y < 0) {
-            throw new IllegalArgumentException(String.format("Position can't be negative! x = %d y = %d", x, y));
+            throw new IllegalArgumentException(String.format("Position can't be negative x = %d y = %d", x, y));
         }
         return new Position(x, y);
     }
 
     public double distanceTo(int x, int y) {
         return Math.sqrt((double) ((x - this.x) * (x - this.x))
-                + ((y - this.y) * (y - this.y)));
+                + (y - this.y) * (y - this.y));
     }
 
     public double distanceTo(Position that) {
@@ -55,13 +55,78 @@ public final class Position {
         return this.distanceTo(that) < 2;
     }
 
-    public Position chooseClosest(Position first, Position second) {
+    /**
+     * Returns closest to this position from given two {@link Position}s
+     *
+     * @param first  first position
+     * @param second second position
+     * @return position closest to this position, either {@param first} or {@param second}
+     */
+    public Position closest(Position first, Position second) {
         return this.distanceTo(first) < this.distanceTo(second) ? first
                 : second;
     }
 
     public Position apply(Direction direction) {
-        return Direction.applyDirection(this, direction);
+        int x = getX();
+        int y = getY();
+        switch (direction) {
+            case NORTH:
+                y += 1;
+                break;
+            case SOUTH:
+                y -= 1;
+                break;
+            case WEST:
+                x -= 1;
+                break;
+            case EAST:
+                x += 1;
+                break;
+            case NORTHEAST:
+                x += 1;
+                y += 1;
+                break;
+            case SOUTHEAST:
+                x += 1;
+                y -= 1;
+                break;
+            case SOUTHWEST:
+                x -= 1;
+                y -= 1;
+                break;
+            case NORTHWEST:
+                x -= 1;
+                y += 1;
+                break;
+            default:
+                break;
+        }
+        if (x >= 0 && y >= 0) {
+            return Position.getInstance(x, y);
+        } else {
+            return null;
+        }
+    }
+
+    public Direction directionTo(Position that) {
+        if (this.getX() == that.getX() && this.getY() > that.getY())
+            return Direction.SOUTH;
+        if (this.getX() == that.getX() && this.getY() < that.getY())
+            return Direction.NORTH;
+        if (this.getX() > that.getX() && this.getY() == that.getY())
+            return Direction.WEST;
+        if (this.getX() < that.getX() && this.getY() == that.getY())
+            return Direction.EAST;
+        if (this.getX() > that.getX() && this.getY() < that.getY())
+            return Direction.NORTHWEST;
+        if (this.getX() < that.getX() && this.getY() < that.getY())
+            return Direction.NORTHEAST;
+        if (this.getX() > that.getX() && this.getY() > that.getY())
+            return Direction.SOUTHWEST;
+        if (this.getX() < that.getX() && this.getY() > that.getY())
+            return Direction.SOUTHEAST;
+        return null;
     }
 
     @Override

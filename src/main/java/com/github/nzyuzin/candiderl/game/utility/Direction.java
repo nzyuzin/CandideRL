@@ -18,50 +18,5 @@
 package com.github.nzyuzin.candiderl.game.utility;
 
 public enum Direction {
-    NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
-
-    public static Position applyDirection(Position pos, Direction there) {
-        switch (there) {
-            case NORTH:
-                return Position.getInstance(pos.getX(), pos.getY() + 1);
-            case SOUTH:
-                return Position.getInstance(pos.getX(), pos.getY() - 1);
-            case WEST:
-                return Position.getInstance(pos.getX() - 1, pos.getY());
-            case EAST:
-                return Position.getInstance(pos.getX() + 1, pos.getY());
-            case NORTHEAST:
-                return Position.getInstance(pos.getX() + 1, pos.getY() + 1);
-            case SOUTHEAST:
-                return Position.getInstance(pos.getX() + 1, pos.getY() - 1);
-            case SOUTHWEST:
-                return Position.getInstance(pos.getX() - 1, pos.getY() - 1);
-            case NORTHWEST:
-                return Position.getInstance(pos.getX() - 1, pos.getY() + 1);
-            default:
-                return pos;
-        }
-    }
-
-    public static Direction getDirection(Position from, Position to) {
-        if (from.getX() == to.getX() && from.getY() > to.getY())
-            return Direction.SOUTH;
-        if (from.getX() == to.getX() && from.getY() < to.getY())
-            return Direction.NORTH;
-        if (from.getX() > to.getX() && from.getY() == to.getY())
-            return Direction.WEST;
-        if (from.getX() < to.getX() && from.getY() == to.getY())
-            return Direction.EAST;
-        if (from.getX() > to.getX() && from.getY() < to.getY())
-            return Direction.NORTHWEST;
-        if (from.getX() < to.getX() && from.getY() < to.getY())
-            return Direction.NORTHEAST;
-        if (from.getX() > to.getX() && from.getY() > to.getY())
-            return Direction.SOUTHWEST;
-        if (from.getX() < to.getX() && from.getY() > to.getY())
-            return Direction.SOUTHEAST;
-
-        return null;
-    }
-
+    NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
 }
