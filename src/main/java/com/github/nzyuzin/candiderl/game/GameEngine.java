@@ -48,7 +48,6 @@ public final class GameEngine implements AutoCloseable {
 
     private Player player;
     private List<NPC> npcs;
-    private MessageLog messageLog;
     private int currentTurn = 0;
     private GameUI ui;
     private NpcController npcController;
