@@ -58,9 +58,6 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private GameEngine(GameUi ui, Map map) {
-        if (log.isTraceEnabled()) {
-            log.trace("mapFactory done");
-        }
         this.ui = ui;
         npcs = new ArrayList<>();
         player = Player.getInstance();
