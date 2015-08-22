@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import com.github.nzyuzin.candiderl.game.ai.ArtificialIntelligence;
+import com.github.nzyuzin.candiderl.game.ai.NpcController;
 import com.github.nzyuzin.candiderl.game.characters.NPC;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.map.Map;
@@ -51,7 +51,7 @@ public final class GameEngine implements AutoCloseable {
     private MessageLog messageLog;
     private int currentTurn = 0;
     private GameUI ui;
-    private ArtificialIntelligence ai;
+    private NpcController npcController;
 
     public static GameEngine getGameEngine() {
         MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
@@ -65,8 +65,8 @@ public final class GameEngine implements AutoCloseable {
         this.ui = ui;
         npcs = new ArrayList<>();
         player = Player.getInstance();
-        // Some magic constants here
-        ai = new ArtificialIntelligence(player, (this.ui.getMapWidth() + this.ui.getMapHeight()) / 2 + 100);
+        int npcOperationalRange = (this.ui.getMapWidth() + this.ui.getMapHeight()) / 2;
+        npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new NPC(
                     "troll",
@@ -92,7 +92,7 @@ public final class GameEngine implements AutoCloseable {
             if (npc.isDead()) {
                 iterator.remove();
                 continue;
-            } else ai.chooseAction(npc);
+            } else npcController.chooseAction(npc);
             if (npc.canPerformAction())
                 npc.performAction();
             else npc.removeCurrentAction();
@@ -118,7 +118,7 @@ public final class GameEngine implements AutoCloseable {
             log.debug(String.format("handleInput input = %s", input));
         }
         if (KeyDefinitions.isDirectionKey(input)) {
-            ai.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
+            npcController.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
             return;
         }
         if (KeyDefinitions.isSkipTurnChar(input)) {

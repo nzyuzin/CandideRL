@@ -20,18 +20,17 @@ package com.github.nzyuzin.candiderl.game.ai;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitGameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MovementGameAction;
-
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 
-public class ArtificialIntelligence {
+public class NpcController {
 
     private final GameCharacter target;
-    private final int distanceLimit;
+    private final int opeationalRange;
     private PathFinder path;
 
-    public ArtificialIntelligence(GameCharacter t, int distance) {
-        distanceLimit = distance;
-        target = t;
+    public NpcController(GameCharacter target, int operationalRange) {
+        this.opeationalRange = operationalRange;
+        this.target = target;
     }
 
     public void chooseAction(GameCharacter mob) {
@@ -57,12 +56,12 @@ public class ArtificialIntelligence {
     }
 
     private void moveToTarget(GameCharacter mob) {
-        // TODO: whole implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
-        if (mob.getPosition().distanceTo(target.getPosition()) > distanceLimit)
+        // TODO: implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
+        if (mob.getPosition().distanceTo(target.getPosition()) > opeationalRange)
             return;
 
         if (target.getPositionOnMap().getLastPos() != target.getPosition())
-            path = new PathFinder(target.getPosition(), distanceLimit, target.getPositionOnMap().getMap());
+            path = new PathFinder(target.getPosition(), opeationalRange, target.getPositionOnMap().getMap());
         mob.move(path.chooseQuickestWay(mob.getPosition()));
     }
 
