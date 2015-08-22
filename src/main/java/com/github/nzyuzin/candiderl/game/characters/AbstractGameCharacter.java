@@ -130,11 +130,6 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public void breakActionQueue() {
-        gameActions = new ArrayDeque<GameAction>();
-    }
-
-    @Override
     public void hit(Position pos) {
         addAction(new HitGameAction(this, pos));
     }
