@@ -44,15 +44,14 @@ public class NpcController {
 
     public void chooseActionInDirection(GameCharacter mob, Direction there) {
         MovementGameAction move = new MovementGameAction(mob, there);
-
         if (move.canBeExecuted()) {
             mob.addAction(move);
             return;
         }
-
-        HitGameAction hit = new HitGameAction(mob, Direction .applyDirection(mob.getPosition(), there));
-
-        if (hit.canBeExecuted()) mob.addAction(hit);
+        HitGameAction hit = new HitGameAction(mob, Direction.applyDirection(mob.getPosition(), there));
+        if (hit.canBeExecuted()) {
+            mob.addAction(hit);
+        }
     }
 
     private void moveToTarget(GameCharacter mob) {

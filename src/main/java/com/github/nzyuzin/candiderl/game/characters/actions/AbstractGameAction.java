@@ -21,12 +21,12 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 
 // GameActions connect GameCharacters and classes from another packages,
 // such as Map, so GameCharacters will only operate with highly abstract methods.
-
 abstract class AbstractGameAction implements GameAction {
+    private final GameCharacter performer;
 
-    private final GameCharacter performer; // The one who performs an action
-
-    private int actionPointsLeft = 0;  // Not implemented yet.
+    public AbstractGameAction(GameCharacter subject) {
+        this.performer = subject;
+    }
 
     protected GameCharacter getPerformer() {
         return performer;
@@ -34,19 +34,8 @@ abstract class AbstractGameAction implements GameAction {
 
     public abstract boolean canBeExecuted();
 
-    /* Perform an action. Action is not supposed to be used after doing this method once. */
+    /**
+     * Perform an action. Action is not supposed to be used after doing this method once.
+     */
     public abstract void execute();
-
-    public AbstractGameAction(GameCharacter subject) {
-        this.performer = subject;
-    }
-
-    public int getActionPointsLeft() {
-        return (this.actionPointsLeft < 0 ? 0 : this.actionPointsLeft);
-    }
-
-    public void setActionPointsLeft(int points) {
-        this.actionPointsLeft = points;
-    }
-
 }

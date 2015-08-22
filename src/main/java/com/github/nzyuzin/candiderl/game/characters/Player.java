@@ -17,13 +17,13 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-import com.github.nzyuzin.candiderl.game.fov.FOVFactory;
-import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
+import com.github.nzyuzin.candiderl.game.fov.FovFactory;
+import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public final class Player extends AbstractGameCharacter {
 
@@ -34,7 +34,7 @@ public final class Player extends AbstractGameCharacter {
         super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP);
         this.charOnMap = ColoredChar
                 .getColoredChar(com.github.nzyuzin.candiderl.game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
-        fov = FOVFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
+        fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }
 
     public Map<String, String> getStats() {

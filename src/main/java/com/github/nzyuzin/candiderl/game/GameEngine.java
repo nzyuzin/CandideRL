@@ -92,29 +92,31 @@ public final class GameEngine implements AutoCloseable {
                 iterator.remove();
                 continue;
             } else npcController.chooseAction(npc);
-            if (npc.canPerformAction())
+            if (npc.canPerformAction()) {
                 npc.performAction();
-            else npc.removeCurrentAction();
+            } else {
+                npc.removeCurrentAction();
+            }
         }
     }
 
     private void advanceTime() {
         if (log.isTraceEnabled()) {
-            log.trace("advanceTime begin");
+            log.trace("advanceTime begin currentTurn = {}", currentTurn);
         }
-        currentTurn++;
         processActions();
         drawMap();
         showStats();
+        currentTurn++;
         if (log.isTraceEnabled()) {
-            log.trace(String.format("advanceTime end :: currentTurn = %d", currentTurn));
+            log.trace("advanceTime end");
         }
     }
 
     private void handleInput() throws GameClosedException {
         char input = ui.getInputChar();
         if (log.isDebugEnabled()) {
-            log.debug(String.format("handleInput input = %s", input));
+            log.debug("handleInput input = {}", input);
         }
         if (KeyDefinitions.isDirectionKey(input)) {
             npcController.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
@@ -171,7 +173,7 @@ public final class GameEngine implements AutoCloseable {
             }
         } catch (GameClosedException gameClosedException) {
             if (log.isDebugEnabled()) {
-                log.debug("Game was closed");
+                log.debug("Closing game");
             }
         } finally {
             close();

@@ -18,13 +18,6 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 public interface GameAction {
-
     void execute();
-
     boolean canBeExecuted();
-
-    int getActionPointsLeft();
-
-    void setActionPointsLeft(int points);
-
 }

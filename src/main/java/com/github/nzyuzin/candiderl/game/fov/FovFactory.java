@@ -17,12 +17,11 @@
 
 package com.github.nzyuzin.candiderl.game.fov;
 
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.fov.strategy.FOVStrategy;
 import com.github.nzyuzin.candiderl.game.fov.strategy.ShadowCastingStrategy;
 
-import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-
-public class FOVFactory {
+public class FovFactory {
 
     public enum Strategies {
         SHADOW_CASTING(new ShadowCastingStrategy());
@@ -38,8 +37,8 @@ public class FOVFactory {
         }
     }
 
-    public static FOVFactory getInstance() {
-        return new FOVFactory();
+    public static FovFactory getInstance() {
+        return new FovFactory();
     }
 
     public FieldOfVision getFOV(GameCharacter watcher, int viewDistance) {
