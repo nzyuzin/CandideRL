@@ -33,11 +33,11 @@ public class SwingGameUi implements GameUi {
     private JFrame mainWindow;
     private TextWindow mapWindow;
 
-    private Character key = ' ';
-    private boolean keyRead;
+    private Character key;
+    private boolean keyRead = true;
     private final Object lock = new Object();
 
-    private final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
+    private static final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
 
     public static GameUi getUi() {
         return new SwingGameUi();
@@ -64,9 +64,9 @@ public class SwingGameUi implements GameUi {
             @Override
             public void keyTyped(KeyEvent e) {
                 synchronized (lock) {
-                    lock.notify();
                     key = e.getKeyChar();
                     keyRead = false;
+                    lock.notify();
                 }
             }
 
@@ -89,7 +89,7 @@ public class SwingGameUi implements GameUi {
         if (log.isTraceEnabled()) {
             log.trace("drawMap begin");
         }
-        // draw map on screen taking in mind that drawing begins in left upper corner
+        // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
         for (int i = charMap[0].length - 1; i >= 0; i--) {
             for (int j = 0; j < charMap.length; j++) {
