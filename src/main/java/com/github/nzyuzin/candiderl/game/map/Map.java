@@ -19,78 +19,24 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
-import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
-import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
 public class Map {
-
-    private final static Logger log = LoggerFactory.getLogger(Map.class);
-
     private final int mapWidth;
     private final int mapHeight;
-
     private final MapCell[][] map;
 
-    private Map(int width, int height) {
+    Map(int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
         map = new MapCell[width][height];
         mapWidth = width;
         mapHeight = height;
-    }
-
-    static Map buildEmptyMap(int width, int height) {
-        Map instance = new Map(width, height);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Map construction start :: passed arguments: %d %d%nTotal Map size = %d",
-                    width, height, width * height));
-        }
-        for (int i = 1; i < width - 1; i++)
-            for (int j = 1; j < height - 1; j++)
-                instance.setCell(i, j, Floor.getFloor());
-        for (int i = 0; i < height; i++) {
-            instance.setCell(0, i, Wall.getWall());
-            instance.setCell(width - 1, i, Wall.getWall());
-        }
-        for (int i = 0; i < width; i++) {
-            instance.setCell(i, 0, Wall.getWall());
-            instance.setCell(i, height - 1, Wall.getWall());
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("Map construction end");
-        }
-        return instance;
-    }
-
-    static Map buildRandomizedMap(int width, int height, double filledCells) {
-        Preconditions.checkArgument(filledCells < 1 && filledCells > 0);
-        Map instance = buildEmptyMap(width, height);
-        for (int i = 0; i < instance.mapHeight * instance.mapWidth * filledCells; i++) {
-            instance.setCell(instance.getRandomFreePosition(), Wall.getWall());
-        }
-        return instance;
-    }
-
-    static Map buildMapFrom(char[][] array) {
-        Map instance = buildEmptyMap(array[0].length, array.length);
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[0].length; j++) {
-                char c = array[i][j];
-                Preconditions.checkArgument(c == '#' || c == ' ', "Map char array can only contain '#' and ' ' :: " +
-                        "given \'" + c + "\'");
-                MapCell cell = c == '#' ? Wall.getWall() : Floor.getFloor();
-                instance.setCell(j, array.length - 1 - i, cell);
-            }
-        }
-        return instance;
     }
 
     MapCell getCell(Position pos) {
@@ -103,7 +49,7 @@ public class Map {
         setCell(pos.getX(), pos.getY(), cell);
     }
 
-    private void setCell(int x, int y, MapCell cell) {
+    void setCell(int x, int y, MapCell cell) {
         Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0);
         map[x][y] = cell;
     }

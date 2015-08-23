@@ -40,7 +40,7 @@ public class GameEngineTest {
     @Mock
     private GameUi gameUi;
 
-    private Map testMap = MapFactory.getMapFrom(new char[][]{
+    private Map testMap = MapFactory.buildMapFrom(new char[][]{
             {'#', '#', '#', '#'},
             {'#', ' ', ' ', '#'},
             {'#', ' ', ' ', '#'},

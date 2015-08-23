@@ -38,7 +38,7 @@ public final class GameEngine implements AutoCloseable {
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
 
     public static void main(String args[]) {
-        MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
+        MapFactory mapFactory = MapFactory.getInstance();
         GameUi gameUi = SwingGameUi.getUi();
         try (GameEngine engine = getGameEngine(mapFactory, gameUi)) {
             engine.startGame();
