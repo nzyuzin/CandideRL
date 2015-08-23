@@ -20,19 +20,12 @@ package com.github.nzyuzin.candiderl.game.ui;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 public interface GameUi extends AutoCloseable {
-
-     void drawMap(ColoredChar[][] charMap);
-
-     char getInputChar();
-
-     void showAnnouncement(String msg);
-
-     void showMessage(String msg);
-
-     void showStats(String stats);
-
-     int getMapWidth();
-
-     int getMapHeight();
-
+    void init();
+    void drawMap(ColoredChar[][] charMap);
+    char getInputChar();
+    void showAnnouncement(String msg);
+    void showMessage(String msg);
+    void showStats(String stats);
+    int getMapWidth();
+    int getMapHeight();
 }

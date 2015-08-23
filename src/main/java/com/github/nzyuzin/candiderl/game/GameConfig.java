@@ -17,13 +17,13 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import java.awt.Font;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -44,8 +44,6 @@ public class GameConfig {
     }
 
     public static final Font DEFAULT_FONT = new Font(ConfigHelper.DEFAULT_FONT.getValue(), Font.PLAIN, 16);
-    public static final boolean FIT_TO_SCREEN =
-            Boolean.parseBoolean(ConfigHelper.FIT_TO_SCREEN.getValue());
     public static final int MAP_WIDTH = Integer.parseInt(ConfigHelper.MAP_WIDTH.getValue());
     public static final int MAP_HEIGHT = Integer.parseInt(ConfigHelper.MAP_HEIGHT.getValue());
     public static final int DEFAULT_MAP_SIZE = 100;
@@ -69,7 +67,6 @@ public class GameConfig {
 
     private enum ConfigHelper {
         DEFAULT_FONT("default_font", "DejaVu Sans Mono"),
-        FIT_TO_SCREEN("fit_to_screen", "false"),
         MAP_WIDTH("map_width", "600"),
         MAP_HEIGHT("map_height", "500"),
         VIEW_DISTANCE_LIMIT("view_distance_limit", "10"),

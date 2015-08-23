@@ -24,12 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class SwingGameUi implements GameUi {
-
     private JFrame mainWindow;
     private TextWindow mapWindow;
 
@@ -39,25 +37,14 @@ public class SwingGameUi implements GameUi {
 
     private static final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
 
-    public static GameUi getUi() {
-        return new SwingGameUi();
+    public static GameUi getUi(String windowName) {
+        return new SwingGameUi(windowName);
     }
 
-    private SwingGameUi() {
-        long initTime = 0;
-        if (log.isTraceEnabled()) {
-            log.trace("SwingGameUI creation start");
-            initTime = System.currentTimeMillis();
-        }
-        mainWindow = new JFrame("CandideRL");
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private SwingGameUi(String frameName) {
+        mainWindow = new JFrame(frameName);
         mapWindow = TextWindow
-                .getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT, screenSize);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("Created console :: %dms", System.currentTimeMillis() - initTime));
-            log.trace(String.format("mapWindow preferred = %s%n mapWindow minimum = %s%n mapWindow maximum = %s",
-                    mapWindow.getPreferredSize(), mapWindow.getMinimumSize(), mapWindow.getMaximumSize()));
-        }
+                .getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT);
         mainWindow.getContentPane().add(mapWindow);
         mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         KeyListener kl = new KeyListener() {
@@ -77,9 +64,14 @@ public class SwingGameUi implements GameUi {
             @Override
             public void keyReleased(KeyEvent e) { }
         };
+        mainWindow.addKeyListener(kl);
+    }
+
+    @Override
+    public void init() {
+        mapWindow.init();
         mainWindow.setPreferredSize(mapWindow.getPreferredSize());
         mainWindow.setResizable(false);
-        mainWindow.addKeyListener(kl);
         mainWindow.pack();
         mainWindow.setVisible(true);
     }

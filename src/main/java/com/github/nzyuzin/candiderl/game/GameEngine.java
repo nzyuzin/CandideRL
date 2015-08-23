@@ -39,7 +39,7 @@ public final class GameEngine implements AutoCloseable {
 
     public static void main(String args[]) {
         MapFactory mapFactory = MapFactory.getInstance();
-        GameUi gameUi = SwingGameUi.getUi();
+        GameUi gameUi = SwingGameUi.getUi("CandideRL");
         try (GameEngine engine = getGameEngine(mapFactory, gameUi)) {
             engine.startGame();
         } catch (Exception ex) {
@@ -66,14 +66,14 @@ public final class GameEngine implements AutoCloseable {
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new Npc(
-                    "troll",
-                    "A furious beast with sharp claws.",
-                    ColoredChar.getColoredChar('t', ColoredChar.RED))
+                            "troll",
+                            "A furious beast with sharp claws.",
+                            ColoredChar.getColoredChar('t', ColoredChar.RED))
             );
             npcs.add(new Npc(
-                    "goblin",
-                    "A regular goblin.",
-                    ColoredChar.getColoredChar('g', ColoredChar.GREEN))
+                            "goblin",
+                            "A regular goblin.",
+                            ColoredChar.getColoredChar('g', ColoredChar.GREEN))
             );
             for (Npc mob : npcs)
                 map.putGameCharacter(mob, map.getRandomFreePosition());
@@ -113,18 +113,14 @@ public final class GameEngine implements AutoCloseable {
 
     private void handleInput() throws GameClosedException {
         char input = gameUi.getInputChar();
-        if (log.isDebugEnabled()) {
+        if (log.isTraceEnabled()) {
             log.debug("handleInput input = {}", input);
         }
         if (KeyDefinitions.isDirectionKey(input)) {
             npcController.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
-            return;
-        }
-        if (KeyDefinitions.isSkipTurnChar(input)) {
+        } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
-            return;
-        }
-        if (KeyDefinitions.isExitChar(input)) {
+        } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
         }
     }
@@ -157,9 +153,10 @@ public final class GameEngine implements AutoCloseable {
     }
 
     public void startGame() {
-        if (log.isInfoEnabled()) {
-            log.info("Game starts");
+        if (log.isDebugEnabled()) {
+            log.debug("Game starts");
         }
+        gameUi.init();
         gameUi.showMessage("Prepare to play!");
         drawMap();
         showStats();
@@ -177,11 +174,14 @@ public final class GameEngine implements AutoCloseable {
             close();
             GameConfig.write();
         }
-        if (npcs.isEmpty()) gameUi.showAnnouncement("All mobs are dead!");
-        if (player.isDead()) gameUi.showAnnouncement("You're dead!");
-        if (log.isInfoEnabled()) {
-            log.info("Game ends");
+        if (npcs.isEmpty()) {
+            gameUi.showAnnouncement("All mobs are dead!");
+        }
+        if (player.isDead()) {
+            gameUi.showAnnouncement("You're dead!");
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Game ends");
         }
     }
-
 }
