@@ -45,13 +45,13 @@ public class MapFactory {
     }
 
     public static MapFactory getInstance() {
-        return new MapFactory(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
+        return getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
     }
 
     public Map getMap() {
         if (GameConfig.BUILD_MAP_FROM_FILE) {
             try {
-                return buildMapFrom(readMap());
+                return buildMapFrom(readMapFile());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to read map file", e);
             }
@@ -93,8 +93,8 @@ public class MapFactory {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[0].length; j++) {
                 char c = array[i][j];
-                Preconditions.checkArgument(c == '#' || c == ' ', "Map char array can only contain '#' and ' ' :: " +
-                        "given \'" + c + "\'");
+                Preconditions.checkArgument(c == '#' || c == ' ' || c == '.',
+                        "Map char array can only contain '#', '.' or ' ' :: given \'" + c + "\'");
                 MapCell cell = c == '#' ? Wall.getWall() : Floor.getFloor();
                 map.setCell(j, array.length - 1 - i, cell);
             }
@@ -102,13 +102,16 @@ public class MapFactory {
         return map;
     }
 
-    private char[][] readMap() throws IOException {
+    private char[][] readMapFile() throws IOException {
         File mapFile = new File(GameConstants.MAP_FILENAME);
         LineReader lineReader = new LineReader(new FileReader(mapFile));
         ArrayList<char[]> result = new ArrayList<>();
         String line;
         while ((line = lineReader.readLine()) != null) {
-            result.add(line.replaceAll(System.lineSeparator(), "").toCharArray());
+            if (line.length() == 0) {
+                break;
+            }
+            result.add(line.toCharArray());
         }
         return result.toArray(new char[result.size()][]);
     }
