@@ -21,8 +21,13 @@ import com.github.nzyuzin.candiderl.game.GameConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
@@ -103,7 +108,9 @@ public class TextWindow extends JComponent {
 
     @Override
     public void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
         Graphics2D g = (Graphics2D) graphics;
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         for (int row = 0; row < data.getRows(); row++) {
             for (int col1 = 0, col2 = col1 + 1; col1 < data.getColumns(); col1 = col2, col2 = col1 + 1) {
                 Color fgColor = data.getForegroundAt(col1, row);
