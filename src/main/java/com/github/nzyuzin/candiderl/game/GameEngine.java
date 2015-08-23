@@ -38,8 +38,10 @@ public final class GameEngine implements AutoCloseable {
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
 
     public static void main(String args[]) {
-        try (GameEngine engine = getGameEngine()) {
-            engine.play();
+        MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
+        GameUi gameUi = SwingGameUi.getUi();
+        try (GameEngine engine = getGameEngine(mapFactory, gameUi)) {
+            engine.startGame();
         } catch (Exception ex) {
             log.error("Error during game", ex);
             throw ex;
@@ -49,19 +51,18 @@ public final class GameEngine implements AutoCloseable {
     private Player player;
     private List<Npc> npcs;
     private int currentTurn = 0;
-    private GameUi ui;
+    private GameUi gameUi;
     private NpcController npcController;
 
-    public static GameEngine getGameEngine() {
-        MapFactory mapFactory = MapFactory.getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
-        return new GameEngine(SwingGameUi.getUi(), mapFactory.getMap());
+    public static GameEngine getGameEngine(MapFactory mapFactory, GameUi gameUi) {
+        return new GameEngine(gameUi, mapFactory.getMap());
     }
 
-    private GameEngine(GameUi ui, Map map) {
-        this.ui = ui;
+    private GameEngine(GameUi gameUi, Map map) {
+        this.gameUi = gameUi;
         npcs = new ArrayList<>();
         player = Player.getInstance();
-        int npcOperationalRange = (this.ui.getMapWidth() + this.ui.getMapHeight()) / 2;
+        int npcOperationalRange = (this.gameUi.getMapWidth() + this.gameUi.getMapHeight()) / 2;
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new Npc(
@@ -111,7 +112,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void handleInput() throws GameClosedException {
-        char input = ui.getInputChar();
+        char input = gameUi.getInputChar();
         if (log.isDebugEnabled()) {
             log.debug("handleInput input = {}", input);
         }
@@ -129,9 +130,9 @@ public final class GameEngine implements AutoCloseable {
     }
 
     public void close() {
-        ui.showAnnouncement("You're leaving the game.");
+        gameUi.showAnnouncement("You're leaving the game.");
         try {
-            ui.close();
+            gameUi.close();
         } catch (Exception ex) {
             throw new RuntimeException("Exception during attempt to close the game", ex);
         }
@@ -144,7 +145,7 @@ public final class GameEngine implements AutoCloseable {
             initTime = System.currentTimeMillis();
         }
         if (!player.isDead()) {
-            ui.drawMap(player.getVisibleMap(ui.getMapWidth(), ui.getMapHeight()));
+            gameUi.drawMap(player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight()));
         }
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawMap end :: time=%d", System.currentTimeMillis() - initTime));
@@ -152,14 +153,14 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void showStats() {
-        ui.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
+        gameUi.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
     }
 
-    public void play() {
+    public void startGame() {
         if (log.isInfoEnabled()) {
             log.info("Game starts");
         }
-        ui.showMessage("Prepare to play!");
+        gameUi.showMessage("Prepare to play!");
         drawMap();
         showStats();
         try {
@@ -176,8 +177,8 @@ public final class GameEngine implements AutoCloseable {
             close();
             GameConfig.write();
         }
-        if (npcs.isEmpty()) ui.showAnnouncement("All mobs are dead!");
-        if (player.isDead()) ui.showAnnouncement("You're dead!");
+        if (npcs.isEmpty()) gameUi.showAnnouncement("All mobs are dead!");
+        if (player.isDead()) gameUi.showAnnouncement("You're dead!");
         if (log.isInfoEnabled()) {
             log.info("Game ends");
         }

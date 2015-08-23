@@ -21,10 +21,12 @@ import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameConstants;
 import com.google.common.io.LineReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public final class MapFactory {
+public class MapFactory {
 
     private int mapWidth = GameConfig.DEFAULT_MAP_SIZE;
     private int mapHeight = GameConfig.DEFAULT_MAP_SIZE;
