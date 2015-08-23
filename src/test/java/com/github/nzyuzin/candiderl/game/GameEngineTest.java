@@ -27,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +58,7 @@ public class GameEngineTest {
         engine.startGame();
 
         verify(mapFactory, atLeastOnce()).getMap();
-        verify(gameUi, atLeastOnce()).getInputChar();
+        verify(gameUi, times(1)).getInputChar();
         verify(gameUi, atLeastOnce()).drawMap(any());
         try {
             verify(gameUi).close();
