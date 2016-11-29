@@ -17,18 +17,14 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-public class ConfigurationException extends Exception {
+public class ConfigurationException extends RuntimeException {
 
-    public ConfigurationException() {
-        super();
+    public ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     public ConfigurationException(Exception e) {
-        super(e);
-    }
-
-    public ConfigurationException(String s) {
-        super(s);
+        this("Error during configuration file processing", e);
     }
 
 }

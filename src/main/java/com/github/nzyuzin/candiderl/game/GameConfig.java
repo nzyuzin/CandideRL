@@ -17,7 +17,10 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import java.awt.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,20 +36,17 @@ import java.util.Properties;
  */
 public class GameConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(GameConfig.class);
+
     private GameConfig() { }
 
     static {
-        try {
-            ConfigHelper.read();
-        } catch (ConfigurationException e) {
-            throw new RuntimeException("Error reading configuration", e);
-        }
+        ConfigHelper.read();
     }
 
     public static final Font DEFAULT_FONT = new Font(ConfigHelper.DEFAULT_FONT.getValue(), Font.PLAIN, 16);
     public static final int MAP_WIDTH = Integer.parseInt(ConfigHelper.MAP_WIDTH.getValue());
     public static final int MAP_HEIGHT = Integer.parseInt(ConfigHelper.MAP_HEIGHT.getValue());
-    public static final int DEFAULT_MAP_SIZE = 100;
     public static final int VIEW_DISTANCE_LIMIT =
             Integer.parseInt(ConfigHelper.VIEW_DISTANCE_LIMIT.getValue());
     public static final int DEFAULT_MAP_WINDOW_WIDTH =
@@ -66,7 +66,7 @@ public class GameConfig {
     }
 
     private enum ConfigHelper {
-        DEFAULT_FONT("default_font", "DejaVu Sans Mono"),
+        DEFAULT_FONT("default_font", Font.MONOSPACED),
         MAP_WIDTH("map_width", "600"),
         MAP_HEIGHT("map_height", "500"),
         VIEW_DISTANCE_LIMIT("view_distance_limit", "10"),
@@ -80,7 +80,7 @@ public class GameConfig {
         private String property;
         private String defValue;
 
-        private ConfigHelper(String property, String defValue) {
+        ConfigHelper(String property, String defValue) {
             this.property = property;
             this.defValue = defValue;
         }
@@ -102,17 +102,18 @@ public class GameConfig {
         private static final Path pathToConfig = Paths.get("config.properties");
         private static Properties configuration;
 
-        public static void read() throws ConfigurationException {
+        public static void read() {
             try {
                 if (Files.exists(pathToConfig)) {
                     try (InputStream inStream = Files.newInputStream(pathToConfig)) {
                         configuration = new Properties();
                         configuration.load(inStream);
                         validateConfigurationProperties();
-                        for (String property : defaultConfiguration.stringPropertyNames()) {
-                            if (!configuration.containsKey(property))
+                        defaultConfiguration.stringPropertyNames().forEach(property -> {
+                            if (!configuration.containsKey(property)) {
                                 configuration.put(property, defaultConfiguration.getProperty(property));
-                        }
+                            }
+                        });
                     }
                 } else {
                     configuration = defaultConfiguration;
@@ -129,18 +130,18 @@ public class GameConfig {
             try (OutputStream outputStream = Files.newOutputStream(pathToConfig)) {
                 configuration.store(outputStream, CONFIGURATION_FILE_HEADER);
             } catch (IOException e) {
-                throw new RuntimeException("Error writing configuration", e);
+                throw new ConfigurationException("Error writing configuration", e);
             }
         }
 
-        private static boolean validateConfigurationProperties() throws ConfigurationException {
-            // TODO: include check for type of values specified, e.g. check that boolean property has boolean value
-            for (String propertyName : configuration.stringPropertyNames()) {
-                if (!defaultConfiguration.containsKey(propertyName)) {
-                    throw new ConfigurationException(String.format("Wrong configuration property:%n%s=%s",
-                            propertyName, configuration.getProperty(propertyName)));
+        private static boolean validateConfigurationProperties() {
+            configuration.stringPropertyNames().forEach(property -> {
+                if (!defaultConfiguration.containsKey(property)) {
+                    if (log.isErrorEnabled()) {
+                        log.error("Unknown configuration property: '{}'", property);
+                    }
                 }
-            }
+            });
             return true;
         }
     }
