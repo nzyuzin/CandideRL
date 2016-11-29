@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
 import com.github.nzyuzin.candiderl.game.map.Map;
@@ -28,9 +29,7 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
@@ -130,12 +129,12 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public void performAction() {
+    public List<Event> performAction() {
         // TODO make use of action points
         if (gameActions.isEmpty()) {
-            return;
+            return Collections.emptyList();
         }
-        gameActions.poll().execute();
+        return gameActions.poll().execute();
     }
 
     @Override

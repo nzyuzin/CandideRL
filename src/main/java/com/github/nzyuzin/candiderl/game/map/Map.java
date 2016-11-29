@@ -20,12 +20,15 @@ package com.github.nzyuzin.candiderl.game.map;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
 
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Map {
     private final int mapWidth;
@@ -152,6 +155,14 @@ public class Map {
         return result;
     }
 
+    public void addEffectsToArea(Position pos, int width, int height, MapCellEffect<?> effect) {
+        map((MapCell cell) -> cell.addEffect(effect), getPartOfMap(pos, width, height));
+    }
+
+    public void applyEffects() {
+        map(MapCell::applyEffects, map);
+    }
+
     public int getWidth() {
         return mapWidth;
     }
@@ -163,6 +174,14 @@ public class Map {
     private Position getRandomPositionInsideMap() {
         Random rand = new Random();
         return Position.getInstance(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);
+    }
+
+    private void map(final Consumer<MapCell> mapping, final MapCell[][] map) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                mapping.accept(map[i][j]);
+            }
+        }
     }
 
 }

@@ -18,9 +18,13 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Preconditions;
+
+import java.util.Collections;
+import java.util.List;
 
 public final class MoveToNextCellAction extends AbstractGameAction {
 
@@ -42,7 +46,8 @@ public final class MoveToNextCellAction extends AbstractGameAction {
                 && map.isCellPassable(position) && !map.isSomeoneHere(position);
     }
 
-    protected void doExecute() {
+    protected List<Event> doExecute() {
         map.moveGameCharacter(getPerformer(), position);
+        return Collections.emptyList(); // TODO: change position event
     }
 }

@@ -22,10 +22,13 @@ import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+
+import java.util.List;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
     boolean hasAction();
@@ -40,7 +43,7 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     int getCurrentHP();
     int getMaxHP();
     boolean canPerformAction();
-    void performAction();
+    List<Event> performAction();
     void hit(Position pos);
 
     void move(Position pos);

@@ -20,12 +20,15 @@ package com.github.nzyuzin.candiderl.game.map.cells;
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
+public abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
     protected final ColoredChar charOnMap;
     protected final boolean transparent;
     protected final boolean canBePassed;
@@ -34,13 +37,15 @@ abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
 
     protected GameCharacter gameCharacter = null;
     protected List<GameItem> gameItems = null;
+    protected List<MapCellEffect<? extends MapCell>> effects = null;
 
     protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
         super(name, desc);
         this.canBePassed = canBePassed;
         this.charOnMap = onMap;
         this.visibleChar = onMap;
-        this.gameItems = new ArrayList<>();
+        this.gameItems = Lists.newArrayList();
+        this.effects = Lists.newArrayList();
         this.transparent = transp;
     }
 
@@ -101,6 +106,23 @@ abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
         ArrayList<GameItem> result = new ArrayList<>();
         result.addAll(gameItems);
         return result;
+    }
+
+    @Override
+    public void applyEffects() {
+        final Iterator<MapCellEffect<?>> effectIterator = effects.iterator();
+        while (effectIterator.hasNext()) {
+            final MapCellEffect effect = effectIterator.next();
+            effect.apply(this);
+            if (effect.getDuration() <= 0) {
+                effects.remove(effect);
+            }
+        }
+    }
+
+    @Override
+    public void addEffect(MapCellEffect<? extends MapCell> effect) {
+        this.effects.add(effect);
     }
 
     @Override

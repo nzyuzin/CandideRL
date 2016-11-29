@@ -20,12 +20,14 @@ package com.github.nzyuzin.candiderl.game;
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.ui.GameUi;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,8 @@ public final class GameEngine implements AutoCloseable {
 
     private Player player;
     private List<Npc> npcs;
-    private int currentTurn = 0;
+    private List<Event> events;
+    private long currentTurn = 0;
     private GameUi gameUi;
     private NpcController npcController;
 
@@ -60,7 +63,8 @@ public final class GameEngine implements AutoCloseable {
 
     private GameEngine(GameUi gameUi, Map map) {
         this.gameUi = gameUi;
-        npcs = new ArrayList<>();
+        npcs = Lists.newArrayList();
+        events = Lists.newArrayList();
         player = Player.getInstance();
         int npcOperationalRange = (this.gameUi.getMapWidth() + this.gameUi.getMapHeight()) / 2;
         npcController = new NpcController(player, npcOperationalRange);
@@ -83,7 +87,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void processActions() {
-        player.performAction();
+        events.addAll(player.performAction());
         for (Iterator<Npc> iterator = npcs.iterator(); iterator.hasNext(); ) {
             Npc npc = iterator.next();
             if (npc.isDead()) {
@@ -91,11 +95,21 @@ public final class GameEngine implements AutoCloseable {
                 continue;
             } else npcController.chooseAction(npc);
             if (npc.canPerformAction()) {
-                npc.performAction();
+                events.addAll(npc.performAction());
             } else {
                 npc.removeCurrentAction();
             }
         }
+    }
+
+    private void processEvents() {
+        for (Event event : events) {
+            event.occur();
+        }
+    }
+
+    private void applyMapEffects() {
+        player.getMap().applyEffects();
     }
 
     private void advanceTime() {
@@ -103,6 +117,8 @@ public final class GameEngine implements AutoCloseable {
             log.trace("advanceTime begin currentTurn = {}", currentTurn);
         }
         processActions();
+        processEvents();
+        applyMapEffects();
         drawMap();
         showStats();
         currentTurn++;

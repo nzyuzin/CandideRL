@@ -18,8 +18,12 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.google.common.base.Preconditions;
+
+import java.util.Collections;
+import java.util.List;
 
 public class HitInMeleeAction extends AbstractGameAction {
 
@@ -39,7 +43,7 @@ public class HitInMeleeAction extends AbstractGameAction {
                 && target.getPosition().distanceTo(getPerformer().getPosition()) < 2;
     }
 
-    protected void doExecute() {
+    protected List<Event> doExecute() {
         int damage = getPerformer().rollDamageDice();
         target.takeDamage(damage);
         // TODO: move to GameCharacter
@@ -47,5 +51,6 @@ public class HitInMeleeAction extends AbstractGameAction {
             map.putItem(target.die(), target.getPosition());
             map.removeGameCharacter(target);
         }
+        return Collections.emptyList(); // TODO: take damage event
     }
 }

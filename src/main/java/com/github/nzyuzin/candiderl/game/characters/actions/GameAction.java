@@ -17,7 +17,11 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
+import com.github.nzyuzin.candiderl.game.events.Event;
+
+import java.util.List;
+
 public interface GameAction {
-    void execute();
+    List<Event> execute();
     boolean canBeExecuted();
 }
