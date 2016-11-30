@@ -59,7 +59,7 @@ public class GameEngineTest {
 
         verify(mapFactory, atLeastOnce()).getMap();
         verify(gameUi, times(1)).getInputChar();
-        verify(gameUi, atLeastOnce()).drawMap(any());
+        verify(gameUi, atLeastOnce()).drawUi(any());
         try {
             verify(gameUi).close();
         } catch (Exception e) {

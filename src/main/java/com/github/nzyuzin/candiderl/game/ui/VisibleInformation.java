@@ -17,11 +17,29 @@
 
 package com.github.nzyuzin.candiderl.game.ui;
 
-public interface GameUi extends AutoCloseable {
-    void init();
-    void drawUi(VisibleInformation visibleInfo);
-    char getInputChar();
-    void showAnnouncement(String msg);
-    int getMapWidth();
-    int getMapHeight();
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+
+public class VisibleInformation {
+    private final ColoredChar[][] visibleMap;
+    private final GameCharacter player;
+    private final long currentTurn;
+
+    public VisibleInformation(ColoredChar[][] visibleMap, GameCharacter player, long currentTurn) {
+        this.visibleMap = visibleMap;
+        this.player = player;
+        this.currentTurn = currentTurn;
+    }
+
+    public ColoredChar[][] getVisibleMap() {
+        return visibleMap;
+    }
+
+    public GameCharacter getPlayer() {
+        return player;
+    }
+
+    public long getCurrentTurn() {
+        return currentTurn;
+    }
 }

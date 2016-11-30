@@ -24,6 +24,7 @@ import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.ui.GameUi;
+import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
@@ -31,7 +32,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -119,8 +119,7 @@ public final class GameEngine implements AutoCloseable {
         processActions();
         processEvents();
         applyMapEffects();
-        drawMap();
-        showStats();
+        drawUi();
         currentTurn++;
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
@@ -150,22 +149,22 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-    private void drawMap() {
+    private void drawUi() {
         long initTime = 0;
         if (log.isTraceEnabled()) {
-            log.trace("drawMap start");
+            log.trace("drawUi start");
             initTime = System.currentTimeMillis();
         }
         if (!player.isDead()) {
-            gameUi.drawMap(player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight()));
+            final VisibleInformation visibleInformation = new VisibleInformation(
+                    player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight()),
+                    player,
+                    currentTurn);
+            gameUi.drawUi(visibleInformation);
         }
         if (log.isTraceEnabled()) {
-            log.trace(String.format("drawMap end :: time=%d", System.currentTimeMillis() - initTime));
+            log.trace(String.format("drawUi end :: time=%d", System.currentTimeMillis() - initTime));
         }
-    }
-
-    private void showStats() {
-        gameUi.showStats(String.format("%s%nCurrent turn: %d%n", player.getStats(), currentTurn));
     }
 
     public void startGame() {
@@ -173,9 +172,8 @@ public final class GameEngine implements AutoCloseable {
             log.debug("Game starts");
         }
         gameUi.init();
-        gameUi.showMessage("Prepare to play!");
-        drawMap();
-        showStats();
+        gameUi.showAnnouncement("Prepare to play!");
+        drawUi();
         try {
             while (!player.isDead()) {
                 handleInput();

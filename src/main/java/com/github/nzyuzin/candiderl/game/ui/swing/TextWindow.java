@@ -30,7 +30,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 
 public class TextWindow extends JComponent {
 
@@ -69,8 +68,8 @@ public class TextWindow extends JComponent {
         fontWidth = (int) charBounds.getWidth();
         fontHeight = (int) charBounds.getHeight();
         fontYOffset = -(int) charBounds.getMinY() - fontHeight;
-        int windowWidth = data.getColumns() * fontWidth;
-        int windowHeight = data.getRows() * fontHeight;
+        final int windowWidth = data.getColumns() * fontWidth;
+        final int windowHeight = (data.getRows() + 1) * fontHeight; // +1 is for the last row, we write below it
         Dimension windowSize = new Dimension(windowWidth, windowHeight);
         setMinimumSize(windowSize);
         setPreferredSize(windowSize);
@@ -172,7 +171,13 @@ public class TextWindow extends JComponent {
         repaintArea(0, 0, width, height);
     }
 
-    private void moveCursor() {
+    public void moveCursor(int n) {
+        for (int i = 0; i < n; i++) {
+            moveCursor();
+        }
+    }
+
+    public void moveCursor() {
         cursorColumn++;
         if (cursorColumn >= data.getColumns()) {
             cursorColumn = 0;
@@ -181,106 +186,6 @@ public class TextWindow extends JComponent {
         if (cursorRow >= data.getRows()) {
             cursorRow = 0;
             cursorColumn = 0;
-        }
-    }
-
-    /**
-     * Internal class to hold TextWindow data
-     */
-    private static final class TextWindowContent {
-        private int capacity = 0;
-        private int rows;
-        private int columns;
-        private Color[][] background;
-        private Color[][] foreground;
-        private char[][] text;
-
-        TextWindowContent(int columns, int rows) {
-            text = new char[rows][columns];
-            background = new Color[rows][columns];
-            foreground = new Color[rows][columns];
-            this.columns = columns;
-            this.rows = rows;
-        }
-
-        public void init() {
-            ensureCapacity(rows, columns);
-        }
-
-        void fillText(char c) {
-            for (char[] arr : text) {
-                Arrays.fill(arr, c);
-            }
-        }
-
-        void fillBackground(Color c) {
-            for (Color[] arr : background) {
-                Arrays.fill(arr, c);
-            }
-        }
-
-        void fillForeground(Color c) {
-            for (Color[] arr : foreground) {
-                Arrays.fill(arr, c);
-            }
-        }
-
-        private void ensureCapacity(int minRows, int minColumns) {
-            if (capacity >= minRows * minColumns)
-                return;
-
-            char[][] newText = new char[minRows][minColumns];
-            Color[][] newBackground = new Color[minRows][minColumns];
-            Color[][] newForeground = new Color[minRows][minColumns];
-
-            for (int i = 0; i < minRows; i++)
-                System.arraycopy(text[i], 0, newText[i], 0, minColumns);
-            for (int i = 0; i < minRows; i++)
-                System.arraycopy(foreground[i], 0, newForeground[i], 0, minColumns);
-            for (int i = 0; i < minRows; i++)
-                System.arraycopy(background[i], 0, newBackground[i], 0, minColumns);
-
-            text = newText;
-            foreground = newForeground;
-            background = newBackground;
-            capacity = minRows * minColumns;
-        }
-
-        void setDataAt(int column, int row, char c, Color fg, Color bg) {
-            text[row][column] = c;
-            foreground[row][column] = fg;
-            background[row][column] = bg;
-        }
-
-        Color getForegroundAt(int column, int row) {
-            return foreground[row][column];
-        }
-
-        Color getBackgroundAt(int column, int row) {
-            return background[row][column];
-        }
-
-        int getColumns() {
-            return columns;
-        }
-
-        int getRows() {
-            return rows;
-        }
-
-        char[] getRow(int n) {
-            return text[n];
-        }
-
-        void fillArea(char c, Color fg, Color bg, int column,
-                      int row, int width, int height) {
-            for (int q = Math.max(0, row); q < Math.min(row + height, rows); q++) {
-                for (int p = Math.max(0, column); p < Math.min(column + width, columns); p++) {
-                    text[q][p] = c;
-                    foreground[q][p] = fg;
-                    background[q][p] = bg;
-                }
-            }
         }
     }
 

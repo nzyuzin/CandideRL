@@ -18,12 +18,16 @@
 package com.github.nzyuzin.candiderl.game.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.ui.GameUi;
+import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -43,8 +47,8 @@ public class SwingGameUi implements GameUi {
 
     private SwingGameUi(String frameName) {
         mainWindow = new JFrame(frameName);
-        mapWindow = TextWindow
-                .getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT);
+        mapWindow = TextWindow.getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH + GameConfig.DEFAULT_STATS_PANEL_WIDTH,
+                        GameConfig.DEFAULT_MAP_WINDOW_HEIGHT);
         mainWindow.getContentPane().add(mapWindow);
         mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         KeyListener kl = new KeyListener() {
@@ -77,22 +81,70 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void drawMap(ColoredChar[][] charMap) {
+    public void drawUi(final VisibleInformation uiInfo) {
         if (log.isTraceEnabled()) {
-            log.trace("drawMap begin");
+            log.trace("drawUi begin");
         }
+        final ColoredChar[][] charMap = uiInfo.getVisibleMap();
+        final int mapHeight = charMap[0].length;
+        final int mapWidth = charMap.length;
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
-        for (int i = charMap[0].length - 1; i >= 0; i--) {
-            for (int j = 0; j < charMap.length; j++) {
+        for (int i = mapHeight - 1; i >= 0; i--) {
+            for (int j = 0; j < mapWidth; j++) {
                 ColoredChar c = charMap[j][i];
                 mapWindow.write(c.getChar(), c.getForeground(), c.getBackground());
             }
+            drawStatsPanelRow(uiInfo, mapHeight, i);
         }
         mapWindow.repaint();
         if (log.isTraceEnabled()) {
-            log.trace("drawMap end");
+            log.trace("drawUi end");
         }
+    }
+
+    private void drawStatsPanelRow(VisibleInformation uiInfo, int mapHeight, int mapRow) {
+        final GameCharacter player = uiInfo.getPlayer();
+        if (mapRow == 0 || mapRow == mapHeight - 1) {
+            for (int k = 0; k < GameConfig.DEFAULT_STATS_PANEL_WIDTH; k++) {
+                writeBlackWhite('-');
+            }
+            return;
+        }
+        writeBlackWhite('|');
+        if (mapRow == mapHeight - 2) {
+            writeToStatsPanel(player.getName());
+            return;
+        }
+        if (mapRow == mapHeight - 4) {
+            final String health = String.format("HP: %d/%d", player.getCurrentHP(), player.getMaxHP());
+            writeToStatsPanel(health);
+            return;
+        }
+        if (mapRow == mapHeight - 6) {
+            writeToStatsPanel("Current turn: " + uiInfo.getCurrentTurn());
+            return;
+        }
+        writeToStatsPanel("");
+    }
+
+    private void writeToStatsPanel(final String s) {
+        if (s.length() > GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) {
+            writeBlackWhite(s.substring(0, GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1));
+        } else {
+            writeBlackWhite(s);
+            mapWindow.moveCursor((GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) - s.length());
+        }
+    }
+
+    private void writeBlackWhite(final String s) {
+        for (int i = 0; i < s.length(); i++) {
+            writeBlackWhite(s.charAt(i));
+        }
+    }
+
+    private void writeBlackWhite(final char character) {
+        mapWindow.write(character, Color.WHITE, Color.BLACK);
     }
 
     @Override
@@ -112,12 +164,6 @@ public class SwingGameUi implements GameUi {
 
     @Override
     public void showAnnouncement(String msg) { }
-
-    @Override
-    public void showMessage(String msg) { }
-
-    @Override
-    public void showStats(String stats) { }
 
     @Override
     public void close() {
