@@ -25,7 +25,6 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
@@ -37,7 +36,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     protected GameCharacter gameCharacter = null;
     protected List<GameItem> gameItems = null;
-    protected List<MapCellEffect<? extends MapCell>> effects = null;
+    protected List<MapCellEffect> effects = null;
 
     protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
         super(name, desc);
@@ -110,9 +109,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public void applyEffects() {
-        final Iterator<MapCellEffect<?>> effectIterator = effects.iterator();
-        while (effectIterator.hasNext()) {
-            final MapCellEffect effect = effectIterator.next();
+        for (MapCellEffect effect : effects) {
             effect.apply(this);
             if (effect.getDuration() <= 0) {
                 effects.remove(effect);
@@ -121,7 +118,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     }
 
     @Override
-    public void addEffect(MapCellEffect<? extends MapCell> effect) {
+    public void addEffect(MapCellEffect effect) {
         this.effects.add(effect);
     }
 

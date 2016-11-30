@@ -16,8 +16,8 @@
  */
 
 package com.github.nzyuzin.candiderl.game.map.generator;
+
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 
 public class DungeonBuilder {
 

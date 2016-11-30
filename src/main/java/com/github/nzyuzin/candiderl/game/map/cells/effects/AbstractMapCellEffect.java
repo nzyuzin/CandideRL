@@ -17,10 +17,10 @@
 
 package com.github.nzyuzin.candiderl.game.map.cells.effects;
 
-import com.github.nzyuzin.candiderl.game.map.cells.AbstractMapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.google.common.base.Preconditions;
 
-public abstract class AbstractMapCellEffect<T extends AbstractMapCell> implements MapCellEffect<T> {
+public abstract class AbstractMapCellEffect implements MapCellEffect {
     private int duration;
 
     public AbstractMapCellEffect(int initialDuration) {
@@ -28,7 +28,7 @@ public abstract class AbstractMapCellEffect<T extends AbstractMapCell> implement
     }
 
     @Override
-    public void apply(T cell) {
+    public void apply(MapCell cell) {
         Preconditions.checkArgument(duration > 0, "Can only apply effects with positive duration");
         duration--;
     }

@@ -19,10 +19,10 @@ package com.github.nzyuzin.candiderl.game.map.cells;
 
 import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 
 import java.util.List;
 
@@ -47,5 +47,5 @@ public interface MapCell extends GameObject, Visible {
     List<GameItem> getListOfItems();
 
     void applyEffects();
-    void addEffect(MapCellEffect<? extends MapCell> effect);
+    void addEffect(MapCellEffect effect);
 }

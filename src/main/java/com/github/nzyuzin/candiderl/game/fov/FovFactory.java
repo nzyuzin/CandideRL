@@ -28,7 +28,7 @@ public class FovFactory {
 
         private FovStrategy implementation;
 
-        private Strategies(FovStrategy impl) {
+        Strategies(FovStrategy impl) {
             this.implementation = impl;
         }
 

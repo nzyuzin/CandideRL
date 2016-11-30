@@ -17,10 +17,10 @@
 
 package com.github.nzyuzin.candiderl.game.map.cells.effects;
 
-import com.github.nzyuzin.candiderl.game.map.cells.AbstractMapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.google.common.base.Preconditions;
 
-public class Explosion extends AbstractMapCellEffect<AbstractMapCell> {
+public class Explosion extends AbstractMapCellEffect {
     private final int explosionPower;
 
     public Explosion(int explosionPower) {
@@ -30,7 +30,7 @@ public class Explosion extends AbstractMapCellEffect<AbstractMapCell> {
     }
 
     @Override
-    public void apply(AbstractMapCell cell) {
+    public void apply(MapCell cell) {
         super.apply(cell);
         cell.getGameCharacter().takeDamage(explosionPower);
     }

@@ -54,16 +54,10 @@ public final class KeyDefinitions {
         EXIT_CHARS.add('q');
     }
 
-    private static final Set<Integer> EXIT_CODES = new HashSet<>();
-
     private static final Set<Character> SKIP_TURN_CHARS = new HashSet<>();
 
     static {
         SKIP_TURN_CHARS.add('s');
-    }
-
-    public static boolean isExitCode(int code) {
-        return EXIT_CODES.contains(code);
     }
 
     public static boolean isExitChar(char c) {

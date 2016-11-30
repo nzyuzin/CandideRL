@@ -26,7 +26,6 @@ public class NpcController {
 
     private final GameCharacter target;
     private final int operationalRange;
-    private PathFinder path;
 
     public NpcController(GameCharacter target, int operationalRange) {
         this.operationalRange = operationalRange;
@@ -57,7 +56,8 @@ public class NpcController {
         if (mob.getPosition().distanceTo(target.getPosition()) > operationalRange)
             return;
 
-        path = new PathFinder(target.getPosition(), operationalRange, target.getPositionOnMap().getMap());
+        final PathFinder path =
+                new PathFinder(target.getPosition(), operationalRange, target.getPositionOnMap().getMap());
         mob.move(path.findNextMove(mob.getPosition()));
     }
 

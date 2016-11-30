@@ -58,13 +58,9 @@ public class ShadowCastingStrategy implements FovStrategy {
 
                 marked[pos.getX()][pos.getY()] = true;
                 Position cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
-                if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                seen[pos.getX()][pos.getY()] = !(seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
                         && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
-                        && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
-                    seen[pos.getX()][pos.getY()] = false;
-                } else {
-                    seen[pos.getX()][pos.getY()] = true;
-                }
+                        && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]);
 
                 if (transparent[pos.getX()][pos.getY()]) {
                     for (int j = i - 1 + directions.length; j <= i + 1 + directions.length; j++) {

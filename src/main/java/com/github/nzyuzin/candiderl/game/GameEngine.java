@@ -103,9 +103,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void processEvents() {
-        for (Event event : events) {
-            event.occur();
-        }
+        events.forEach(Event::occur);
     }
 
     private void applyMapEffects() {

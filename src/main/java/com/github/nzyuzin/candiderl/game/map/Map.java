@@ -28,7 +28,6 @@ import com.google.common.base.Preconditions;
 
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Map {
     private final int mapWidth;
@@ -155,7 +154,7 @@ public class Map {
         return result;
     }
 
-    public void addEffectsToArea(Position pos, int width, int height, MapCellEffect<?> effect) {
+    public void addEffectsToArea(Position pos, int width, int height, MapCellEffect effect) {
         map((MapCell cell) -> cell.addEffect(effect), getPartOfMap(pos, width, height));
     }
 
