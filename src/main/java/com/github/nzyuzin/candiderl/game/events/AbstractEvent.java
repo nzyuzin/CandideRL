@@ -27,4 +27,9 @@ abstract  class AbstractEvent<T extends EventContext> implements Event<T> {
     protected T getContext() {
         return context;
     }
+
+    @Override
+    public String getTextDescription() {
+        return "";
+    }
 }
