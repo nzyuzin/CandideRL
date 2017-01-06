@@ -133,7 +133,13 @@ public class SwingGameUi implements GameUi {
             writeBlackWhite(s.substring(0, GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1));
         } else {
             writeBlackWhite(s);
-            mapWindow.moveCursor((GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) - s.length());
+            writeBlanks((GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) - s.length());
+        }
+    }
+
+    private void writeBlanks(final int times) {
+        for (int i = 0; i < times; i++) {
+            writeBlackWhite(" ");
         }
     }
 
