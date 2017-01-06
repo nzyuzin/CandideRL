@@ -32,8 +32,11 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public final class GameEngine implements AutoCloseable {
 
@@ -57,6 +60,8 @@ public final class GameEngine implements AutoCloseable {
     private GameUi gameUi;
     private NpcController npcController;
 
+    private final Deque<String> lastTenMessages = new ArrayDeque<>(10);
+
     public static GameEngine getGameEngine(MapFactory mapFactory, GameUi gameUi) {
         return new GameEngine(gameUi, mapFactory.getMap());
     }
@@ -70,12 +75,12 @@ public final class GameEngine implements AutoCloseable {
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new Npc(
-                            "troll",
+                            "Troll",
                             "A furious beast with sharp claws.",
                             ColoredChar.getColoredChar('t', ColoredChar.RED))
             );
             npcs.add(new Npc(
-                            "goblin",
+                            "Goblin",
                             "A regular goblin.",
                             ColoredChar.getColoredChar('g', ColoredChar.GREEN))
             );
@@ -103,7 +108,13 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void processEvents() {
-        events.forEach(Event::occur);
+        final ListIterator<Event> eventsIterator = events.listIterator();
+        while (eventsIterator.hasNext()) {
+            final Event e = eventsIterator.next();
+            e.occur();
+            lastTenMessages.addFirst(e.getTextualDescription());
+            eventsIterator.remove();
+        }
     }
 
     private void applyMapEffects() {
@@ -157,7 +168,8 @@ public final class GameEngine implements AutoCloseable {
             final VisibleInformation visibleInformation = new VisibleInformation(
                     player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight()),
                     player,
-                    currentTurn);
+                    currentTurn,
+                    Lists.newArrayList(lastTenMessages));
             gameUi.drawUi(visibleInformation);
         }
         if (log.isTraceEnabled()) {

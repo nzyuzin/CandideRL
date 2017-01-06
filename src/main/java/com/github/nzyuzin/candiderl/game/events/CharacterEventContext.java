@@ -17,19 +17,17 @@
 
 package com.github.nzyuzin.candiderl.game.events;
 
-abstract  class AbstractEvent<T extends EventContext> implements Event<T> {
-    private final T context;
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 
-    AbstractEvent(T context) {
-        this.context = context;
+public class CharacterEventContext implements EventContext {
+
+    private final GameCharacter character;
+
+    public CharacterEventContext(GameCharacter character) {
+        this.character = character;
     }
 
-    protected T getContext() {
-        return context;
-    }
-
-    @Override
-    public String getTextualDescription() {
-        return "";
+    public GameCharacter getCharacter() {
+        return character;
     }
 }

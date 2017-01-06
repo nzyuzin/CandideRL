@@ -55,6 +55,8 @@ public class GameConfig {
             Integer.parseInt(ConfigHelper.DEFAULT_MAP_WINDOW_HEIGHT.getValue());
     public static final int DEFAULT_STATS_PANEL_WIDTH =
             Integer.parseInt(ConfigHelper.DEFAULT_STATS_PANEL_WIDTH.getValue());
+    public static final int DEFAULT_MESSAGES_PANEL_HEIGHT =
+            Integer.parseInt(ConfigHelper.DEFAULT_MESSAGES_PANEL_HEIGHT.getValue());
     public static final boolean CALCULATE_FIELD_OF_VIEW =
             Boolean.parseBoolean(ConfigHelper.CALCULATE_FIELD_OF_VIEW.getValue());
     public static final boolean RANDOM_MAP = Boolean.parseBoolean(ConfigHelper.RANDOM_MAP.getValue());
@@ -75,6 +77,7 @@ public class GameConfig {
         DEFAULT_MAP_WINDOW_WIDTH("default_map_window_width", "80"),
         DEFAULT_MAP_WINDOW_HEIGHT("default_map_window_height", "25"),
         DEFAULT_STATS_PANEL_WIDTH("default_stats_panel_width", "20"),
+        DEFAULT_MESSAGES_PANEL_HEIGHT("default_messages_panel_height", "11"),
         CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true"),
         RANDOM_MAP("random_map", "true"),
         BUILD_MAP_FROM_FILE("build_map_from_file", "false"),

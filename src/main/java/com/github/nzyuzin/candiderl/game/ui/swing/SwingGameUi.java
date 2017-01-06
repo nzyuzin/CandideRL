@@ -30,10 +30,11 @@ import javax.swing.WindowConstants;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 public class SwingGameUi implements GameUi {
     private JFrame mainWindow;
-    private TextWindow mapWindow;
+    private TextWindow gameWindow;
 
     private Character key;
     private boolean keyRead = true;
@@ -47,9 +48,9 @@ public class SwingGameUi implements GameUi {
 
     private SwingGameUi(String frameName) {
         mainWindow = new JFrame(frameName);
-        mapWindow = TextWindow.getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH + GameConfig.DEFAULT_STATS_PANEL_WIDTH,
-                        GameConfig.DEFAULT_MAP_WINDOW_HEIGHT);
-        mainWindow.getContentPane().add(mapWindow);
+        gameWindow = TextWindow.getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH + GameConfig.DEFAULT_STATS_PANEL_WIDTH,
+                        GameConfig.DEFAULT_MAP_WINDOW_HEIGHT + GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT);
+        mainWindow.getContentPane().add(gameWindow);
         mainWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         KeyListener kl = new KeyListener() {
             @Override
@@ -73,8 +74,8 @@ public class SwingGameUi implements GameUi {
 
     @Override
     public void init() {
-        mapWindow.init();
-        mainWindow.setPreferredSize(mapWindow.getPreferredSize());
+        gameWindow.init();
+        mainWindow.setPreferredSize(gameWindow.getPreferredSize());
         mainWindow.setResizable(false);
         mainWindow.pack();
         mainWindow.setVisible(true);
@@ -86,42 +87,54 @@ public class SwingGameUi implements GameUi {
             log.trace("drawUi begin");
         }
         final ColoredChar[][] charMap = uiInfo.getVisibleMap();
-        final int mapHeight = charMap[0].length;
-        final int mapWidth = charMap.length;
+        final int messagesHeight = GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT;
+        final int screenHeight = getMapHeight() + messagesHeight;
+        final List<String> messages = uiInfo.getMessages();
+
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
-        for (int i = mapHeight - 1; i >= 0; i--) {
-            for (int j = 0; j < mapWidth; j++) {
-                ColoredChar c = charMap[j][i];
-                mapWindow.write(c.getChar(), c.getForeground(), c.getBackground());
+        for (int i = screenHeight - 1; i >= 0; i--) {
+            if (i < (screenHeight - getMapHeight())) { // map is written
+                if (messagesHeight == i + 1) {
+                    writeBlackWhite("-", getMapWidth());
+                } else if (messages.size() >= i + 1) {
+                    writeToMessagesPanel(messages.get(i));
+                } else {
+                    writeToMessagesPanel("");
+                }
+            } else {
+                for (int j = 0; j < getMapWidth(); j++) { // write map
+                    final ColoredChar c = charMap[j][i - (screenHeight - getMapHeight())];
+                    gameWindow.write(c.getChar(), c.getForeground(), c.getBackground());
+                }
             }
-            drawStatsPanelRow(uiInfo, mapHeight, i);
+            drawStatsPanelRow(uiInfo, screenHeight, i);
         }
-        mapWindow.repaint();
+        gameWindow.repaint();
         if (log.isTraceEnabled()) {
             log.trace("drawUi end");
         }
     }
 
-    private void drawStatsPanelRow(VisibleInformation uiInfo, int mapHeight, int mapRow) {
+    private void drawStatsPanelRow(VisibleInformation uiInfo, int screenHeight, int mapRow) {
         final GameCharacter player = uiInfo.getPlayer();
-        if (mapRow == 0 || mapRow == mapHeight - 1) {
+        if (mapRow == 0 || mapRow == screenHeight - 1) {
             for (int k = 0; k < GameConfig.DEFAULT_STATS_PANEL_WIDTH; k++) {
                 writeBlackWhite('-');
             }
             return;
         }
         writeBlackWhite('|');
-        if (mapRow == mapHeight - 2) {
+        if (mapRow == screenHeight - 2) {
             writeToStatsPanel(player.getName());
             return;
         }
-        if (mapRow == mapHeight - 4) {
+        if (mapRow == screenHeight - 4) {
             final String health = String.format("HP: %d/%d", player.getCurrentHP(), player.getMaxHP());
             writeToStatsPanel(health);
             return;
         }
-        if (mapRow == mapHeight - 6) {
+        if (mapRow == screenHeight - 6) {
             writeToStatsPanel("Current turn: " + uiInfo.getCurrentTurn());
             return;
         }
@@ -137,20 +150,34 @@ public class SwingGameUi implements GameUi {
         }
     }
 
-    private void writeBlanks(final int times) {
-        for (int i = 0; i < times; i++) {
-            writeBlackWhite(" ");
+    private void writeToMessagesPanel(final String s) {
+        final int messagesSpaceWidth = gameWindow.getColumns() - GameConfig.DEFAULT_STATS_PANEL_WIDTH;
+        if (s.length() > messagesSpaceWidth) {
+            writeBlackWhite(s.substring(0, messagesSpaceWidth));
+        } else {
+            writeBlackWhite(s);
+            writeBlanks(messagesSpaceWidth - s.length());
         }
     }
 
+    private void writeBlanks(final int times) {
+        writeBlackWhite(" ", times);
+    }
+
     private void writeBlackWhite(final String s) {
-        for (int i = 0; i < s.length(); i++) {
-            writeBlackWhite(s.charAt(i));
+        writeBlackWhite(s, 1);
+    }
+
+    private void writeBlackWhite(final String s, final int times) {
+        for (int k = 0; k < times; k++) {
+            for (int i = 0; i < s.length(); i++) {
+                writeBlackWhite(s.charAt(i));
+            }
         }
     }
 
     private void writeBlackWhite(final char character) {
-        mapWindow.write(character, Color.WHITE, Color.BLACK);
+        gameWindow.write(character, Color.WHITE, Color.BLACK);
     }
 
     @Override

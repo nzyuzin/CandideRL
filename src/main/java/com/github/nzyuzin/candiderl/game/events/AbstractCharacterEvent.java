@@ -17,19 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game.events;
 
-abstract  class AbstractEvent<T extends EventContext> implements Event<T> {
-    private final T context;
+abstract public class AbstractCharacterEvent extends AbstractEvent<CharacterEventContext> {
 
-    AbstractEvent(T context) {
-        this.context = context;
-    }
-
-    protected T getContext() {
-        return context;
-    }
-
-    @Override
-    public String getTextualDescription() {
-        return "";
+    public AbstractCharacterEvent(CharacterEventContext context) {
+        super(context);
     }
 }

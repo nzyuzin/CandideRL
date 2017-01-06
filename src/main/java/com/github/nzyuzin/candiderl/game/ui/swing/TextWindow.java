@@ -189,5 +189,12 @@ public class TextWindow extends JComponent {
         }
     }
 
+    public int getColumns() {
+        return data.getColumns();
+    }
+
+    public int getRows() {
+        return data.getRows();
+    }
 }
 

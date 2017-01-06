@@ -20,15 +20,22 @@ package com.github.nzyuzin.candiderl.game.ui;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
+import java.util.List;
+
 public class VisibleInformation {
     private final ColoredChar[][] visibleMap;
     private final GameCharacter player;
     private final long currentTurn;
+    private final List<String> messages;
 
-    public VisibleInformation(ColoredChar[][] visibleMap, GameCharacter player, long currentTurn) {
+    public VisibleInformation(final ColoredChar[][] visibleMap,
+                              final GameCharacter player,
+                              final long currentTurn,
+                              final List<String> gameMessages) {
         this.visibleMap = visibleMap;
         this.player = player;
         this.currentTurn = currentTurn;
+        this.messages = gameMessages;
     }
 
     public ColoredChar[][] getVisibleMap() {
@@ -41,5 +48,9 @@ public class VisibleInformation {
 
     public long getCurrentTurn() {
         return currentTurn;
+    }
+
+    public List<String> getMessages() {
+        return messages;
     }
 }
