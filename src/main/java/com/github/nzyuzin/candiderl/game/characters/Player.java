@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.github.nzyuzin.candiderl.game.utility.VisibleCharacters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +33,7 @@ public final class Player extends AbstractGameCharacter {
 
     private Player() {
         super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP);
-        this.charOnMap = ColoredChar
-                .getColoredChar(com.github.nzyuzin.candiderl.game.utility.VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
+        this.charOnMap = ColoredChar .getColoredChar(VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
         fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }
 
