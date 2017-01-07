@@ -28,6 +28,7 @@ import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +113,9 @@ public final class GameEngine implements AutoCloseable {
         while (eventsIterator.hasNext()) {
             final Event e = eventsIterator.next();
             e.occur();
-            lastTenMessages.addFirst(e.getTextualDescription());
+            if (!Strings.isNullOrEmpty(e.getTextualDescription())) {
+                lastTenMessages.addFirst(e.getTextualDescription());
+            }
             eventsIterator.remove();
         }
     }
