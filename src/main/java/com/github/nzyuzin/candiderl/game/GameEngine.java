@@ -28,6 +28,7 @@ import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -54,14 +55,16 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-    private Player player;
-    private List<Npc> npcs;
-    private List<Event> events;
-    private long currentTurn = 0;
-    private GameUi gameUi;
-    private NpcController npcController;
+    private final Player player;
+    private final List<Npc> npcs;
+    private final List<Event> events;
+    private final GameUi gameUi;
+    private final NpcController npcController;
 
     private final Deque<String> lastTenMessages = new ArrayDeque<>(10);
+
+    private PositionOnMap playerPosition;
+    private long currentTurn = 0;
 
     public static GameEngine getGameEngine(MapFactory mapFactory, GameUi gameUi) {
         return new GameEngine(gameUi, mapFactory.getMap());
@@ -89,6 +92,7 @@ public final class GameEngine implements AutoCloseable {
                 map.putGameCharacter(mob, map.getRandomFreePosition());
         }
         map.putGameCharacter(player, map.getRandomFreePosition());
+        playerPosition = player.getPositionOnMap();
         currentTurn = 0;
     }
 
@@ -121,7 +125,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void applyMapEffects() {
-        player.getMap().applyEffects();
+        playerPosition.getMap().applyEffects();
     }
 
     private void advanceTime() {
@@ -131,6 +135,9 @@ public final class GameEngine implements AutoCloseable {
         processActions();
         processEvents();
         applyMapEffects();
+        if (player.getPositionOnMap() != null) {
+            playerPosition = player.getPositionOnMap();
+        }
         drawUi();
         currentTurn++;
         if (log.isTraceEnabled()) {
@@ -143,7 +150,7 @@ public final class GameEngine implements AutoCloseable {
         if (log.isTraceEnabled()) {
             log.debug("handleInput input = {}", input);
         }
-        if (KeyDefinitions.isDirectionKey(input)) {
+        if (KeyDefinitions.isDirectionKey(input) && !player.isDead()) {
             npcController.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
@@ -167,14 +174,17 @@ public final class GameEngine implements AutoCloseable {
             log.trace("drawUi start");
             initTime = System.currentTimeMillis();
         }
+        final VisibleInformation visibleInformation;
+        final ColoredChar[][] visibleMap;
         if (!player.isDead()) {
-            final VisibleInformation visibleInformation = new VisibleInformation(
-                    player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight()),
-                    player,
-                    currentTurn,
-                    Lists.newArrayList(lastTenMessages));
-            gameUi.drawUi(visibleInformation);
+            visibleMap = player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight());
+        } else {
+            visibleMap = playerPosition.getMap().getVisibleChars(
+                    playerPosition.getPosition(), gameUi.getMapWidth(), gameUi.getMapHeight());
         }
+        visibleInformation = new VisibleInformation(visibleMap, player, currentTurn,
+                Lists.newArrayList(lastTenMessages));
+        gameUi.drawUi(visibleInformation);
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawUi end :: time=%d", System.currentTimeMillis() - initTime));
         }
@@ -188,10 +198,11 @@ public final class GameEngine implements AutoCloseable {
         gameUi.showAnnouncement("Prepare to play!");
         drawUi();
         try {
-            while (!player.isDead()) {
+            while (true) {
                 handleInput();
-                if (player.canPerformAction())
+                if (player.canPerformAction()) {
                     advanceTime();
+                }
             }
         } catch (GameClosedException gameClosedException) {
             if (log.isDebugEnabled()) {
@@ -200,12 +211,6 @@ public final class GameEngine implements AutoCloseable {
         } finally {
             close();
             GameConfig.write();
-        }
-        if (npcs.isEmpty()) {
-            gameUi.showAnnouncement("All mobs are dead!");
-        }
-        if (player.isDead()) {
-            gameUi.showAnnouncement("You're dead!");
         }
         if (log.isDebugEnabled()) {
             log.debug("Game ends");

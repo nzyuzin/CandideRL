@@ -42,8 +42,8 @@ public class NpcController {
     }
 
     public void chooseActionInDirection(GameCharacter mob, Direction direction) {
-        Position position = mob.getPosition().apply(direction);
-        MoveToNextCellAction move = new MoveToNextCellAction(mob, mob.getMap(), position);
+        final Position position = mob.getPosition().apply(direction);
+        final MoveToNextCellAction move = new MoveToNextCellAction(mob, mob.getMap(), position);
         if (move.canBeExecuted()) {
             mob.addAction(move);
             return;

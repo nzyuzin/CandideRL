@@ -29,7 +29,11 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.Random;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
@@ -125,7 +129,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public boolean canPerformAction() {
-        return hasAction() && gameActions.peek().canBeExecuted();
+        return !isDead() && hasAction() && gameActions.peek().canBeExecuted();
     }
 
     @Override
@@ -158,13 +162,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void takeDamage(int damage) {
-    /* TODO
-	 * if takes 0 as arguments - attacker missed,
-	 * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
-	 */
+        if (isDead()) {
+            return;
+        }
+        /* TODO
+         * if takes 0 as arguments - attacker missed,
+         * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
+         */
         currentHP -= damage;
         if (currentHP < 0) {
-            die();
+            getMap().putItem(this.die(), this.getPosition());
+            getMap().removeGameCharacter(this);
         }
     }
 

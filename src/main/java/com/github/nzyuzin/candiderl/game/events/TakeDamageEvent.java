@@ -18,7 +18,6 @@
 package com.github.nzyuzin.candiderl.game.events;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.map.Map;
 
 public class TakeDamageEvent extends AbstractCharacterEvent {
 
@@ -33,12 +32,6 @@ public class TakeDamageEvent extends AbstractCharacterEvent {
     public void occur() {
         final GameCharacter target = getContext().getCharacter();
         target.takeDamage(damage);
-        // TODO: move to GameCharacter
-        if (target.isDead()) {
-            Map map = target.getMap();
-            map.putItem(target.die(), target.getPosition());
-            map.removeGameCharacter(target);
-        }
     }
 
     @Override
