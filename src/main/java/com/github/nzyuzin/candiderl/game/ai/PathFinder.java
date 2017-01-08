@@ -99,7 +99,7 @@ public class PathFinder {
 
                 if (!map.isSomeoneHere(p) && (distance[x][y] < distance[best.getX()][best.getY()]
                         || distance[x][y] == distance[best.getX()][best.getY()]
-                        && p == target.closest(p, best))) {
+                        && p == target.closestBetweenTwo(p, best))) {
                     best = p;
                 }
             }

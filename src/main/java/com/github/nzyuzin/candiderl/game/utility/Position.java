@@ -56,15 +56,25 @@ public final class Position {
     }
 
     /**
-     * Returns closest to this position from given two {@link Position}s
+     * Returns a position that is closest to this position from given two {@link Position}s
      *
      * @param first  first position
      * @param second second position
-     * @return position closest to this position, either {@param first} or {@param second}
+     * @return position closestBetweenTwo to this position, either {@param first} or {@param second}
      */
-    public Position closest(Position first, Position second) {
+    public Position closestBetweenTwo(Position first, Position second) {
         return this.distanceTo(first) < this.distanceTo(second) ? first
                 : second;
+    }
+
+    /**
+     * Returns the position that follows this position on the line between this and target positions
+     *
+     * @param that target position
+     * @return position that is on the line between this and target positions
+     */
+    public Position nextInLine(Position that) {
+        return apply(directionTo(that));
     }
 
     public Position apply(Direction direction) {

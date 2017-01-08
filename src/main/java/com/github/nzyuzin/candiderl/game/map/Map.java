@@ -34,25 +34,30 @@ public class Map {
     private final int mapHeight;
     private final MapCell[][] map;
 
-    Map(int width, int height) {
+    public Map(int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
         map = new MapCell[width][height];
         mapWidth = width;
         mapHeight = height;
     }
 
-    MapCell getCell(Position pos) {
-        Preconditions.checkArgument(pos.getX() < mapWidth && pos.getX() >= 0 && pos.getY() < mapHeight
-                && pos.getY() >= 0);
-        return map[pos.getX()][pos.getY()];
+    public MapCell getCell(Position pos) {
+        return getCell(pos.getX(), pos.getY());
     }
 
-    void setCell(Position pos, MapCell cell) {
+    public MapCell getCell(int x, int y) {
+        Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0,
+                "Illegal position: (" + x + ", " + y + ")");
+        return map[x][y];
+    }
+
+    public void setCell(Position pos, MapCell cell) {
         setCell(pos.getX(), pos.getY(), cell);
     }
 
-    void setCell(int x, int y, MapCell cell) {
-        Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0);
+    public void setCell(int x, int y, MapCell cell) {
+        Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0,
+                "Illegal position: (" + x + ", " + y + ")");
         map[x][y] = cell;
     }
 

@@ -22,6 +22,9 @@ import com.github.nzyuzin.candiderl.game.GameConstants;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
+import com.github.nzyuzin.candiderl.game.map.generator.DungeonGenerator;
+import com.github.nzyuzin.candiderl.game.map.generator.EmptyMapGenerator;
+import com.github.nzyuzin.candiderl.game.map.generator.RandomMapGenerator;
 import com.google.common.base.Preconditions;
 import com.google.common.io.LineReader;
 
@@ -35,13 +38,18 @@ public class MapFactory {
     private final int width;
     private final int height;
 
-    private MapFactory(int width, int height) {
+    private final EmptyMapGenerator emptyMapGenerator;
+    private final DungeonGenerator dungeonGenerator;
+
+    public MapFactory(int width, int height, EmptyMapGenerator emptyMapGenerator, DungeonGenerator dungeonGenerator) {
         this.width = width;
         this.height = height;
+        this.emptyMapGenerator = emptyMapGenerator;
+        this.dungeonGenerator = dungeonGenerator;
     }
 
     public static MapFactory getInstance(int mapWidth, int mapHeight) {
-        return new MapFactory(mapWidth, mapHeight);
+        return new MapFactory(mapWidth, mapHeight, new EmptyMapGenerator(), new DungeonGenerator(3, 3));
     }
 
     public static MapFactory getInstance() {
@@ -58,33 +66,20 @@ public class MapFactory {
         } else if (GameConfig.RANDOM_MAP) {
             return buildRandomMap(0.25);
         } else {
-            return buildEmptyMap();
+            return buildDungeon();
         }
     }
 
     public Map buildEmptyMap() {
-        Map map = new Map(width, height);
-        for (int i = 1; i < width - 1; i++)
-            for (int j = 1; j < height - 1; j++)
-                map.setCell(i, j, Floor.getFloor());
-        for (int i = 0; i < height; i++) {
-            map.setCell(0, i, Wall.getWall());
-            map.setCell(width - 1, i, Wall.getWall());
-        }
-        for (int i = 0; i < width; i++) {
-            map.setCell(i, 0, Wall.getWall());
-            map.setCell(i, height - 1, Wall.getWall());
-        }
-        return map;
+        return this.emptyMapGenerator.generate(width, height);
     }
 
     public Map buildRandomMap(double filledCells) {
-        Preconditions.checkArgument(filledCells < 1 && filledCells > 0);
-        Map map = buildEmptyMap();
-        for (int i = 0; i < height * width * filledCells; i++) {
-            map.setCell(map.getRandomFreePosition(), Wall.getWall());
-        }
-        return map;
+        return new RandomMapGenerator(filledCells, emptyMapGenerator).generate(width, height);
+    }
+
+    public Map buildDungeon() {
+        return this.dungeonGenerator.generate(width, height);
     }
 
     public static Map buildMapFrom(char[][] array) {

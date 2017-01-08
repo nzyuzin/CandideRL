@@ -19,10 +19,6 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 
-public class DungeonBuilder {
-
-    public Map buildMap(int width, int height) {
-        return null;
-    }
-
+public interface MapGenerator {
+    Map generate(int width, int height);
 }
