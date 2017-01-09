@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -61,7 +62,9 @@ public class HitInMeleeActionTest {
 
         assertThat(action.canBeExecuted(), is(true));
 
-        action.execute();
+        for (Event e : action.execute()) {
+            e.occur();
+        }
 
         verify(performer).rollDamageDice();
         verify(target).takeDamage(anyInt());
