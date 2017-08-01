@@ -51,8 +51,6 @@ public class GameEngineTest {
     public void gameStartsAndExitsWithoutException() {
         when(mapFactory.getMap()).thenReturn(testMap);
         when(gameUi.getInputChar()).thenReturn('q');
-        when(gameUi.getMapWidth()).thenReturn(testMap.getWidth());
-        when(gameUi.getMapHeight()).thenReturn(testMap.getHeight());
 
         GameEngine engine = GameEngine.getGameEngine(mapFactory, gameUi);
         engine.startGame();
