@@ -64,7 +64,6 @@ public class Map {
     public void removeGameCharacter(GameCharacter mob) {
         Preconditions.checkState(mob.getMap().equals(this));
         MapCell cell = getCell(mob.getPosition());
-        mob.setPositionOnMap(null);
         cell.setGameCharacter(null);
     }
 
