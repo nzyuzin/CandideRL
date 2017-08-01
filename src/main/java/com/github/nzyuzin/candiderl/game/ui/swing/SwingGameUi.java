@@ -18,29 +18,24 @@
 package com.github.nzyuzin.candiderl.game.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.GameInformation;
 import com.github.nzyuzin.candiderl.game.ui.GameUi;
-import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.List;
 
 public class SwingGameUi implements GameUi {
-    private JFrame mainWindow;
-    private TextWindow gameWindow;
+    private final JFrame mainWindow;
+    private final TextWindow gameWindow;
+
+    private final GameScreen gameScreen;
+    private final AnnouncementScreen announcementScreen;
 
     private Character key;
     private boolean keyRead = true;
     private final Object lock = new Object();
-
-    private static final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
 
     public static GameUi getUi(String windowName) {
         return new SwingGameUi(windowName);
@@ -70,6 +65,9 @@ public class SwingGameUi implements GameUi {
             public void keyReleased(KeyEvent e) { }
         };
         mainWindow.addKeyListener(kl);
+
+        gameScreen = new GameScreen(gameWindow);
+        announcementScreen = new AnnouncementScreen(gameWindow);
     }
 
     @Override
@@ -82,102 +80,8 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void drawUi(final VisibleInformation uiInfo) {
-        if (log.isTraceEnabled()) {
-            log.trace("drawUi begin");
-        }
-        final ColoredChar[][] charMap = uiInfo.getVisibleMap();
-        final int messagesHeight = GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT;
-        final int screenHeight = getMapHeight() + messagesHeight;
-        final List<String> messages = uiInfo.getMessages();
-
-        // drawing begins in upper left corner of screen
-        // map passed as argument has (0, 0) as lower left point
-        for (int i = screenHeight - 1; i >= 0; i--) {
-            if (i < (screenHeight - getMapHeight())) { // map is written
-                if (messagesHeight == i + 1) {
-                    writeBlackWhite("-", getMapWidth());
-                } else if (messages.size() >= i + 1) {
-                    writeToMessagesPanel(messages.get(i));
-                } else {
-                    writeToMessagesPanel("");
-                }
-            } else {
-                for (int j = 0; j < getMapWidth(); j++) { // write map
-                    final ColoredChar c = charMap[j][i - (screenHeight - getMapHeight())];
-                    gameWindow.write(c.getChar(), c.getForeground(), c.getBackground());
-                }
-            }
-            drawStatsPanelRow(uiInfo, screenHeight, i);
-        }
-        gameWindow.repaint();
-        if (log.isTraceEnabled()) {
-            log.trace("drawUi end");
-        }
-    }
-
-    private void drawStatsPanelRow(VisibleInformation uiInfo, int screenHeight, int mapRow) {
-        final GameCharacter player = uiInfo.getPlayer();
-        if (mapRow == 0 || mapRow == screenHeight - 1) {
-            for (int k = 0; k < GameConfig.DEFAULT_STATS_PANEL_WIDTH; k++) {
-                writeBlackWhite('-');
-            }
-            return;
-        }
-        writeBlackWhite('|');
-        if (mapRow == screenHeight - 2) {
-            writeToStatsPanel(player.getName());
-            return;
-        }
-        if (mapRow == screenHeight - 4) {
-            final String health = String.format("HP: %d/%d", player.getCurrentHP(), player.getMaxHP());
-            writeToStatsPanel(health);
-            return;
-        }
-        if (mapRow == screenHeight - 6) {
-            writeToStatsPanel("Current turn: " + uiInfo.getCurrentTurn());
-            return;
-        }
-        writeToStatsPanel("");
-    }
-
-    private void writeToStatsPanel(final String s) {
-        if (s.length() > GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) {
-            writeBlackWhite(s.substring(0, GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1));
-        } else {
-            writeBlackWhite(s);
-            writeBlanks((GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) - s.length());
-        }
-    }
-
-    private void writeToMessagesPanel(final String s) {
-        final int messagesSpaceWidth = gameWindow.getColumns() - GameConfig.DEFAULT_STATS_PANEL_WIDTH;
-        if (s.length() > messagesSpaceWidth) {
-            writeBlackWhite(s.substring(0, messagesSpaceWidth));
-        } else {
-            writeBlackWhite(s);
-            writeBlanks(messagesSpaceWidth - s.length());
-        }
-    }
-
-    private void writeBlanks(final int times) {
-        writeBlackWhite(" ", times);
-    }
-
-    private void writeBlackWhite(final String s) {
-        writeBlackWhite(s, 1);
-    }
-
-    private void writeBlackWhite(final String s, final int times) {
-        for (int k = 0; k < times; k++) {
-            for (int i = 0; i < s.length(); i++) {
-                writeBlackWhite(s.charAt(i));
-            }
-        }
-    }
-
-    private void writeBlackWhite(final char character) {
-        gameWindow.write(character, Color.WHITE, Color.BLACK);
+    public void drawUi(final GameInformation gameInfo) {
+        gameScreen.draw(gameInfo);
     }
 
     @Override
@@ -196,21 +100,14 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void showAnnouncement(String msg) { }
+    public void showAnnouncement(String msg) {
+        announcementScreen.draw(msg);
+        while (getInputChar() != ' ') { /* wait for space */ }
+    }
 
     @Override
     public void close() {
         mainWindow.setVisible(false);
         mainWindow.dispose();
-    }
-
-    @Override
-    public int getMapWidth() {
-        return GameConfig.DEFAULT_MAP_WINDOW_WIDTH;
-    }
-
-    @Override
-    public int getMapHeight() {
-        return GameConfig.DEFAULT_MAP_WINDOW_HEIGHT;
     }
 }

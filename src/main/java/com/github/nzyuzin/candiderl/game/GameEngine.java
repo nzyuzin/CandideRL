@@ -24,7 +24,6 @@ import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.ui.GameUi;
-import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
@@ -34,8 +33,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -55,16 +52,14 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-    private final Player player;
     private final List<Npc> npcs;
     private final List<Event> events;
     private final GameUi gameUi;
     private final NpcController npcController;
 
-    private final Deque<String> lastTenMessages = new ArrayDeque<>(10);
-
     private PositionOnMap playerPosition;
-    private long currentTurn = 0;
+
+    private final GameInformation gameInformation;
 
     public static GameEngine getGameEngine(MapFactory mapFactory, GameUi gameUi) {
         return new GameEngine(gameUi, mapFactory.getMap());
@@ -74,8 +69,8 @@ public final class GameEngine implements AutoCloseable {
         this.gameUi = gameUi;
         npcs = Lists.newArrayList();
         events = Lists.newArrayList();
-        player = Player.getInstance();
-        int npcOperationalRange = (this.gameUi.getMapWidth() + this.gameUi.getMapHeight()) / 2;
+        final Player player = Player.getInstance();
+        int npcOperationalRange = 20; // arbitrary for now
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
             npcs.add(new Npc(
@@ -93,11 +88,11 @@ public final class GameEngine implements AutoCloseable {
         }
         map.putGameCharacter(player, map.getRandomFreePosition());
         playerPosition = player.getPositionOnMap();
-        currentTurn = 0;
+        gameInformation = new GameInformation(player);
     }
 
     private void processActions() {
-        events.addAll(player.performAction());
+        events.addAll(gameInformation.getPlayer().performAction());
         for (Iterator<Npc> iterator = npcs.iterator(); iterator.hasNext(); ) {
             Npc npc = iterator.next();
             if (npc.isDead()) {
@@ -118,7 +113,7 @@ public final class GameEngine implements AutoCloseable {
             final Event e = eventsIterator.next();
             e.occur();
             if (!Strings.isNullOrEmpty(e.getTextualDescription())) {
-                lastTenMessages.addFirst(e.getTextualDescription());
+                gameInformation.addMessage(e.getTextualDescription());
             }
             eventsIterator.remove();
         }
@@ -130,16 +125,16 @@ public final class GameEngine implements AutoCloseable {
 
     private void advanceTime() {
         if (log.isTraceEnabled()) {
-            log.trace("advanceTime begin currentTurn = {}", currentTurn);
+            log.trace("advanceTime begin currentTurn = {}", gameInformation.getCurrentTurn());
         }
         processActions();
         processEvents();
         applyMapEffects();
-        if (player.getPositionOnMap() != null) {
-            playerPosition = player.getPositionOnMap();
+        if (gameInformation.getPlayer().getPositionOnMap() != null) {
+            playerPosition = gameInformation.getPlayer().getPositionOnMap();
         }
         drawUi();
-        currentTurn++;
+        gameInformation.incrementTurn();
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
         }
@@ -150,8 +145,8 @@ public final class GameEngine implements AutoCloseable {
         if (log.isTraceEnabled()) {
             log.debug("handleInput input = {}", input);
         }
-        if (KeyDefinitions.isDirectionKey(input) && !player.isDead()) {
-            npcController.chooseActionInDirection(player, KeyDefinitions.getDirectionFromKey(input));
+        if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
+            npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
         } else if (KeyDefinitions.isExitChar(input)) {
@@ -160,7 +155,7 @@ public final class GameEngine implements AutoCloseable {
     }
 
     public void close() {
-        gameUi.showAnnouncement("You're leaving the game.");
+        gameUi.showAnnouncement("You are leaving the game.");
         try {
             gameUi.close();
         } catch (Exception ex) {
@@ -174,17 +169,7 @@ public final class GameEngine implements AutoCloseable {
             log.trace("drawUi start");
             initTime = System.currentTimeMillis();
         }
-        final VisibleInformation visibleInformation;
-        final ColoredChar[][] visibleMap;
-        if (!player.isDead()) {
-            visibleMap = player.getVisibleMap(gameUi.getMapWidth(), gameUi.getMapHeight());
-        } else {
-            visibleMap = playerPosition.getMap().getVisibleChars(
-                    playerPosition.getPosition(), gameUi.getMapWidth(), gameUi.getMapHeight());
-        }
-        visibleInformation = new VisibleInformation(visibleMap, player, currentTurn,
-                Lists.newArrayList(lastTenMessages));
-        gameUi.drawUi(visibleInformation);
+        gameUi.drawUi(gameInformation);
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawUi end :: time=%d", System.currentTimeMillis() - initTime));
         }
@@ -195,12 +180,12 @@ public final class GameEngine implements AutoCloseable {
             log.debug("Game starts");
         }
         gameUi.init();
-        gameUi.showAnnouncement("Prepare to play!");
+        gameUi.showAnnouncement("Journey awaits!");
         drawUi();
         try {
             while (true) {
                 handleInput();
-                if (player.canPerformAction()) {
+                if (gameInformation.getPlayer().canPerformAction()) {
                     advanceTime();
                 }
             }

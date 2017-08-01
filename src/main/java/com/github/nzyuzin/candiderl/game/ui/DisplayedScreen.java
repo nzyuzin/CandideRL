@@ -17,11 +17,4 @@
 
 package com.github.nzyuzin.candiderl.game.ui;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
-
-public interface GameUi extends AutoCloseable {
-    void init();
-    void drawUi(GameInformation gameInfo);
-    char getInputChar();
-    void showAnnouncement(String msg);
-}
+public interface DisplayedScreen { }
