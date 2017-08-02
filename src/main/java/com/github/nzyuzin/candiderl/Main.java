@@ -15,26 +15,17 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl;
 
-mainClassName = 'com.github.nzyuzin.candiderl.Main'
+import com.github.nzyuzin.candiderl.ui.GameUi;
+import com.github.nzyuzin.candiderl.ui.swing.SwingGameUi;
 
-repositories {
-    mavenCentral()
-}
+public class Main {
 
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
+    public static void main(String[] args) {
+        GameUi ui = new SwingGameUi("CandideRL");
+        final Menu menu = new Menu(ui);
+        menu.start();
+    }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'org.slf4j:slf4j-log4j12:1.7.12'
-    compile 'com.google.guava:guava:18.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
 }

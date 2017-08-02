@@ -15,7 +15,7 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui.swing;
+package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import org.slf4j.Logger;
@@ -192,6 +192,11 @@ public class TextWindow extends JComponent {
     public void moveCursorToLastRow() {
         resetCursor();
         moveCursor(getColumns() * (getRows() - 1));
+    }
+
+    public void nextLine() {
+        cursorColumn = data.getColumns();
+        moveCursor();
     }
 
     public int getColumns() {

@@ -15,15 +15,16 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui.swing;
+package com.github.nzyuzin.candiderl.ui.swing.screens;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameInformation;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Player;
-import com.github.nzyuzin.candiderl.game.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.ui.VisibleInformation;
+import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
 import java.util.List;
 

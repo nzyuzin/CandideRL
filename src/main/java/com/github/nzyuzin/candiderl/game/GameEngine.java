@@ -23,11 +23,10 @@ import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
-import com.github.nzyuzin.candiderl.game.ui.GameUi;
-import com.github.nzyuzin.candiderl.game.ui.swing.SwingGameUi;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -40,17 +39,6 @@ import java.util.ListIterator;
 public final class GameEngine implements AutoCloseable {
 
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
-
-    public static void main(String args[]) {
-        MapFactory mapFactory = MapFactory.getInstance();
-        GameUi gameUi = SwingGameUi.getUi("CandideRL");
-        try (GameEngine engine = getGameEngine(mapFactory, gameUi)) {
-            engine.startGame();
-        } catch (Exception ex) {
-            log.error("Error during game", ex);
-            throw ex;
-        }
-    }
 
     private final List<Npc> npcs;
     private final List<Event> events;
@@ -169,7 +157,7 @@ public final class GameEngine implements AutoCloseable {
             log.trace("drawUi start");
             initTime = System.currentTimeMillis();
         }
-        gameUi.drawUi(gameInformation);
+        gameUi.drawGame(gameInformation);
         if (log.isTraceEnabled()) {
             log.trace(String.format("drawUi end :: time=%d", System.currentTimeMillis() - initTime));
         }
@@ -179,7 +167,6 @@ public final class GameEngine implements AutoCloseable {
         if (log.isDebugEnabled()) {
             log.debug("Game starts");
         }
-        gameUi.init();
         gameUi.showAnnouncement("Journey awaits!");
         drawUi();
         try {

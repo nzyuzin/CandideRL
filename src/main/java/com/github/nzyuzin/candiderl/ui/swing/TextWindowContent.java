@@ -15,7 +15,7 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui.swing;
+package com.github.nzyuzin.candiderl.ui.swing;
 
 import java.awt.Color;
 import java.util.Arrays;

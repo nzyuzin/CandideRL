@@ -15,16 +15,20 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui.swing;
+package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameInformation;
-import com.github.nzyuzin.candiderl.game.ui.GameUi;
+import com.github.nzyuzin.candiderl.ui.GameUi;
+import com.github.nzyuzin.candiderl.ui.swing.screens.AnnouncementScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.GameScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.MenuScreen;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 public class SwingGameUi implements GameUi {
     private final JFrame mainWindow;
@@ -32,16 +36,13 @@ public class SwingGameUi implements GameUi {
 
     private final GameScreen gameScreen;
     private final AnnouncementScreen announcementScreen;
+    private final MenuScreen menuScreen;
 
     private Character key;
     private boolean keyRead = true;
     private final Object lock = new Object();
 
-    public static GameUi getUi(String windowName) {
-        return new SwingGameUi(windowName);
-    }
-
-    private SwingGameUi(String frameName) {
+    public SwingGameUi(String frameName) {
         mainWindow = new JFrame(frameName);
         gameWindow = TextWindow.getTextWindow(GameConfig.DEFAULT_MAP_WINDOW_WIDTH + GameConfig.DEFAULT_STATS_PANEL_WIDTH,
                         GameConfig.DEFAULT_MAP_WINDOW_HEIGHT + GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT);
@@ -68,6 +69,7 @@ public class SwingGameUi implements GameUi {
 
         gameScreen = new GameScreen(gameWindow);
         announcementScreen = new AnnouncementScreen(gameWindow);
+        menuScreen = new MenuScreen(gameWindow);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void drawUi(final GameInformation gameInfo) {
+    public void drawGame(final GameInformation gameInfo) {
         gameScreen.draw(gameInfo);
     }
 
@@ -103,6 +105,11 @@ public class SwingGameUi implements GameUi {
     public void showAnnouncement(String msg) {
         announcementScreen.draw(msg);
         while (getInputChar() != ' ') { /* wait for space */ }
+    }
+
+    @Override
+    public void displayMenu(List<? extends Object> options) {
+        menuScreen.drawOptions(options);
     }
 
     @Override

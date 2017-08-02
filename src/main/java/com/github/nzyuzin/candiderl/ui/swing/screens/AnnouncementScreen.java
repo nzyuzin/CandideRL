@@ -15,26 +15,19 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-mainClassName = 'com.github.nzyuzin.candiderl.Main'
+import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
-repositories {
-    mavenCentral()
-}
+public class AnnouncementScreen extends AbstractDisplayedScreen {
 
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
+    public AnnouncementScreen(TextWindow gameWindow) {
+        super(gameWindow);
+    }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'org.slf4j:slf4j-log4j12:1.7.12'
-    compile 'com.google.guava:guava:18.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
+    public void draw(final String msg) {
+        getGameWindow().clearScreen();
+        writeBalckWhiteString(msg);
+        writeBottomRow("Press <space> to continue");
+    }
 }

@@ -15,13 +15,23 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui;
+package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
-public interface GameUi extends AutoCloseable {
-    void init();
-    void drawUi(GameInformation gameInfo);
-    char getInputChar();
-    void showAnnouncement(String msg);
+import java.util.List;
+
+public class MenuScreen extends AbstractDisplayedScreen {
+
+    public MenuScreen(TextWindow gameWindow) {
+        super(gameWindow);
+    }
+
+    public void drawOptions(List<? extends Object> options) {
+        getGameWindow().clearScreen();
+        for (int i = 0; i < options.size(); i++) {
+            final char index = (char)('a' + i);
+            writeBalckWhiteLine(index + ") " + options.get(i).toString());
+        }
+    }
 }

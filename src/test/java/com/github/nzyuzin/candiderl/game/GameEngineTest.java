@@ -19,7 +19,7 @@ package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
-import com.github.nzyuzin.candiderl.game.ui.GameUi;
+import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -57,7 +57,7 @@ public class GameEngineTest {
 
         verify(mapFactory, atLeastOnce()).getMap();
         verify(gameUi, times(1)).getInputChar();
-        verify(gameUi, atLeastOnce()).drawUi(any());
+        verify(gameUi, atLeastOnce()).drawGame(any());
         try {
             verify(gameUi).close();
         } catch (Exception e) {

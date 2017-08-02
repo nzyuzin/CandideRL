@@ -15,9 +15,10 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui.swing;
+package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.ui.DisplayedScreen;
+import com.github.nzyuzin.candiderl.ui.DisplayedScreen;
+import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ import java.awt.Color;
 
 public abstract class AbstractDisplayedScreen implements DisplayedScreen {
 
-    protected static final Logger log = LoggerFactory.getLogger(SwingGameUi.class);
+    protected static final Logger log = LoggerFactory.getLogger(AbstractDisplayedScreen.class);
 
     private TextWindow gameWindow;
 
@@ -65,6 +66,13 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
         for (int i = 0; i < s.length(); i++) {
             writeBlackWhite(s.charAt(i));
         }
+    }
+
+    protected void writeBalckWhiteLine(final String s) {
+        for (int i = 0; i < s.length(); i++) {
+            writeBlackWhite(s.charAt(i));
+        }
+        gameWindow.nextLine();
     }
 
     protected void writeBottomRow(final String s) {

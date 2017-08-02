@@ -15,7 +15,7 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.ui;
+package com.github.nzyuzin.candiderl.ui;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
