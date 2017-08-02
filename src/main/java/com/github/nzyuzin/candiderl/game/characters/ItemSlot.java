@@ -19,8 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
-
-import java.util.Optional;
+import com.google.common.base.Optional;
 
 public class ItemSlot extends AbstractGameObject {
 
@@ -28,7 +27,7 @@ public class ItemSlot extends AbstractGameObject {
         HAND, BODY, HEAD, LEGS, RING, AMULET;
     }
 
-    private Optional<Item> gameItem = Optional.empty();
+    private Optional<Item> gameItem = Optional.absent();
     private final Type type;
 
     public ItemSlot(String name, Type type) {
@@ -49,7 +48,7 @@ public class ItemSlot extends AbstractGameObject {
     }
 
     public void removeItem() {
-        this.gameItem = Optional.empty();
+        this.gameItem = Optional.absent();
     }
 
 }
