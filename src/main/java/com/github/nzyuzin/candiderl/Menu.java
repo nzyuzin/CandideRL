@@ -71,8 +71,10 @@ public class Menu {
 
     private void startGame() {
         MapFactory mapFactory = MapFactory.getInstance();
-        try (GameEngine engine = getGameEngine(mapFactory, gameUi)) {
+        try {
+            GameEngine engine = getGameEngine(mapFactory, gameUi);
             engine.startGame();
+            quit();
         } catch (Exception ex) {
             log.error("Error during the game", ex);
             throw ex;

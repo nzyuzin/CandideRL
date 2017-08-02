@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public final class GameEngine implements AutoCloseable {
+public final class GameEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
 
@@ -146,15 +146,6 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-    public void close() {
-        gameUi.showAnnouncement("You are leaving the game.");
-        try {
-            gameUi.close();
-        } catch (Exception ex) {
-            throw new RuntimeException("Exception during attempt to close the game", ex);
-        }
-    }
-
     private void drawGameScreen() {
         long initTime = 0;
         if (log.isTraceEnabled()) {
@@ -181,11 +172,8 @@ public final class GameEngine implements AutoCloseable {
                 }
             }
         } catch (GameClosedException gameClosedException) {
-            if (log.isDebugEnabled()) {
-                log.debug("Closing game");
-            }
+            gameUi.showAnnouncement("You are leaving the game.");
         } finally {
-            close();
             GameConfig.write();
         }
         if (log.isDebugEnabled()) {
