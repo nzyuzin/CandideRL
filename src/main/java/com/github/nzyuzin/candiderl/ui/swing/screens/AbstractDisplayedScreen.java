@@ -38,6 +38,10 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
         return gameWindow;
     }
 
+    protected void clearScreen() {
+        gameWindow.clearScreen();
+    }
+
     protected void writeBlanks(final int times) {
         writeBlackWhite(" ", times);
     }
@@ -68,7 +72,7 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
         }
     }
 
-    protected void writeBalckWhiteLine(final String s) {
+    protected void writeBlackWhiteLine(final String s) {
         for (int i = 0; i < s.length(); i++) {
             writeBlackWhite(s.charAt(i));
         }

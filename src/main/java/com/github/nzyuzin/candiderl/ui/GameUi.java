@@ -25,6 +25,7 @@ public interface GameUi extends AutoCloseable {
     void init();
     char getInputChar();
     void drawGame(GameInformation gameInfo);
+    void showStatus(GameInformation gameInfo);
     void showAnnouncement(String msg);
     void displayMenu(List<? extends Object> options);
 }

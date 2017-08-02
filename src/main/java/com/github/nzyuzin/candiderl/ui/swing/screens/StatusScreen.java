@@ -17,17 +17,23 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
+import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
-public class AnnouncementScreen extends AbstractDisplayedScreen {
+public class StatusScreen extends AbstractDisplayedScreen {
 
-    public AnnouncementScreen(TextWindow gameWindow) {
+    public StatusScreen(TextWindow gameWindow) {
         super(gameWindow);
     }
 
-    public void draw(final String msg) {
+    public void show(final GameInformation gameInfo) {
         clearScreen();
-        writeBalckWhiteString(msg);
-        writeBottomRow("Press <space> to continue");
+        final Player player = gameInfo.getPlayer();
+        writeBlackWhiteLine(player.getName() + "   HP: " + player.getCurrentHP() + "/" + player.getMaxHP());
+        writeBlackWhiteLine("Str: " + player.getStrength());
+        writeBlackWhiteLine("Dex: " + player.getDexterity());
+        writeBlackWhiteLine("Int: " + player.getIntelligence());
+        writeBlackWhiteLine("Armor: " + player.getArmor());
     }
 }

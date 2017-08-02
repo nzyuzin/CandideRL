@@ -42,6 +42,10 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     void setPositionOnMap(PositionOnMap position);
     int getCurrentHP();
     int getMaxHP();
+    short getStrength();
+    short getDexterity();
+    short getIntelligence();
+    short getArmor();
     boolean canPerformAction();
     List<Event> performAction();
     void hit(Position pos);

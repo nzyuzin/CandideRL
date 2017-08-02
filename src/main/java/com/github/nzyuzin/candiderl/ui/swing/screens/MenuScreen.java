@@ -28,10 +28,10 @@ public class MenuScreen extends AbstractDisplayedScreen {
     }
 
     public void drawOptions(List<? extends Object> options) {
-        getGameWindow().clearScreen();
+        clearScreen();
         for (int i = 0; i < options.size(); i++) {
             final char index = (char)('a' + i);
-            writeBalckWhiteLine(index + ") " + options.get(i).toString());
+            writeBlackWhiteLine(index + ") " + options.get(i).toString());
         }
     }
 }

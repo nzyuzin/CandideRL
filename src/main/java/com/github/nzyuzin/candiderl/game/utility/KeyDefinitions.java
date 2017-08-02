@@ -33,6 +33,8 @@ public final class KeyDefinitions {
 
     private static final Map<Character, Direction> DIRECTION_KEYS = new HashMap<>();
 
+    public static final char STATUS_KEY = '@';
+
     static {
         DIRECTION_KEYS.put('j', Direction.SOUTH);
         DIRECTION_KEYS.put('k', Direction.NORTH);

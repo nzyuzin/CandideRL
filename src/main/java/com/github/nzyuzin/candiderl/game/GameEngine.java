@@ -121,7 +121,7 @@ public final class GameEngine implements AutoCloseable {
         if (gameInformation.getPlayer().getPositionOnMap() != null) {
             playerPosition = gameInformation.getPlayer().getPositionOnMap();
         }
-        drawUi();
+        drawGameScreen();
         gameInformation.incrementTurn();
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
@@ -129,11 +129,15 @@ public final class GameEngine implements AutoCloseable {
     }
 
     private void handleInput() throws GameClosedException {
-        char input = gameUi.getInputChar();
+        final char input = gameUi.getInputChar();
         if (log.isTraceEnabled()) {
-            log.debug("handleInput input = {}", input);
+            log.trace("handleInput input = {}", input);
         }
-        if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
+        if (Character.compare(KeyDefinitions.STATUS_KEY, input) == 0) {
+            gameUi.showStatus(gameInformation);
+            gameUi.getInputChar(); // Skin one char to close the status screen
+            drawGameScreen();
+        } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
             npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
@@ -151,7 +155,7 @@ public final class GameEngine implements AutoCloseable {
         }
     }
 
-    private void drawUi() {
+    private void drawGameScreen() {
         long initTime = 0;
         if (log.isTraceEnabled()) {
             log.trace("drawUi start");
@@ -168,7 +172,7 @@ public final class GameEngine implements AutoCloseable {
             log.debug("Game starts");
         }
         gameUi.showAnnouncement("Journey awaits!");
-        drawUi();
+        drawGameScreen();
         try {
             while (true) {
                 handleInput();

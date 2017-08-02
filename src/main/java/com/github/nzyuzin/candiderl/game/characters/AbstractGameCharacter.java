@@ -128,6 +128,26 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public short getStrength() {
+        return attributes.strength;
+    }
+
+    @Override
+    public short getDexterity() {
+        return attributes.dexterity;
+    }
+
+    @Override
+    public short getIntelligence() {
+        return attributes.intelligence;
+    }
+
+    @Override
+    public short getArmor() {
+        return attributes.armor;
+    }
+
+    @Override
     public boolean canPerformAction() {
         return !isDead() && hasAction() && gameActions.peek().canBeExecuted();
     }

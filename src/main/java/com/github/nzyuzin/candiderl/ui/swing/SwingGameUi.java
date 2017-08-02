@@ -23,6 +23,7 @@ import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.github.nzyuzin.candiderl.ui.swing.screens.AnnouncementScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.GameScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.MenuScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.StatusScreen;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -37,6 +38,7 @@ public class SwingGameUi implements GameUi {
     private final GameScreen gameScreen;
     private final AnnouncementScreen announcementScreen;
     private final MenuScreen menuScreen;
+    private final StatusScreen statusScreen;
 
     private Character key;
     private boolean keyRead = true;
@@ -70,6 +72,7 @@ public class SwingGameUi implements GameUi {
         gameScreen = new GameScreen(gameWindow);
         announcementScreen = new AnnouncementScreen(gameWindow);
         menuScreen = new MenuScreen(gameWindow);
+        statusScreen = new StatusScreen(gameWindow);
     }
 
     @Override
@@ -84,6 +87,11 @@ public class SwingGameUi implements GameUi {
     @Override
     public void drawGame(final GameInformation gameInfo) {
         gameScreen.draw(gameInfo);
+    }
+
+    @Override
+    public void showStatus(final GameInformation gameInfo) {
+        statusScreen.show(gameInfo);
     }
 
     @Override
