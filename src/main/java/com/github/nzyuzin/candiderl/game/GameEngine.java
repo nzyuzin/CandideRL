@@ -209,7 +209,7 @@ public final class GameEngine {
         return false;
     }
 
-    public void wieldItem(final Item item) {
+    private void wieldItem(final Item item) {
         Preconditions.checkArgument(gameInformation.getPlayer().getItems().contains(item), "Item should be in the inventory!");
         for (final ItemSlot itemSlot : gameInformation.getPlayer().getItemSlots()) {
             if (itemSlot.getType() == ItemSlot.Type.HAND && !itemSlot.getItem().isPresent()) {
