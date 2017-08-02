@@ -35,7 +35,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     protected ColoredChar visibleChar;
 
     protected GameCharacter gameCharacter = null;
-    protected List<GameItem> gameItems = null;
+    protected List<GameItem> items = null;
     protected List<MapCellEffect> effects = null;
 
     protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
@@ -43,7 +43,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
         this.canBePassed = canBePassed;
         this.charOnMap = onMap;
         this.visibleChar = onMap;
-        this.gameItems = Lists.newArrayList();
+        this.items = Lists.newArrayList();
         this.effects = Lists.newArrayList();
         this.transparent = transp;
     }
@@ -62,8 +62,8 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     public void chooseCharOnMap() {
         if (gameCharacter != null)
             visibleChar = gameCharacter.getChar();
-        else if (!gameItems.isEmpty())
-            visibleChar = gameItems.get(0).getChar();
+        else if (!items.isEmpty())
+            visibleChar = items.get(0).getChar();
         else
             visibleChar = charOnMap;
     }
@@ -92,18 +92,18 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public void putItem(GameItem item) {
-        gameItems.add(item);
+        items.add(item);
     }
 
     @Override
     public void removeItem(GameItem item) {
-        gameItems.remove(item);
+        items.remove(item);
     }
 
     @Override
-    public List<GameItem> getListOfItems() {
+    public List<GameItem> getItems() {
         ArrayList<GameItem> result = new ArrayList<>();
-        result.addAll(gameItems);
+        result.addAll(items);
         return result;
     }
 

@@ -87,11 +87,13 @@ public class SwingGameUi implements GameUi {
     @Override
     public void drawGame(final GameInformation gameInfo) {
         gameScreen.draw(gameInfo);
+        gameWindow.repaint();
     }
 
     @Override
     public void showStatus(final GameInformation gameInfo) {
         statusScreen.show(gameInfo);
+        gameWindow.repaint();
     }
 
     @Override
@@ -112,12 +114,14 @@ public class SwingGameUi implements GameUi {
     @Override
     public void showAnnouncement(String msg) {
         announcementScreen.draw(msg);
+        gameWindow.repaint();
         while (getInputChar() != ' ') { /* wait for space */ }
     }
 
     @Override
     public void displayMenu(List<? extends Object> options) {
         menuScreen.drawOptions(options);
+        gameWindow.repaint();
     }
 
     @Override

@@ -17,15 +17,31 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.items.GameItem;
 
-import java.util.Collections;
+import java.util.Optional;
 
-public class Npc extends AbstractGameCharacter {
+public class ItemSlot extends AbstractGameObject {
 
-    public Npc(String name, String description, ColoredChar onMap) {
-        super(name, description, DEFAULT_HP, Collections.emptyList());
-        this.charOnMap = onMap;
+    enum Type {
+        HAND, BODY, HEAD, LEGS, RING, AMULET;
+    }
+
+    private Optional<GameItem> gameItem = Optional.empty();
+    private final Type type;
+
+    public ItemSlot(String name, Type type) {
+        super(name, name);
+        this.type = type;
+    }
+
+    public Optional<GameItem> getItem() {
+        return gameItem;
+    }
+
+    public void setItem(final GameItem gameItem) {
+        this.gameItem = Optional.of(gameItem);
     }
 
 }

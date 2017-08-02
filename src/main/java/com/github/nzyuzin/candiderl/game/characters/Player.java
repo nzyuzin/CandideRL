@@ -22,9 +22,14 @@ import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.VisibleCharacters;
+import com.google.common.collect.Lists;
 
-import java.util.HashMap;
-import java.util.Map;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.AMULET;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.BODY;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.HAND;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.HEAD;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.LEGS;
+import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.RING;
 
 public final class Player extends AbstractGameCharacter {
 
@@ -32,17 +37,12 @@ public final class Player extends AbstractGameCharacter {
     private final static Player PLAYER = new Player();
 
     private Player() {
-        super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP);
+        super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP,
+                Lists.newArrayList(new ItemSlot("right hand", HAND), new ItemSlot("left hand", HAND),
+                        new ItemSlot("head", HEAD), new ItemSlot("body", BODY), new ItemSlot("legs", LEGS),
+                        new ItemSlot("left ring", RING), new ItemSlot("right ring", RING), new ItemSlot("amulet", AMULET)));
         this.charOnMap = ColoredChar .getColoredChar(VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
         fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
-    }
-
-    public Map<String, String> getStats() {
-        HashMap<String, String> stats = new HashMap<>();
-        stats.put("HP", String.valueOf(currentHP));
-        stats.put("maxHP", String.valueOf(maxHP));
-        stats.put("str", String.valueOf(attributes.strength));
-        return stats;
     }
 
     public ColoredChar[][] getVisibleMap(int width, int height) {

@@ -18,8 +18,6 @@
 package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import java.awt.Color;
@@ -32,8 +30,6 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 
 public class TextWindow extends JComponent {
-
-    private static final Logger log = LoggerFactory.getLogger(TextWindow.class);
 
     private static final Color DEFAULT_FOREGROUND = Color.LIGHT_GRAY;
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;
@@ -190,11 +186,18 @@ public class TextWindow extends JComponent {
     }
 
     public void moveCursorToLastRow() {
-        resetCursor();
-        moveCursor(getColumns() * (getRows() - 1));
+        cursorColumn = 0;
+        cursorRow = data.getRows() - 1;
     }
 
-    public void nextLine() {
+    public void fillCurrentRow(char c) {
+        cursorColumn = 0;
+        for (int i = 0; i < data.getColumns(); i++) {
+            write(c);
+        }
+    }
+
+    public void nextRow() {
         cursorColumn = data.getColumns();
         moveCursor();
     }

@@ -28,10 +28,12 @@ import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Random;
 
@@ -61,16 +63,19 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     protected int currentHP;
     protected int maxHP;
 
+    protected List<ItemSlot> itemSlots;
+
     protected double attackRate;
     protected Attributes attributes;
     protected boolean canTakeDamage;
 
-    AbstractGameCharacter(String name, String description, int HP) {
+    AbstractGameCharacter(String name, String description, int HP, List<ItemSlot> itemSlots) {
         super(name, description);
         maxHP = HP;
         currentHP = HP;
         this.canTakeDamage = true;
         this.attackRate = 1.0;
+        this.itemSlots = itemSlots;
         attributes = new Attributes();
         gameActions = new ArrayDeque<>();
     }
@@ -143,6 +148,21 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public ImmutableList<ItemSlot> getItemSlots() {
+        return ImmutableList.copyOf(itemSlots);
+    }
+
+    @Override
+    public Optional<GameItem> getItem(final ItemSlot slot) {
+        return itemSlots.get(itemSlots.indexOf(slot)).getItem();
+    }
+
+    @Override
+    public void setItem(final ItemSlot slot, final GameItem item) {
+        itemSlots.get(itemSlots.indexOf(slot)).setItem(item);
+    }
+
+    @Override
     public short getArmor() {
         return attributes.armor;
     }
@@ -177,7 +197,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public int rollDamageDice() {
         Random dice = new Random();
-        return (int) ((dice.nextInt(20) + this.attributes.strength) * attackRate);
+        return (int) (dice.nextInt(this.attributes.strength) * attackRate);
     }
 
     @Override

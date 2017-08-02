@@ -17,13 +17,20 @@
 
 package com.github.nzyuzin.candiderl.game.items;
 
-import com.github.nzyuzin.candiderl.game.GameObject;
-import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
-public interface GameItem extends GameObject, Visible {
+public class Weapon extends AbstractItem {
 
-	 int getWeight();
+    public enum Type {
+        Sword
+    }
 
-	 int getSize();
+    private final Type type;
+    private final int damage;
 
+    public Weapon(String name, String description, Type type, int damage, int weight, int size) {
+        super(name, description, ColoredChar.getColoredChar('/'), weight, size);
+        this.type = type;
+        this.damage = damage;
+    }
 }

@@ -44,7 +44,7 @@ public interface MapCell extends GameObject, Visible {
 
     void removeItem(GameItem item);
 
-    List<GameItem> getListOfItems();
+    List<GameItem> getItems();
 
     void applyEffects();
     void addEffect(MapCellEffect effect);

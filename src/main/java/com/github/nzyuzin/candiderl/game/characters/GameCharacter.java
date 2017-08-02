@@ -27,8 +27,10 @@ import com.github.nzyuzin.candiderl.game.items.GameItem;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
     boolean hasAction();
@@ -40,12 +42,19 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     Map getMap();
     PositionOnMap getPositionOnMap();
     void setPositionOnMap(PositionOnMap position);
+
     int getCurrentHP();
     int getMaxHP();
     short getStrength();
     short getDexterity();
     short getIntelligence();
     short getArmor();
+
+    ImmutableList<ItemSlot> getItemSlots();
+
+    Optional<GameItem> getItem(ItemSlot slot);
+    void setItem(ItemSlot slot, GameItem item);
+
     boolean canPerformAction();
     List<Event> performAction();
     void hit(Position pos);

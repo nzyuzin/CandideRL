@@ -66,21 +66,29 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
         gameWindow.write(c, fg, bg);
     }
 
-    protected void writeBalckWhiteString(final String s) {
+    protected void writeBlackWhiteString(final String s) {
         for (int i = 0; i < s.length(); i++) {
             writeBlackWhite(s.charAt(i));
         }
+    }
+
+    protected void nextLine() {
+        gameWindow.nextRow();
     }
 
     protected void writeBlackWhiteLine(final String s) {
         for (int i = 0; i < s.length(); i++) {
             writeBlackWhite(s.charAt(i));
         }
-        gameWindow.nextLine();
+        nextLine();
     }
 
     protected void writeBottomRow(final String s) {
         gameWindow.moveCursorToLastRow();
-        writeBalckWhiteString(s);
+        writeBlackWhiteString(s);
+    }
+
+    protected void fillLine(final char c) {
+        gameWindow.fillCurrentRow(c);
     }
 }

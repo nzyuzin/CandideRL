@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.ai.NpcController;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.events.Event;
+import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -66,15 +67,11 @@ public final class GameEngine {
                             "A furious beast with sharp claws.",
                             ColoredChar.getColoredChar('t', ColoredChar.RED))
             );
-            npcs.add(new Npc(
-                            "Goblin",
-                            "A regular goblin.",
-                            ColoredChar.getColoredChar('g', ColoredChar.GREEN))
-            );
             for (Npc mob : npcs)
                 map.putGameCharacter(mob, map.getRandomFreePosition());
         }
         map.putGameCharacter(player, map.getRandomFreePosition());
+        player.setItem(player.getItemSlots().get(0), new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1));
         playerPosition = player.getPositionOnMap();
         gameInformation = new GameInformation(player);
     }

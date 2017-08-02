@@ -27,7 +27,7 @@ public class AnnouncementScreen extends AbstractDisplayedScreen {
 
     public void draw(final String msg) {
         clearScreen();
-        writeBalckWhiteString(msg);
+        writeBlackWhiteString(msg);
         writeBottomRow("Press <space> to continue");
     }
 }

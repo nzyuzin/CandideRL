@@ -26,19 +26,11 @@ abstract class AbstractItem extends AbstractGameObject implements GameItem {
     protected final int weight;
     protected final int size;
 
-    protected int quantity;
-
-    AbstractItem(String name, String description, ColoredChar onMap,
-                 int weight, int size, int quantity) {
+    AbstractItem(String name, String description, ColoredChar onMap, int weight, int size) {
         super(name, description);
         this.charOnMap = onMap;
         this.weight = weight;
         this.size = size;
-        this.quantity = quantity;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public int getWeight() {

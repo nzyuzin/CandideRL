@@ -74,7 +74,6 @@ public class GameScreen extends AbstractDisplayedScreen {
             }
             drawStatsPanelRow(uiInfo, screenHeight, i);
         }
-        getGameWindow().repaint();
         if (log.isTraceEnabled()) {
             log.trace("drawUi end");
         }
