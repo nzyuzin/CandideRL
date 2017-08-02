@@ -20,7 +20,7 @@ package com.github.nzyuzin.candiderl.game.items;
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
-abstract class AbstractItem extends AbstractGameObject implements GameItem {
+abstract class AbstractItem extends AbstractGameObject implements Item {
 
     protected final ColoredChar charOnMap;
     protected final int weight;

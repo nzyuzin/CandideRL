@@ -30,10 +30,18 @@ public final class KeyDefinitions {
     /**
      * Map of keys corresponding to directions
      */
-
     private static final Map<Character, Direction> DIRECTION_KEYS = new HashMap<>();
 
     public static final char STATUS_KEY = '@';
+
+    public static final char INVENTORY_KEY = 'i';
+
+    public static final char ESCAPE_KEY = (char) 0x1B;
+
+    public static final char DROP_ITEM_KEY = 'd';
+    public static final char PICKUP_ITEM_KEY = 'g';
+
+    public static final char WIELD_ITEM_KEY = 'w';
 
     static {
         DIRECTION_KEYS.put('j', Direction.SOUTH);
@@ -49,7 +57,6 @@ public final class KeyDefinitions {
     /**
      * EXIT_CHARS, EXIT_CODES - sets of char and int codes respectively which are meant to shutdown the game.
      */
-
     private static final Set<Character> EXIT_CHARS = new HashSet<>();
 
     static {

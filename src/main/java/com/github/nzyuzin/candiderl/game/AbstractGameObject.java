@@ -34,4 +34,9 @@ public abstract class AbstractGameObject implements GameObject {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

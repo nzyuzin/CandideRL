@@ -22,13 +22,16 @@ import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.events.Event;
-import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -63,6 +66,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     protected int currentHP;
     protected int maxHP;
 
+    protected List<Item> items;
     protected List<ItemSlot> itemSlots;
 
     protected double attackRate;
@@ -75,6 +79,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         currentHP = HP;
         this.canTakeDamage = true;
         this.attackRate = 1.0;
+        this.items = Lists.newArrayListWithCapacity(52);
         this.itemSlots = itemSlots;
         attributes = new Attributes();
         gameActions = new ArrayDeque<>();
@@ -123,6 +128,11 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public MapCell getMapCell() {
+        return getPositionOnMap().getMap().getCell(getPosition());
+    }
+
+    @Override
     public int getCurrentHP() {
         return currentHP;
     }
@@ -148,17 +158,52 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public ImmutableList<Item> getItems() {
+        return ImmutableList.copyOf(items);
+    }
+
+    @Override
+    public void addItem(final Item item) {
+        items.add(item);
+    }
+
+    @Override
+    public void removeItem(final Item item) {
+        items.remove(item);
+        for (final ItemSlot slot : itemSlots) {
+            if (slot.getItem().isPresent() && slot.getItem().get() == item) {
+                slot.removeItem();
+            }
+        }
+    }
+
+    @Override
+    public void pickupItem(final Item item) {
+        final MapCell currentCell = getMapCell();
+        Preconditions.checkArgument(currentCell.getItems().contains(item), "No such item on the current cell!");
+        currentCell.removeItem(item);
+        this.addItem(item);
+    }
+
+    @Override
+    public void dropItem(final Item item) {
+        Preconditions.checkArgument(getItems().contains(item), "No such item in the inventory!");
+        getMapCell().putItem(item);
+        this.removeItem(item);
+    }
+
+    @Override
     public ImmutableList<ItemSlot> getItemSlots() {
         return ImmutableList.copyOf(itemSlots);
     }
 
     @Override
-    public Optional<GameItem> getItem(final ItemSlot slot) {
+    public Optional<Item> getItem(final ItemSlot slot) {
         return itemSlots.get(itemSlots.indexOf(slot)).getItem();
     }
 
     @Override
-    public void setItem(final ItemSlot slot, final GameItem item) {
+    public void setItem(final ItemSlot slot, final Item item) {
         itemSlots.get(itemSlots.indexOf(slot)).setItem(item);
     }
 
@@ -217,7 +262,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public GameItem die() {
+    public Item die() {
         return new MiscItem("Corpse of " + this.getName(), "A corpse",
                 ColoredChar.getColoredChar(this.charOnMap.getChar(),
                         this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);

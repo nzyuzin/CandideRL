@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.ui;
 
 import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.items.Item;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public interface GameUi extends AutoCloseable {
     char getInputChar();
     void drawGame(GameInformation gameInfo);
     void showStatus(GameInformation gameInfo);
+    void showInventory(GameInformation gameInfo);
+    void showItem(Item item);
     void showAnnouncement(String msg);
     void displayMenu(List<? extends Object> options);
 }

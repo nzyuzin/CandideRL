@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
+import java.util.Map;
 
 public abstract class AbstractDisplayedScreen implements DisplayedScreen {
 
@@ -83,6 +84,11 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
         nextLine();
     }
 
+    protected void writeBeforeBottomRow(final String s) {
+        gameWindow.moveCursorToRowBeforeLast();
+        writeBlackWhiteString(s);
+    }
+
     protected void writeBottomRow(final String s) {
         gameWindow.moveCursorToLastRow();
         writeBlackWhiteString(s);
@@ -90,5 +96,13 @@ public abstract class AbstractDisplayedScreen implements DisplayedScreen {
 
     protected void fillLine(final char c) {
         gameWindow.fillCurrentRow(c);
+    }
+
+    protected String actionRow(final Map<Character, String> actions) {
+        final StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Character, String> action : actions.entrySet()) {
+            sb.append("(" + action.getKey() + ") " + action.getValue() + "  ");
+        }
+        return sb.toString();
     }
 }

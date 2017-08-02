@@ -19,9 +19,12 @@ package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.github.nzyuzin.candiderl.ui.swing.screens.AnnouncementScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.GameScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.InventoryScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.ItemScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.MenuScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.StatusScreen;
 
@@ -39,6 +42,8 @@ public class SwingGameUi implements GameUi {
     private final AnnouncementScreen announcementScreen;
     private final MenuScreen menuScreen;
     private final StatusScreen statusScreen;
+    private final InventoryScreen inventoryScreen;
+    private final ItemScreen itemScreen;
 
     private Character key;
     private boolean keyRead = true;
@@ -73,6 +78,8 @@ public class SwingGameUi implements GameUi {
         announcementScreen = new AnnouncementScreen(gameWindow);
         menuScreen = new MenuScreen(gameWindow);
         statusScreen = new StatusScreen(gameWindow);
+        inventoryScreen = new InventoryScreen(gameWindow);
+        itemScreen = new ItemScreen(gameWindow);
     }
 
     @Override
@@ -93,6 +100,18 @@ public class SwingGameUi implements GameUi {
     @Override
     public void showStatus(final GameInformation gameInfo) {
         statusScreen.show(gameInfo);
+        gameWindow.repaint();
+    }
+
+    @Override
+    public void showInventory(GameInformation gameInfo) {
+        inventoryScreen.draw(gameInfo);
+        gameWindow.repaint();
+    }
+
+    @Override
+    public void showItem(Item item) {
+        itemScreen.draw(item);
         gameWindow.repaint();
     }
 

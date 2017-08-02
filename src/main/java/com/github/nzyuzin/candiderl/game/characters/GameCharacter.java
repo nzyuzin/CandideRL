@@ -23,8 +23,9 @@ import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.events.Event;
-import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.collect.ImmutableList;
@@ -41,6 +42,7 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
 
     Map getMap();
     PositionOnMap getPositionOnMap();
+    MapCell getMapCell();
     void setPositionOnMap(PositionOnMap position);
 
     int getCurrentHP();
@@ -50,10 +52,17 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     short getIntelligence();
     short getArmor();
 
+    ImmutableList<Item> getItems();
+    void addItem(Item item);
+    void removeItem(Item item);
+
+    void pickupItem(Item item);
+    void dropItem(Item item);
+
     ImmutableList<ItemSlot> getItemSlots();
 
-    Optional<GameItem> getItem(ItemSlot slot);
-    void setItem(ItemSlot slot, GameItem item);
+    Optional<Item> getItem(ItemSlot slot);
+    void setItem(ItemSlot slot, Item item);
 
     boolean canPerformAction();
     List<Event> performAction();
@@ -63,5 +72,5 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
 
     int rollDamageDice();
 
-    GameItem die();
+    Item die();
 }

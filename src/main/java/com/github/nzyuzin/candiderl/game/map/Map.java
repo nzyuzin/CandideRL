@@ -18,7 +18,7 @@
 package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -72,7 +72,7 @@ public class Map {
         mob.setPositionOnMap(new PositionOnMap(pos, this));
     }
 
-    public void putItem(GameItem item, Position pos) {
+    public void putItem(Item item, Position pos) {
         getCell(pos).putItem(item);
     }
 

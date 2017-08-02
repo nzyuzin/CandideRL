@@ -18,16 +18,20 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
+import com.github.nzyuzin.candiderl.game.characters.ItemSlot;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.events.Event;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -71,7 +75,9 @@ public final class GameEngine {
                 map.putGameCharacter(mob, map.getRandomFreePosition());
         }
         map.putGameCharacter(player, map.getRandomFreePosition());
-        player.setItem(player.getItemSlots().get(0), new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1));
+        final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1);
+        player.addItem(broadsword);
+        player.setItem(player.getItemSlots().get(0), broadsword);
         playerPosition = player.getPositionOnMap();
         gameInformation = new GameInformation(player);
     }
@@ -125,22 +131,96 @@ public final class GameEngine {
         }
     }
 
-    private void handleInput() throws GameClosedException {
+    private char getInput() {
         final char input = gameUi.getInputChar();
         if (log.isTraceEnabled()) {
-            log.trace("handleInput input = {}", input);
+            log.trace("handleInput input = {}, {}", input, (int) input);
         }
-        if (Character.compare(KeyDefinitions.STATUS_KEY, input) == 0) {
+        return input;
+    }
+
+    private void handleInput() throws GameClosedException {
+        final char input = getInput();
+        if (KeyDefinitions.STATUS_KEY == input) {
             gameUi.showStatus(gameInformation);
-            gameUi.getInputChar(); // Skin one char to close the status screen
+            getInput(); // Skip one char to close the status screen
             drawGameScreen();
+        } if (KeyDefinitions.INVENTORY_KEY == input ) {
+            showInventory();
         } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
             npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
+        } else if (KeyDefinitions.PICKUP_ITEM_KEY == input) {
+            pickupItem();
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
         } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
         }
+    }
+
+    private void pickupItem() {
+        final Player player = gameInformation.getPlayer();
+        final MapCell playerCell = player.getMapCell();
+        if (!playerCell.getItems().isEmpty()) {
+            final Item item = playerCell.getItems().get(0);
+            player.pickupItem(item);
+            gameInformation.addMessage("You pick up " + item);
+        }
+        drawGameScreen();
+    }
+
+    private void showInventory() {
+        gameUi.showInventory(gameInformation);
+        char newInput = getInput();
+        final List<Item> playerItems = gameInformation.getPlayer().getItems();
+        while (newInput != KeyDefinitions.ESCAPE_KEY) {
+            final int inventoryItem = newInput - 'a';
+            if (inventoryItem >= 0 && inventoryItem < 52 && inventoryItem < playerItems.size()) {
+                if (showItem(playerItems.get(inventoryItem))) {
+                    break;
+                }
+            }
+            newInput = getInput();
+        }
+        drawGameScreen();
+    }
+
+    /**
+     * Displays chosen item
+     * @param item
+     * @return true if escape to game screen should be performed, false if returning to previous screen
+     */
+    private boolean showItem(final Item item) {
+        gameUi.showItem(item);
+        char input = getInput();
+        while(input != KeyDefinitions.ESCAPE_KEY) {
+            if (input == KeyDefinitions.DROP_ITEM_KEY) {
+                gameInformation.getPlayer().dropItem(item);
+                gameInformation.addMessage("You drop " + item);
+                return true;
+            } else if (input == KeyDefinitions.WIELD_ITEM_KEY) {
+                wieldItem(item);
+                return true;
+            }
+
+            input = getInput();
+        }
+        gameUi.showInventory(gameInformation);
+        return false;
+    }
+
+    public void wieldItem(final Item item) {
+        Preconditions.checkArgument(gameInformation.getPlayer().getItems().contains(item), "Item should be in the inventory!");
+        for (final ItemSlot itemSlot : gameInformation.getPlayer().getItemSlots()) {
+            if (itemSlot.getType() == ItemSlot.Type.HAND && !itemSlot.getItem().isPresent()) {
+                itemSlot.setItem(item);
+                gameInformation.addMessage("You wield " + item);
+                drawGameScreen();
+                return;
+            }
+        }
+        gameInformation.addMessage("You do not have free hands to wield that!");
+        drawGameScreen();
     }
 
     private void drawGameScreen() {

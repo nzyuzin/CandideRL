@@ -185,6 +185,11 @@ public class TextWindow extends JComponent {
         }
     }
 
+    public void moveCursorToRowBeforeLast() {
+        cursorColumn = 0;
+        cursorRow = data.getRows() - 2;
+    }
+
     public void moveCursorToLastRow() {
         cursorColumn = 0;
         cursorRow = data.getRows() - 1;

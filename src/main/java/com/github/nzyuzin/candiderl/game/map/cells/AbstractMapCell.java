@@ -19,7 +19,7 @@ package com.github.nzyuzin.candiderl.game.map.cells;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.google.common.collect.Lists;
@@ -35,7 +35,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     protected ColoredChar visibleChar;
 
     protected GameCharacter gameCharacter = null;
-    protected List<GameItem> items = null;
+    protected List<Item> items = null;
     protected List<MapCellEffect> effects = null;
 
     protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
@@ -91,18 +91,18 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     }
 
     @Override
-    public void putItem(GameItem item) {
+    public void putItem(Item item) {
         items.add(item);
     }
 
     @Override
-    public void removeItem(GameItem item) {
+    public void removeItem(Item item) {
         items.remove(item);
     }
 
     @Override
-    public List<GameItem> getItems() {
-        ArrayList<GameItem> result = new ArrayList<>();
+    public List<Item> getItems() {
+        ArrayList<Item> result = new ArrayList<>();
         result.addAll(items);
         return result;
     }

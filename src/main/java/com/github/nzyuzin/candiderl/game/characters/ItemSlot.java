@@ -18,17 +18,17 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
-import com.github.nzyuzin.candiderl.game.items.GameItem;
+import com.github.nzyuzin.candiderl.game.items.Item;
 
 import java.util.Optional;
 
 public class ItemSlot extends AbstractGameObject {
 
-    enum Type {
+    public enum Type {
         HAND, BODY, HEAD, LEGS, RING, AMULET;
     }
 
-    private Optional<GameItem> gameItem = Optional.empty();
+    private Optional<Item> gameItem = Optional.empty();
     private final Type type;
 
     public ItemSlot(String name, Type type) {
@@ -36,12 +36,20 @@ public class ItemSlot extends AbstractGameObject {
         this.type = type;
     }
 
-    public Optional<GameItem> getItem() {
+    public Type getType() {
+        return type;
+    }
+
+    public Optional<Item> getItem() {
         return gameItem;
     }
 
-    public void setItem(final GameItem gameItem) {
-        this.gameItem = Optional.of(gameItem);
+    public void setItem(final Item item) {
+        this.gameItem = Optional.of(item);
+    }
+
+    public void removeItem() {
+        this.gameItem = Optional.empty();
     }
 
 }

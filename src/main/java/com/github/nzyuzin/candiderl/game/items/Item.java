@@ -20,7 +20,7 @@ package com.github.nzyuzin.candiderl.game.items;
 import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 
-public interface GameItem extends GameObject, Visible {
+public interface Item extends GameObject, Visible {
 
 	 int getWeight();
 
