@@ -23,7 +23,6 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
-import com.github.nzyuzin.candiderl.ui.VisibleInformation;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
 import java.util.List;
@@ -48,12 +47,9 @@ public class GameScreen extends AbstractDisplayedScreen {
             visibleMap = playerPosition.getMap().getVisibleChars(
                     playerPosition.getPosition(), getMapWidth(), getMapHeight());
         }
-        final VisibleInformation uiInfo =
-                new VisibleInformation(visibleMap, player, gameInfo.getCurrentTurn(), gameInfo.getDepth(), gameInfo.getMessages());
-        final ColoredChar[][] charMap = uiInfo.getVisibleMap();
         final int messagesHeight = GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT;
         final int screenHeight = getMapHeight() + messagesHeight;
-        final List<String> messages = uiInfo.getMessages();
+        final List<String> messages = gameInfo.getMessages();
 
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
@@ -68,19 +64,19 @@ public class GameScreen extends AbstractDisplayedScreen {
                 }
             } else {
                 for (int j = 0; j < getMapWidth(); j++) { // write map
-                    final ColoredChar c = charMap[j][i - (screenHeight - getMapHeight())];
+                    final ColoredChar c = visibleMap[j][i - (screenHeight - getMapHeight())];
                     write(c.getChar(), c.getForeground(), c.getBackground());
                 }
             }
-            drawStatsPanelRow(uiInfo, screenHeight, i);
+            drawStatsPanelRow(gameInfo, screenHeight, i);
         }
         if (log.isTraceEnabled()) {
             log.trace("drawUi end");
         }
     }
 
-    private void drawStatsPanelRow(VisibleInformation uiInfo, int screenHeight, int mapRow) {
-        final GameCharacter player = uiInfo.getPlayer();
+    private void drawStatsPanelRow(GameInformation gameInfo, int screenHeight, int mapRow) {
+        final GameCharacter player = gameInfo.getPlayer();
         if (mapRow == 0 || mapRow == screenHeight - 1) {
             for (int k = 0; k < GameConfig.DEFAULT_STATS_PANEL_WIDTH; k++) {
                 writeBlackWhite('-');
@@ -98,11 +94,11 @@ public class GameScreen extends AbstractDisplayedScreen {
             return;
         }
         if (mapRow == screenHeight - 6) {
-            writeToStatsPanel("Current turn: " + uiInfo.getCurrentTurn());
+            writeToStatsPanel("Current turn: " + gameInfo.getCurrentTurn());
             return;
         }
         if (mapRow == screenHeight - 8) {
-            writeToStatsPanel("Depth: " + uiInfo.getDepth());
+            writeToStatsPanel("Depth: " + gameInfo.getDepth());
             return;
         }
         writeToStatsPanel("");
