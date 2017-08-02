@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.collect.Lists;
@@ -50,7 +51,7 @@ public class DungeonGenerator implements MapGenerator {
             return map;
         }
         this.map = map;
-        final int desiredRoomAmount = (width * height) / (averageRoomWidth * averageRoomHeight) / 4;
+        final int desiredRoomAmount = (width * height) / (averageRoomWidth * averageRoomHeight * averageRoomHeight * averageRoomWidth);
         List<Position> generatedRooms = Lists.newArrayList();
         while (generatedRooms.size() < desiredRoomAmount) {
             final int actualRoomWidth = averageRoomWidth + randomDifference(averageRoomWidth);
@@ -67,6 +68,8 @@ public class DungeonGenerator implements MapGenerator {
             }
         }
         connectRooms(map, generatedRooms);
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));
         return map;
     }
 

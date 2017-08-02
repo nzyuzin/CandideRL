@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.utility;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 
 public class PositionOnMap {
     private Position position;
@@ -34,6 +35,10 @@ public class PositionOnMap {
 
     public Map getMap() {
         return map;
+    }
+
+    public MapCell getMapCell() {
+        return getMap().getCell(position);
     }
 
     public int getX() {

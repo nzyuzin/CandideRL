@@ -27,6 +27,7 @@ import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
@@ -50,16 +51,18 @@ public final class GameEngine {
     private final GameUi gameUi;
     private final NpcController npcController;
 
-    private PositionOnMap playerPosition;
+    private final MapFactory mapFactory;
 
     private final GameInformation gameInformation;
 
     public static GameEngine getGameEngine(String playerName, MapFactory mapFactory, GameUi gameUi) {
-        return new GameEngine(gameUi, mapFactory.getMap(), playerName);
+        return new GameEngine(gameUi, mapFactory, playerName);
     }
 
-    private GameEngine(GameUi gameUi, Map map, String playerName) {
+    private GameEngine(GameUi gameUi, MapFactory mapFactory, String playerName) {
+        final Map map = mapFactory.getMap();
         this.gameUi = gameUi;
+        this.mapFactory = mapFactory;
         npcs = Lists.newArrayList();
         events = Lists.newArrayList();
         final Player player = new Player(playerName);
@@ -78,7 +81,6 @@ public final class GameEngine {
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1);
         player.addItem(broadsword);
         player.setItem(player.getItemSlots().get(0), broadsword);
-        playerPosition = player.getPositionOnMap();
         gameInformation = new GameInformation(player);
     }
 
@@ -86,6 +88,10 @@ public final class GameEngine {
         events.addAll(gameInformation.getPlayer().performAction());
         for (Iterator<Npc> iterator = npcs.iterator(); iterator.hasNext(); ) {
             Npc npc = iterator.next();
+            if (!npc.getPositionOnMap().getMap().equals(gameInformation.getPlayer().getPositionOnMap().getMap())) {
+                // Skip mob if it is not on the same map as player
+                continue;
+            }
             if (npc.isDead()) {
                 iterator.remove();
                 continue;
@@ -111,7 +117,7 @@ public final class GameEngine {
     }
 
     private void applyMapEffects() {
-        playerPosition.getMap().applyEffects();
+        gameInformation.getPlayer().getPositionOnMap().getMap().applyEffects();
     }
 
     private void advanceTime() {
@@ -121,9 +127,6 @@ public final class GameEngine {
         processActions();
         processEvents();
         applyMapEffects();
-        if (gameInformation.getPlayer().getPositionOnMap() != null) {
-            playerPosition = gameInformation.getPlayer().getPositionOnMap();
-        }
         drawGameScreen();
         gameInformation.incrementTurn();
         if (log.isTraceEnabled()) {
@@ -151,11 +154,55 @@ public final class GameEngine {
             npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
         } else if (KeyDefinitions.PICKUP_ITEM_KEY == input) {
             pickupItem();
+        } else if (KeyDefinitions.STAIRS_UPWARDS_KEY == input || KeyDefinitions.STAIRS_DOWNWARDS_KEY == input) {
+            processStairs(input);
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
             advanceTime();
         } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
         }
+    }
+
+    private void processStairs(final char direction) {
+        final PositionOnMap currentPosition = gameInformation.getPlayer().getPositionOnMap();
+        final String directionStr = KeyDefinitions.STAIRS_UPWARDS_KEY == direction ? "upwards" : "downwards";
+        if (currentPosition.getMapCell() instanceof Stairs) {
+            final Stairs stairs = (Stairs) currentPosition.getMapCell();
+            if (direction == KeyDefinitions.STAIRS_UPWARDS_KEY && stairs.getType() == Stairs.Type.UP) {
+                if (stairs.getMatchingPosition().isPresent()) {
+                    moveToNewMap(stairs.getMatchingPosition().get());
+                    gameInformation.decrementDepth();
+                    gameInformation.addMessage("You walk up the stairs");
+                } else {
+                    gameInformation.addMessage("The stairs lead to the surface, it's too early to go there for you");
+                }
+            } else if (direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY && stairs.getType() == Stairs.Type.DOWN) {
+                if (stairs.getMatchingPosition().isPresent()) {
+                    moveToNewMap(stairs.getMatchingPosition().get());
+                } else {
+                    final Map newMap = mapFactory.getMap();
+                    final Stairs newUpwardsStairs = (Stairs) newMap.getUpwardsStairs().getMapCell();
+                    newUpwardsStairs.setMatchingStairs(currentPosition);
+                    stairs.setMatchingStairs(newMap.getUpwardsStairs());
+                    moveToNewMap(newMap.getUpwardsStairs());
+                }
+                gameInformation.incrementDepth();
+                gameInformation.addMessage("You walk down the stairs");
+            } else {
+                gameInformation.addMessage("You can't go " + directionStr + " here!");
+            }
+        } else {
+            gameInformation.addMessage("You can't go " + directionStr + " here!");
+        }
+        drawGameScreen();
+    }
+
+    private void moveToNewMap(final PositionOnMap newPosition) {
+        final Player player = gameInformation.getPlayer();
+        final Map currentMap = player.getPositionOnMap().getMap();
+        final Map newMap = newPosition.getMap();
+        currentMap.removeGameCharacter(player);
+        newMap.putGameCharacter(player, newPosition.getPosition());
     }
 
     private void pickupItem() {

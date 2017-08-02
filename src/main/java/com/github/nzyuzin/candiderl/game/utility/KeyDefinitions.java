@@ -56,6 +56,9 @@ public final class KeyDefinitions {
         DIRECTION_KEYS.put('n', Direction.SOUTHEAST);
     }
 
+    public static final char STAIRS_UPWARDS_KEY = '<';
+    public static final char STAIRS_DOWNWARDS_KEY = '>';
+
     /**
      * EXIT_CHARS, EXIT_CODES - sets of char and int codes respectively which are meant to shutdown the game.
      */

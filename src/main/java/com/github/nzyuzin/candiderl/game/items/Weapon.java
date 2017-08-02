@@ -33,4 +33,12 @@ public class Weapon extends AbstractItem {
         this.type = type;
         this.damage = damage;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
 }

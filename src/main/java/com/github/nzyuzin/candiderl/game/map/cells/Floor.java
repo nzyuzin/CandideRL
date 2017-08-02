@@ -18,16 +18,10 @@
 package com.github.nzyuzin.candiderl.game.map.cells;
 
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.VisibleCharacters;
 
 public class Floor extends AbstractMapCell {
     private Floor() {
-        super("Floor",
-                "Rough rock floor.",
-                ColoredChar.getColoredChar(VisibleCharacters.FLOOR.getVisibleChar()),
-                true,
-                true
-        );
+        super("Floor", "Rough rock floor.", ColoredChar.getColoredChar('.'), true, true);
     }
 
     public static Floor getFloor() {

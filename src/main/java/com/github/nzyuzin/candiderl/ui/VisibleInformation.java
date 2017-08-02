@@ -26,16 +26,15 @@ public class VisibleInformation {
     private final ColoredChar[][] visibleMap;
     private final GameCharacter player;
     private final long currentTurn;
+    private final int depth;
     private final List<String> messages;
 
-    public VisibleInformation(final ColoredChar[][] visibleMap,
-                              final GameCharacter player,
-                              final long currentTurn,
-                              final List<String> gameMessages) {
+    public VisibleInformation(ColoredChar[][] visibleMap, GameCharacter player, long currentTurn, int depth, List<String> messages) {
         this.visibleMap = visibleMap;
         this.player = player;
         this.currentTurn = currentTurn;
-        this.messages = gameMessages;
+        this.depth = depth;
+        this.messages = messages;
     }
 
     public ColoredChar[][] getVisibleMap() {
@@ -48,6 +47,10 @@ public class VisibleInformation {
 
     public long getCurrentTurn() {
         return currentTurn;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public List<String> getMessages() {

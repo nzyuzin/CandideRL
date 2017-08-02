@@ -49,7 +49,7 @@ public class GameScreen extends AbstractDisplayedScreen {
                     playerPosition.getPosition(), getMapWidth(), getMapHeight());
         }
         final VisibleInformation uiInfo =
-                new VisibleInformation(visibleMap, player, gameInfo.getCurrentTurn(), gameInfo.getMessages());
+                new VisibleInformation(visibleMap, player, gameInfo.getCurrentTurn(), gameInfo.getDepth(), gameInfo.getMessages());
         final ColoredChar[][] charMap = uiInfo.getVisibleMap();
         final int messagesHeight = GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT;
         final int screenHeight = getMapHeight() + messagesHeight;
@@ -99,6 +99,10 @@ public class GameScreen extends AbstractDisplayedScreen {
         }
         if (mapRow == screenHeight - 6) {
             writeToStatsPanel("Current turn: " + uiInfo.getCurrentTurn());
+            return;
+        }
+        if (mapRow == screenHeight - 8) {
+            writeToStatsPanel("Depth: " + uiInfo.getDepth());
             return;
         }
         writeToStatsPanel("");

@@ -24,6 +24,7 @@ import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
+import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -129,7 +130,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public MapCell getMapCell() {
-        return getPositionOnMap().getMap().getCell(getPosition());
+        return getPositionOnMap().getMapCell();
     }
 
     @Override
@@ -229,8 +230,9 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public void hit(Position pos) {
         GameCharacter target = getMap().getGameCharacter(pos);
-        if (target != null) {
-            addAction(new HitInMeleeAction(this, target));
+        final HitInMeleeAction hitAction = new HitInMeleeAction(this, target);
+        if (hitAction.canBeExecuted()) {
+            addAction(hitAction);
         }
     }
 
@@ -241,8 +243,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public int rollDamageDice() {
-        Random dice = new Random();
-        return (int) (dice.nextInt(this.attributes.strength) * attackRate);
+        final Random dice = new Random();
+        int baseDamage = dice.nextInt(this.attributes.strength);
+        for (final ItemSlot itemSlot : getItemSlots()) {
+            if (itemSlot.getType() == ItemSlot.Type.HAND && itemSlot.getItem().isPresent()) {
+                if (itemSlot.getItem().get() instanceof Weapon) {
+                    final Weapon weapon = (Weapon) itemSlot.getItem().get();
+                    baseDamage += dice.nextInt(weapon.getDamage());
+                }
+            }
+        }
+        return (int) (baseDamage * attackRate);
     }
 
     @Override

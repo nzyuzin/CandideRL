@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.google.common.base.Preconditions;
 
@@ -38,6 +39,8 @@ public class RandomMapGenerator implements MapGenerator {
         for (int i = 0; i < height * width * filledCells; i++) {
             map.setCell(map.getRandomFreePosition(), Wall.getWall());
         }
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));
         return map;
     }
 }

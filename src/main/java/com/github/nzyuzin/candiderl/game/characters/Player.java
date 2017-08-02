@@ -21,7 +21,6 @@ import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.VisibleCharacters;
 import com.google.common.collect.Lists;
 
 import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.AMULET;
@@ -40,7 +39,7 @@ public final class Player extends AbstractGameCharacter {
                 Lists.newArrayList(new ItemSlot("right hand", HAND), new ItemSlot("left hand", HAND),
                         new ItemSlot("head", HEAD), new ItemSlot("body", BODY), new ItemSlot("legs", LEGS),
                         new ItemSlot("left ring", RING), new ItemSlot("right ring", RING), new ItemSlot("amulet", AMULET)));
-        this.charOnMap = ColoredChar .getColoredChar(VisibleCharacters.PLAYER.getVisibleChar(), ColoredChar.WHITE);
+        this.charOnMap = ColoredChar .getColoredChar('@');
         fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }
 

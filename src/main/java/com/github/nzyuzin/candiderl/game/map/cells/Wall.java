@@ -18,7 +18,6 @@
 package com.github.nzyuzin.candiderl.game.map.cells;
 
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.VisibleCharacters;
 
 public class Wall extends AbstractMapCell {
     private final static Wall instance = new Wall();
@@ -26,7 +25,7 @@ public class Wall extends AbstractMapCell {
     private Wall() {
         super("Wall",
                 "A regular rock wall.",
-                ColoredChar.getColoredChar(VisibleCharacters.WALL.getVisibleChar(), ColoredChar.YELLOW),
+                ColoredChar.getColoredChar('#', ColoredChar.YELLOW),
                 false,
                 false
         );

@@ -35,7 +35,6 @@ public class HitInMeleeAction extends AbstractGameAction {
     public HitInMeleeAction(GameCharacter performer, GameCharacter target) {
         super(performer);
         Preconditions.checkNotNull(performer);
-        Preconditions.checkNotNull(target);
         this.target = target;
         this.map = performer.getMap();
     }

@@ -19,7 +19,9 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.Item;
+import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -34,11 +36,24 @@ public class Map {
     private final int mapHeight;
     private final MapCell[][] map;
 
+    private PositionOnMap upwardsStairs;
+    private PositionOnMap downwardsStairs;
+
     public Map(int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
         map = new MapCell[width][height];
         mapWidth = width;
         mapHeight = height;
+    }
+
+    public PositionOnMap getUpwardsStairs() {
+        Preconditions.checkNotNull(upwardsStairs, "No upwards stairs on the map!");
+        return upwardsStairs;
+    }
+
+    public PositionOnMap getDownwardsStairs() {
+        Preconditions.checkNotNull(downwardsStairs, "No downwards stairs on the map!");
+        return downwardsStairs;
     }
 
     public MapCell getCell(Position pos) {
@@ -58,6 +73,14 @@ public class Map {
     public void setCell(int x, int y, MapCell cell) {
         Preconditions.checkArgument(x < mapWidth && x >= 0 && y < mapHeight && y >= 0,
                 "Illegal position: (" + x + ", " + y + ")");
+        if (cell instanceof Stairs) {
+            final Stairs stairs = (Stairs) cell;
+            if (stairs.getType() == Stairs.Type.DOWN) {
+                downwardsStairs = new PositionOnMap(Position.getInstance(x, y), this);
+            } else {
+                upwardsStairs = new PositionOnMap(Position.getInstance(x, y), this);
+            }
+        }
         map[x][y] = cell;
     }
 
@@ -101,7 +124,7 @@ public class Map {
      */
     public Position getRandomFreePosition() {
         Position pos = getRandomPositionInsideMap();
-        while (isSomeoneHere(pos) || !isCellPassable(pos)) {
+        while (isSomeoneHere(pos) || !isCellPassable(pos) || !(getCell(pos) instanceof Floor)) {
             pos = getRandomPositionInsideMap();
         }
         return pos;
