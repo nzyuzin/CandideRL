@@ -29,6 +29,7 @@ import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
@@ -150,6 +151,34 @@ public final class GameEngine {
             drawGameScreen();
         } if (KeyDefinitions.INVENTORY_KEY == input ) {
             showInventory();
+        } else if (KeyDefinitions.VIEW_MODE_KEY == input) {
+            PositionOnMap lastPosition = gameInformation.getPlayer().getPositionOnMap();
+            gameUi.drawMapView(lastPosition);
+            char newInput = getInput();
+            while (newInput != KeyDefinitions.ESCAPE_KEY) {
+                if (KeyDefinitions.isDirectionKey(newInput)) {
+                    final Direction direction = KeyDefinitions.getDirectionFromKey(newInput);
+                    final PositionOnMap newPosition =
+                            new PositionOnMap(lastPosition.getPosition().apply(direction), lastPosition.getMap());
+                    if (lastPosition.getMap().isInside(newPosition.getPosition())) {
+                        lastPosition = newPosition;
+                        gameUi.drawMapView(lastPosition);
+                    }
+                } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
+                    final MapCell cell = lastPosition.getMapCell();
+                    if (cell.getGameCharacter() != null) {
+                        gameUi.drawExamineScreen(cell.getGameCharacter());
+                    } else if (!cell.getItems().isEmpty()) {
+                        gameUi.drawExamineScreen(cell.getItems().get(0));
+                    } else {
+                        gameUi.drawExamineScreen(cell);
+                    }
+                    getInput();
+                    gameUi.drawMapView(lastPosition);
+                }
+                newInput = getInput();
+            }
+            drawGameScreen();
         } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
             npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
         } else if (KeyDefinitions.PICKUP_ITEM_KEY == input) {

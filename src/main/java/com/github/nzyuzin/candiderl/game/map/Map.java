@@ -197,6 +197,10 @@ public class Map {
         return mapHeight;
     }
 
+    public boolean isInside(Position pos) {
+        return pos.getX() >= 0 && pos.getX() < mapWidth && pos.getY() >= 0 && pos.getY() < mapHeight;
+    }
+
     private Position getRandomPositionInsideMap() {
         Random rand = new Random();
         return Position.getInstance(rand.nextInt(mapWidth - 2) + 1, rand.nextInt(mapHeight - 2) + 1);

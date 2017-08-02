@@ -18,7 +18,9 @@
 package com.github.nzyuzin.candiderl.ui;
 
 import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 import java.util.List;
 
@@ -26,6 +28,8 @@ public interface GameUi extends AutoCloseable {
     void init();
     char getInputChar();
     void drawGame(GameInformation gameInfo);
+    void drawMapView(PositionOnMap position);
+    void drawExamineScreen(GameObject object);
     void showStatus(GameInformation gameInfo);
     void showInventory(GameInformation gameInfo);
     void showItem(Item item);

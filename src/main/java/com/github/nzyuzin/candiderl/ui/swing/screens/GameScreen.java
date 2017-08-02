@@ -17,7 +17,6 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameInformation;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Player;
@@ -29,8 +28,17 @@ import java.util.List;
 
 public class GameScreen extends AbstractDisplayedScreen {
 
-    public GameScreen(TextWindow gameWindow) {
+    private final int mapWidth;
+    private final int mapHeight;
+    private final int messagesHeight;
+    private final int statsWidth;
+
+    public GameScreen(TextWindow gameWindow, int mapWidth, int mapHeight, int messagesHeight, int statsWidth) {
         super(gameWindow);
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
+        this.messagesHeight = messagesHeight;
+        this.statsWidth = statsWidth;
     }
 
     public void draw(final GameInformation gameInfo) {
@@ -42,29 +50,28 @@ public class GameScreen extends AbstractDisplayedScreen {
         final PositionOnMap playerPosition = player.getPositionOnMap();
         final ColoredChar[][] visibleMap;
         if (!player.isDead()) {
-            visibleMap = player.getVisibleMap(getMapWidth(), getMapHeight());
+            visibleMap = player.getVisibleMap(mapWidth, mapHeight);
         } else {
             visibleMap = playerPosition.getMap().getVisibleChars(
-                    playerPosition.getPosition(), getMapWidth(), getMapHeight());
+                    playerPosition.getPosition(), mapWidth, mapHeight);
         }
-        final int messagesHeight = GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT;
-        final int screenHeight = getMapHeight() + messagesHeight;
+        final int screenHeight = mapHeight + messagesHeight;
         final List<String> messages = gameInfo.getMessages();
 
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
         for (int i = screenHeight - 1; i >= 0; i--) {
-            if (i < (screenHeight - getMapHeight())) { // map is written
+            if (i < (screenHeight - mapHeight)) { // map is written
                 if (messagesHeight == i + 1) {
-                    writeBlackWhite("-", getMapWidth());
+                    writeBlackWhite("-", mapWidth);
                 } else if (messages.size() >= i + 1) {
                     writeToMessagesPanel(messages.get(i));
                 } else {
                     writeToMessagesPanel("");
                 }
             } else {
-                for (int j = 0; j < getMapWidth(); j++) { // write map
-                    final ColoredChar c = visibleMap[j][i - (screenHeight - getMapHeight())];
+                for (int j = 0; j < mapWidth; j++) { // write map
+                    final ColoredChar c = visibleMap[j][i - (screenHeight - mapHeight)];
                     write(c.getChar(), c.getForeground(), c.getBackground());
                 }
             }
@@ -78,7 +85,7 @@ public class GameScreen extends AbstractDisplayedScreen {
     private void drawStatsPanelRow(GameInformation gameInfo, int screenHeight, int mapRow) {
         final GameCharacter player = gameInfo.getPlayer();
         if (mapRow == 0 || mapRow == screenHeight - 1) {
-            for (int k = 0; k < GameConfig.DEFAULT_STATS_PANEL_WIDTH; k++) {
+            for (int k = 0; k < statsWidth; k++) {
                 writeBlackWhite('-');
             }
             return;
@@ -105,29 +112,21 @@ public class GameScreen extends AbstractDisplayedScreen {
     }
 
     private void writeToStatsPanel(final String s) {
-        if (s.length() > GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) {
-            writeBlackWhite(s.substring(0, GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1));
+        if (s.length() > statsWidth - 1) {
+            writeBlackWhite(s.substring(0, statsWidth - 1));
         } else {
             writeBlackWhite(s);
-            writeBlanks((GameConfig.DEFAULT_STATS_PANEL_WIDTH - 1) - s.length());
+            writeBlanks((statsWidth - 1) - s.length());
         }
     }
 
     private void writeToMessagesPanel(final String s) {
-        final int messagesSpaceWidth = getGameWindow().getColumns() - GameConfig.DEFAULT_STATS_PANEL_WIDTH;
+        final int messagesSpaceWidth = getGameWindow().getColumns() - statsWidth;
         if (s.length() > messagesSpaceWidth) {
             writeBlackWhite(s.substring(0, messagesSpaceWidth));
         } else {
             writeBlackWhite(s);
             writeBlanks(messagesSpaceWidth - s.length());
         }
-    }
-
-    private int getMapWidth() {
-        return GameConfig.DEFAULT_MAP_WINDOW_WIDTH;
-    }
-
-    private int getMapHeight() {
-        return GameConfig.DEFAULT_MAP_WINDOW_HEIGHT;
     }
 }

@@ -19,15 +19,19 @@ package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.github.nzyuzin.candiderl.ui.swing.screens.AnnouncementScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.ExamineScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.GameScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.InventoryScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.ItemScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.MenuScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.StatusScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.TextEnterScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.ViewMapScreen;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -40,6 +44,8 @@ public class SwingGameUi implements GameUi {
     private final TextWindow gameWindow;
 
     private final GameScreen gameScreen;
+    private final ViewMapScreen viewMapScreen;
+    private final ExamineScreen examineScreen;
     private final AnnouncementScreen announcementScreen;
     private final MenuScreen menuScreen;
     private final StatusScreen statusScreen;
@@ -76,7 +82,10 @@ public class SwingGameUi implements GameUi {
         };
         mainWindow.addKeyListener(kl);
 
-        gameScreen = new GameScreen(gameWindow);
+        gameScreen = new GameScreen(gameWindow, GameConfig.DEFAULT_MAP_WINDOW_WIDTH, GameConfig.DEFAULT_MAP_WINDOW_HEIGHT,
+                GameConfig.DEFAULT_MESSAGES_PANEL_HEIGHT, GameConfig.DEFAULT_STATS_PANEL_WIDTH);
+        viewMapScreen = new ViewMapScreen(gameWindow);
+        examineScreen = new ExamineScreen(gameWindow);
         announcementScreen = new AnnouncementScreen(gameWindow);
         menuScreen = new MenuScreen(gameWindow);
         statusScreen = new StatusScreen(gameWindow);
@@ -97,6 +106,18 @@ public class SwingGameUi implements GameUi {
     @Override
     public void drawGame(final GameInformation gameInfo) {
         gameScreen.draw(gameInfo);
+        gameWindow.repaint();
+    }
+
+    @Override
+    public void drawMapView(PositionOnMap position) {
+        viewMapScreen.draw(position);
+        gameWindow.repaint();
+    }
+
+    @Override
+    public void drawExamineScreen(GameObject object) {
+        examineScreen.draw(object);
         gameWindow.repaint();
     }
 

@@ -36,9 +36,6 @@ public final class Position {
     }
 
     public static Position getInstance(int x, int y) {
-        if (x < 0 || y < 0) {
-            throw new IllegalArgumentException(String.format("Position can't be negative x = %d y = %d", x, y));
-        }
         return new Position(x, y);
     }
 
@@ -112,11 +109,7 @@ public final class Position {
             default:
                 break;
         }
-        if (x >= 0 && y >= 0) {
-            return Position.getInstance(x, y);
-        } else {
-            return null;
-        }
+        return Position.getInstance(x, y);
     }
 
     public Direction directionTo(Position that) {
