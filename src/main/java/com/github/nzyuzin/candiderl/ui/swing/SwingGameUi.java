@@ -27,6 +27,7 @@ import com.github.nzyuzin.candiderl.ui.swing.screens.InventoryScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.ItemScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.MenuScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.StatusScreen;
+import com.github.nzyuzin.candiderl.ui.swing.screens.TextEnterScreen;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -44,6 +45,7 @@ public class SwingGameUi implements GameUi {
     private final StatusScreen statusScreen;
     private final InventoryScreen inventoryScreen;
     private final ItemScreen itemScreen;
+    private final TextEnterScreen textEnterScreen;
 
     private Character key;
     private boolean keyRead = true;
@@ -80,6 +82,7 @@ public class SwingGameUi implements GameUi {
         statusScreen = new StatusScreen(gameWindow);
         inventoryScreen = new InventoryScreen(gameWindow);
         itemScreen = new ItemScreen(gameWindow);
+        textEnterScreen = new TextEnterScreen(gameWindow);
     }
 
     @Override
@@ -140,6 +143,12 @@ public class SwingGameUi implements GameUi {
     @Override
     public void displayMenu(List<? extends Object> options) {
         menuScreen.drawOptions(options);
+        gameWindow.repaint();
+    }
+
+    @Override
+    public void drawInputForm(String formQuery, int length, String enteredCharacters) {
+        textEnterScreen.drawInputForm(formQuery, length, enteredCharacters);
         gameWindow.repaint();
     }
 

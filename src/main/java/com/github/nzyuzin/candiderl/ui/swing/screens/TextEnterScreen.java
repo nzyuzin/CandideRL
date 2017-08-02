@@ -15,21 +15,20 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.ui;
+package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
-import com.github.nzyuzin.candiderl.game.items.Item;
+import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
+import com.google.common.base.Strings;
 
-import java.util.List;
+public class TextEnterScreen extends AbstractDisplayedScreen {
 
-public interface GameUi extends AutoCloseable {
-    void init();
-    char getInputChar();
-    void drawGame(GameInformation gameInfo);
-    void showStatus(GameInformation gameInfo);
-    void showInventory(GameInformation gameInfo);
-    void showItem(Item item);
-    void showAnnouncement(String msg);
-    void displayMenu(List<? extends Object> options);
-    void drawInputForm(final String formQuery, final int length, final String enteredCharacters);
+    public TextEnterScreen(TextWindow gameWindow) {
+        super(gameWindow);
+    }
+
+    public void drawInputForm(final String formQuery, final int length, final String enteredCharacters) {
+        clearScreen();
+        writeBlackWhiteLine(formQuery);
+        writeBlackWhiteLine(Strings.padEnd(enteredCharacters, length, '_'));
+    }
 }

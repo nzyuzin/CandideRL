@@ -34,10 +34,9 @@ import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.RING;
 public final class Player extends AbstractGameCharacter {
 
     private FieldOfVision fov = null;
-    private final static Player PLAYER = new Player();
 
-    private Player() {
-        super("Player", "Yet another wanderer in forgotten land", DEFAULT_HP,
+    public Player(final String name) {
+        super(name, "Yet another wanderer in forgotten land", DEFAULT_HP,
                 Lists.newArrayList(new ItemSlot("right hand", HAND), new ItemSlot("left hand", HAND),
                         new ItemSlot("head", HEAD), new ItemSlot("body", BODY), new ItemSlot("legs", LEGS),
                         new ItemSlot("left ring", RING), new ItemSlot("right ring", RING), new ItemSlot("amulet", AMULET)));
@@ -47,10 +46,6 @@ public final class Player extends AbstractGameCharacter {
 
     public ColoredChar[][] getVisibleMap(int width, int height) {
         return fov.getVisibleCells(width, height);
-    }
-
-    public static Player getInstance() {
-        return PLAYER;
     }
 
 }

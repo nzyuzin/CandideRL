@@ -37,6 +37,8 @@ public final class KeyDefinitions {
     public static final char INVENTORY_KEY = 'i';
 
     public static final char ESCAPE_KEY = (char) 0x1B;
+    public static final char LF_KEY = (char) 0x0A;
+    public static final char BACKSPACE_KEY = (char) 0x08;
 
     public static final char DROP_ITEM_KEY = 'd';
     public static final char PICKUP_ITEM_KEY = 'g';

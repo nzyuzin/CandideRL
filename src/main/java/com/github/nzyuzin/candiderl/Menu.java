@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl;
 
 import com.github.nzyuzin.candiderl.game.GameEngine;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -63,16 +64,35 @@ public class Menu {
             chosenOption = getOption(input, startScreenOptions);
         }
         if (chosenOption.get() == StartMenuOption.START_GAME) {
-            startGame();
+            final String playerName = askPlayerName();
+            startGame(playerName);
         } else {
             quit();
         }
     }
 
-    private void startGame() {
+    private String askPlayerName() {
+        String name = "";
+        final String enterNameQuery = "Enter name:";
+        final int nameLength = 15;
+        gameUi.drawInputForm(enterNameQuery, nameLength, name);
+        char input = gameUi.getInputChar();
+        while (name.isEmpty() || input != KeyDefinitions.LF_KEY) {
+            if (Character.isAlphabetic(input) && name.length() < nameLength) {
+                name += input;
+            } else if (input == KeyDefinitions.BACKSPACE_KEY && name.length() > 0) {
+                name = name.substring(0, name.length() - 1);
+            }
+            gameUi.drawInputForm(enterNameQuery, nameLength, name);
+            input = gameUi.getInputChar();
+        }
+        return name;
+    }
+
+    private void startGame(final String playerName) {
         MapFactory mapFactory = MapFactory.getInstance();
         try {
-            GameEngine engine = getGameEngine(mapFactory, gameUi);
+            GameEngine engine = getGameEngine(playerName, mapFactory, gameUi);
             engine.startGame();
             quit();
         } catch (Exception ex) {

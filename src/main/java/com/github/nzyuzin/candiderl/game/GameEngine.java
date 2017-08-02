@@ -54,15 +54,15 @@ public final class GameEngine {
 
     private final GameInformation gameInformation;
 
-    public static GameEngine getGameEngine(MapFactory mapFactory, GameUi gameUi) {
-        return new GameEngine(gameUi, mapFactory.getMap());
+    public static GameEngine getGameEngine(String playerName, MapFactory mapFactory, GameUi gameUi) {
+        return new GameEngine(gameUi, mapFactory.getMap(), playerName);
     }
 
-    private GameEngine(GameUi gameUi, Map map) {
+    private GameEngine(GameUi gameUi, Map map, String playerName) {
         this.gameUi = gameUi;
         npcs = Lists.newArrayList();
         events = Lists.newArrayList();
-        final Player player = Player.getInstance();
+        final Player player = new Player(playerName);
         int npcOperationalRange = 20; // arbitrary for now
         npcController = new NpcController(player, npcOperationalRange);
         if (GameConfig.SPAWN_MOBS) {
@@ -239,7 +239,7 @@ public final class GameEngine {
         if (log.isDebugEnabled()) {
             log.debug("Game starts");
         }
-        gameUi.showAnnouncement("Journey awaits!");
+        gameUi.showAnnouncement("Greetings " + gameInformation.getPlayer().getName() + ", your journey awaits!");
         drawGameScreen();
         try {
             while (true) {
