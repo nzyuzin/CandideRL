@@ -28,6 +28,7 @@ public class SquidDungeonGenerator extends AbstractMapGenerator {
         final ClassicRogueMapGenerator classicRogueMapGenerator =
                 new ClassicRogueMapGenerator(3, 3, width, height, 2, 5, 2, 5);
         final Map map = MapFactory.build(classicRogueMapGenerator.generate());
+        placeBorder(map);
         placeStairs(map);
         return map;
     }

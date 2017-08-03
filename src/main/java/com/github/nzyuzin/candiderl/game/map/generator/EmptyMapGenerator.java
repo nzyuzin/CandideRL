@@ -19,25 +19,9 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
-import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
-import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.google.common.base.Preconditions;
 
-import java.util.function.Supplier;
-
 public class EmptyMapGenerator extends AbstractMapGenerator {
-
-    private final Supplier<MapCell> floorSupplier;
-    private final Supplier<MapCell> wallSupplier;
-
-    public EmptyMapGenerator(Supplier<MapCell> floorSupplier, Supplier<MapCell> wallSupplier) {
-        this.floorSupplier = floorSupplier;
-        this.wallSupplier = wallSupplier;
-    }
-
-    public EmptyMapGenerator() {
-        this(Floor::getFloor, Wall::getWall);
-    }
 
     @Override
     public Map generate(final int width, final int height) {
@@ -45,15 +29,9 @@ public class EmptyMapGenerator extends AbstractMapGenerator {
         final Map map = new Map(width, height);
         for (int i = 1; i < width - 1; i++)
             for (int j = 1; j < height - 1; j++)
-                map.setCell(i, j, floorSupplier.get());
-        for (int i = 0; i < height; i++) {
-            map.setCell(0, i, wallSupplier.get());
-            map.setCell(width - 1, i, wallSupplier.get());
-        }
-        for (int i = 0; i < width; i++) {
-            map.setCell(i, 0, wallSupplier.get());
-            map.setCell(i, height - 1, wallSupplier.get());
-        }
+                map.setCell(i, j, Floor.getFloor());
+        placeBorder(map);
+        placeStairs(map);
         return map;
     }
 }

@@ -19,7 +19,6 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
-import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.collect.Lists;
 
@@ -40,7 +39,7 @@ public class DungeonGenerator extends AbstractMapGenerator {
         this.averageRoomWidth = averageRoomWidth;
         this.averageRoomHeight = averageRoomHeight;
         this.random = new Random();
-        this.emptyMapGenerator = new EmptyMapGenerator(Wall::getWall, Wall::getWall);
+        this.emptyMapGenerator = new EmptyMapGenerator();
     }
 
     @Override

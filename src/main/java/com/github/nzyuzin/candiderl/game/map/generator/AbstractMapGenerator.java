@@ -19,12 +19,24 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
+import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 
 public abstract class AbstractMapGenerator implements MapGenerator {
 
     protected void placeStairs(final Map map) {
         map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
         map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));
+    }
+
+    protected void placeBorder(final Map map) {
+        for (int i = 0; i < map.getHeight(); i++) {
+            map.setCell(0, i, Wall.getWall());
+            map.setCell(map.getWidth() - 1, i, Wall.getWall());
+        }
+        for (int i = 0; i < map.getWidth(); i++) {
+            map.setCell(i, 0, Wall.getWall());
+            map.setCell(i, map.getHeight() - 1, Wall.getWall());
+        }
     }
 
 }
