@@ -49,6 +49,9 @@ public final class KeyDefinitions {
 
     public static final char WIELD_ITEM_KEY = 'w';
 
+    public static final char OPEN_DOOR_KEY = 'o';
+    public static final char CLOSE_DOOR_KEY = 'c';
+
     static {
         DIRECTION_KEYS.put('j', Direction.SOUTH);
         DIRECTION_KEYS.put('k', Direction.NORTH);

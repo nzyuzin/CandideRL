@@ -22,15 +22,10 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 import java.util.List;
 
 public interface MapCell extends GameObject, Visible {
-
-    ColoredChar getDefaultChar();
-
-    void chooseCharOnMap();
 
     boolean isTransparent();
 

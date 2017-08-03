@@ -49,6 +49,14 @@ public class PositionOnMap {
         return position.getY();
     }
 
+    public PositionOnMap apply(final Direction direction) {
+        return new PositionOnMap(this.position.apply(direction), this.map);
+    }
+
+    public PositionOnMap newPosition(final Position position) {
+        return new PositionOnMap(position, this.map);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

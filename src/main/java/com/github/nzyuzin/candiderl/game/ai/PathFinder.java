@@ -70,7 +70,7 @@ public class PathFinder {
                 for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
                     if ( insideArray(i, j) && !checked[i][j] ) {
                         p = Position.getInstance(i, j);
-                        if (map.isCellPassable(p)) {
+                        if (map.getCell(p).isPassable()) {
                             positionsToProcess.add(p);
                             distance[i][j] = distance[position.getX()][position.getY()] + 1;
                             checked[i][j] = true;
@@ -97,7 +97,7 @@ public class PathFinder {
 
                 p = Position.getInstance(x, y);
 
-                if (!map.isSomeoneHere(p) && (distance[x][y] < distance[best.getX()][best.getY()]
+                if (map.getCell(p).getGameCharacter() == null && (distance[x][y] < distance[best.getX()][best.getY()]
                         || distance[x][y] == distance[best.getX()][best.getY()]
                         && p == target.closestBetweenTwo(p, best))) {
                     best = p;

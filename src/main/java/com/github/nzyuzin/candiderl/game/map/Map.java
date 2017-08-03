@@ -99,21 +99,9 @@ public class Map {
         getCell(pos).putItem(item);
     }
 
-    public boolean isCellPassable(Position pos) {
-        return getCell(pos).isPassable();
-    }
-
     public void moveGameCharacter(GameCharacter mob, Position pos) {
         removeGameCharacter(mob);
         putGameCharacter(mob, pos);
-    }
-
-    public boolean isSomeoneHere(Position pos) {
-        return getCell(pos).getGameCharacter() != null;
-    }
-
-    public GameCharacter getGameCharacter(Position pos) {
-        return getCell(pos).getGameCharacter();
     }
 
     /**
@@ -124,7 +112,7 @@ public class Map {
      */
     public Position getRandomFreePosition() {
         Position pos = getRandomPositionInsideMap();
-        while (isSomeoneHere(pos) || !isCellPassable(pos) || !(getCell(pos) instanceof Floor)) {
+        while (getCell(pos).getGameCharacter() != null || !getCell(pos).isPassable() || !(getCell(pos) instanceof Floor)) {
             pos = getRandomPositionInsideMap();
         }
         return pos;

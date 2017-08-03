@@ -22,7 +22,7 @@ import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.google.common.base.Preconditions;
 
-public class RandomMapGenerator implements MapGenerator {
+public class RandomMapGenerator extends AbstractMapGenerator {
 
     private final double filledCells;
     private final EmptyMapGenerator emptyMapGenerator;

@@ -19,7 +19,9 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -38,6 +40,9 @@ public class MoveToNextCellActionTest {
     @Mock
     private Map map;
 
+    @Mock
+    private MapCell targetCell;
+
     @Test(expected = ActionAlreadyExecutedException.class)
     public void testExecute() throws Exception {
         when(character.getMap()).thenReturn(map);
@@ -46,10 +51,11 @@ public class MoveToNextCellActionTest {
         Position characterPosition = Position.getInstance(0, 1);
         Position targetPosition = Position.getInstance(0, 0);
         when(character.getPosition()).thenReturn(characterPosition);
-        when(map.isCellPassable(targetPosition)).thenReturn(true);
-        when(map.isSomeoneHere(targetPosition)).thenReturn(false);
+        when(map.getCell(targetPosition)).thenReturn(targetCell);
+        when(targetCell.getGameCharacter()).thenReturn(null);
+        when(targetCell.isPassable()).thenReturn(true);
 
-        MoveToNextCellAction action = new MoveToNextCellAction(character, map, targetPosition);
+        MoveToNextCellAction action = new MoveToNextCellAction(character, new PositionOnMap(targetPosition, map));
 
         assertTrue(action.canBeExecuted());
         action.execute();

@@ -19,8 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.Event;
-import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -28,26 +27,23 @@ import java.util.List;
 
 public final class MoveToNextCellAction extends AbstractGameAction {
 
-    private final Position position;
-    private final Map map;
+    private final PositionOnMap position;
 
-    public MoveToNextCellAction(GameCharacter subject, Map map, Position position) {
+    public MoveToNextCellAction(GameCharacter subject, PositionOnMap position) {
         super(subject);
-        Preconditions.checkNotNull(map);
         Preconditions.checkNotNull(position);
         Preconditions.checkNotNull(subject);
-        this.map = map;
         this.position = position;
     }
 
     public boolean canBeExecuted() {
-        return !getPerformer().isDead() && map.equals(getPerformer().getMap())
-                && getPerformer().getPosition().isAdjacentTo(position)
-                && map.isCellPassable(position) && !map.isSomeoneHere(position);
+        return !getPerformer().isDead() && position.getMap().equals(getPerformer().getMap())
+                && getPerformer().getPosition().isAdjacentTo(position.getPosition())
+                && position.getMapCell().isPassable() && position.getMapCell().getGameCharacter() == null;
     }
 
     protected List<Event> doExecute() {
-        map.moveGameCharacter(getPerformer(), position);
+        position.getMap().moveGameCharacter(getPerformer(), position.getPosition());
         return Collections.emptyList(); // TODO: change position event
     }
 }

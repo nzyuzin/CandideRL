@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
@@ -59,10 +60,11 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         }
     }
 
-    protected Queue<GameAction> gameActions = null;
+    private final Queue<GameAction> gameActions;
+    private final Queue<String> gameMessages;
 
     protected PositionOnMap position;
-    protected ColoredChar charOnMap = null;
+    protected ColoredChar charOnMap;
 
     protected int currentHP;
     protected int maxHP;
@@ -84,6 +86,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         this.itemSlots = itemSlots;
         attributes = new Attributes();
         gameActions = new ArrayDeque<>();
+        gameMessages = new ArrayDeque<>();
     }
 
     @Override
@@ -96,6 +99,35 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         if (action.canBeExecuted()) {
             gameActions.add(action);
         }
+    }
+
+    @Override
+    public boolean canPerformAction() {
+        return !isDead() && hasAction() && gameActions.peek().canBeExecuted();
+    }
+
+    @Override
+    public List<Event> performAction() {
+        // TODO make use of action points
+        if (gameActions.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return gameActions.poll().execute();
+    }
+
+    @Override
+    public boolean hasMessages() {
+        return !gameMessages.isEmpty();
+    }
+
+    @Override
+    public void addMessage(String message) {
+        gameMessages.add(message);
+    }
+
+    @Override
+    public String removeMessage() {
+        return gameMessages.poll();
     }
 
     @Override
@@ -214,31 +246,45 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public boolean canPerformAction() {
-        return !isDead() && hasAction() && gameActions.peek().canBeExecuted();
-    }
-
-    @Override
-    public List<Event> performAction() {
-        // TODO make use of action points
-        if (gameActions.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return gameActions.poll().execute();
-    }
-
-    @Override
-    public void hit(Position pos) {
-        GameCharacter target = getMap().getGameCharacter(pos);
-        final HitInMeleeAction hitAction = new HitInMeleeAction(this, target);
+    public void hit(final PositionOnMap pos) {
+        final HitInMeleeAction hitAction = new HitInMeleeAction(this, pos.getMapCell().getGameCharacter());
         if (hitAction.canBeExecuted()) {
             addAction(hitAction);
+        } else {
+            addMessage("Cannot hit there!");
         }
     }
 
     @Override
-    public void move(Position pos) {
-        addAction(new MoveToNextCellAction(this, this.getMap(), pos));
+    public void move(final PositionOnMap pos) {
+        final MoveToNextCellAction moveAction = new MoveToNextCellAction(this, pos);
+        if (moveAction.canBeExecuted()) {
+            addAction(moveAction);
+        } else {
+            addMessage("Cannot move there!");
+        }
+    }
+
+    @Override
+    public void openDoor(PositionOnMap pos) {
+        final OpenCloseDoorAction doorAction =
+                new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN);
+        if (doorAction.canBeExecuted()) {
+            this.addAction(doorAction);
+        } else {
+            addMessage("Cannot open");
+        }
+    }
+
+    @Override
+    public void closeDoor(PositionOnMap pos) {
+        final OpenCloseDoorAction doorAction =
+                new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE);
+        if (doorAction.canBeExecuted()) {
+            this.addAction(doorAction);
+        } else {
+            addMessage("Cannot close");
+        }
     }
 
     @Override

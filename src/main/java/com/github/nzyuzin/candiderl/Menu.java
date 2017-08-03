@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl;
 
 import com.github.nzyuzin.candiderl.game.GameEngine;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.generator.SquidDungeonGenerator;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.google.common.collect.Lists;
@@ -90,7 +91,7 @@ public class Menu {
     }
 
     private void startGame(final String playerName) {
-        MapFactory mapFactory = MapFactory.getInstance();
+        MapFactory mapFactory = new MapFactory(new SquidDungeonGenerator());
         try {
             GameEngine engine = getGameEngine(playerName, mapFactory, gameUi);
             engine.startGame();

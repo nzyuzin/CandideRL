@@ -18,9 +18,9 @@
 package com.github.nzyuzin.candiderl.game.ai;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
-import com.github.nzyuzin.candiderl.game.utility.Direction;
-import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.github.nzyuzin.candiderl.game.map.cells.Door;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 public class NpcController {
 
@@ -35,20 +35,25 @@ public class NpcController {
     public void chooseAction(GameCharacter mob) {
         if (target.isDead()) return;
         if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
-            mob.hit(target.getPosition());
+            mob.hit(target.getPositionOnMap());
         } else {
             moveToTarget(mob);
         }
     }
 
-    public void chooseActionInDirection(GameCharacter mob, Direction direction) {
-        final Position position = mob.getPosition().apply(direction);
-        final MoveToNextCellAction move = new MoveToNextCellAction(mob, mob.getMap(), position);
-        if (move.canBeExecuted()) {
-            mob.addAction(move);
-            return;
+    public void chooseAction(GameCharacter mob, PositionOnMap position) {
+        final MapCell mapCell = position.getMapCell();
+        if (mapCell.isPassable()) {
+            if (mapCell.getGameCharacter() == null) {
+                mob.move(position);
+            } else {
+                mob.hit(position);
+            }
+        } else {
+            if (mapCell instanceof Door && ((Door) mapCell).isClosed()) {
+                mob.openDoor(position);
+            }
         }
-        mob.hit(mob.getPosition().apply(direction));
     }
 
     private void moveToTarget(GameCharacter mob) {
@@ -58,7 +63,7 @@ public class NpcController {
 
         final PathFinder path =
                 new PathFinder(target.getPosition(), operationalRange, target.getPositionOnMap().getMap());
-        mob.move(path.findNextMove(mob.getPosition()));
+        mob.move(mob.getPositionOnMap().newPosition(path.findNextMove(mob.getPosition())));
     }
 
 }

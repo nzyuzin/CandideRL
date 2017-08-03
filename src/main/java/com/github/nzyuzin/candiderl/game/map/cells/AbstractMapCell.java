@@ -28,21 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractMapCell extends AbstractGameObject implements MapCell {
-    protected final ColoredChar charOnMap;
-    protected final boolean transparent;
-    protected final boolean canBePassed;
-
-    protected ColoredChar visibleChar;
+    protected ColoredChar charOnMap;
+    protected boolean transparent;
+    protected boolean isPassable;
 
     protected GameCharacter gameCharacter = null;
     protected List<Item> items = null;
     protected List<MapCellEffect> effects = null;
 
-    protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean canBePassed) {
+    protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean isPassable) {
         super(name, desc);
-        this.canBePassed = canBePassed;
+        this.isPassable = isPassable;
         this.charOnMap = onMap;
-        this.visibleChar = onMap;
         this.items = Lists.newArrayList();
         this.effects = Lists.newArrayList();
         this.transparent = transp;
@@ -50,22 +47,12 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public ColoredChar getChar() {
-        return visibleChar;
-    }
-
-    @Override
-    public ColoredChar getDefaultChar() {
-        return charOnMap;
-    }
-
-    @Override
-    public void chooseCharOnMap() {
         if (gameCharacter != null)
-            visibleChar = gameCharacter.getChar();
+            return gameCharacter.getChar();
         else if (!items.isEmpty())
-            visibleChar = items.get(0).getChar();
+            return items.get(0).getChar();
         else
-            visibleChar = charOnMap;
+            return charOnMap;
     }
 
     @Override
@@ -75,13 +62,12 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public boolean isPassable() {
-        return this.canBePassed;
+        return this.isPassable;
     }
 
     @Override
     public MapCell setGameCharacter(GameCharacter mob) {
         this.gameCharacter = mob;
-        chooseCharOnMap();
         return this;
     }
 
@@ -132,4 +118,3 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
         return super.hashCode();
     }
 }
-

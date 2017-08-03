@@ -15,27 +15,20 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl.game.map.generator;
 
-mainClassName = 'com.github.nzyuzin.candiderl.Main'
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
 
-repositories {
-    mavenCentral()
-}
+public class SquidDungeonGenerator extends AbstractMapGenerator {
 
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'com.squidpony:squidlib-util:3.0.0-b8'
-    compile 'org.slf4j:slf4j-log4j12:1.7.12'
-    compile 'com.google.guava:guava:18.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
+    @Override
+    public Map generate(int width, int height) {
+        final ClassicRogueMapGenerator classicRogueMapGenerator =
+                new ClassicRogueMapGenerator(3, 3, width, height, 2, 5, 2, 5);
+        final Map map = MapFactory.build(classicRogueMapGenerator.generate());
+        placeStairs(map);
+        return map;
+    }
 }

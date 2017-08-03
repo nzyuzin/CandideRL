@@ -19,12 +19,13 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameConstants;
+import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.map.generator.DungeonGenerator;
 import com.github.nzyuzin.candiderl.game.map.generator.EmptyMapGenerator;
-import com.github.nzyuzin.candiderl.game.map.generator.RandomMapGenerator;
+import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
 import com.google.common.base.Preconditions;
 import com.google.common.io.LineReader;
 
@@ -37,60 +38,43 @@ public class MapFactory {
 
     private final int width;
     private final int height;
+    private final MapGenerator mapGenerator;
 
-    private final EmptyMapGenerator emptyMapGenerator;
-    private final DungeonGenerator dungeonGenerator;
-
-    public MapFactory(int width, int height, EmptyMapGenerator emptyMapGenerator, DungeonGenerator dungeonGenerator) {
+    public MapFactory(int width, int height, MapGenerator mapGenerator) {
         this.width = width;
         this.height = height;
-        this.emptyMapGenerator = emptyMapGenerator;
-        this.dungeonGenerator = dungeonGenerator;
+        this.mapGenerator = mapGenerator;
     }
 
-    public static MapFactory getInstance(int mapWidth, int mapHeight) {
-        return new MapFactory(mapWidth, mapHeight, new EmptyMapGenerator(), new DungeonGenerator(3, 3));
+    public MapFactory(MapGenerator mapGenerator) {
+        this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, mapGenerator);
     }
 
-    public static MapFactory getInstance() {
-        return getInstance(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT);
+    public MapFactory() {
+        this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, new DungeonGenerator(3, 3));
     }
 
-    public Map getMap() {
+    public Map build() {
         if (GameConfig.BUILD_MAP_FROM_FILE) {
             try {
-                return buildMapFrom(readMapFile());
+                return build(readMapFile());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to read map file", e);
             }
-        } else if (GameConfig.RANDOM_MAP) {
-            return buildRandomMap(0.25);
         } else {
-            return buildDungeon();
+            return mapGenerator.generate(width, height);
         }
     }
 
-    public Map buildEmptyMap() {
-        return this.emptyMapGenerator.generate(width, height);
-    }
-
-    public Map buildRandomMap(double filledCells) {
-        return new RandomMapGenerator(filledCells, emptyMapGenerator).generate(width, height);
-    }
-
-    public Map buildDungeon() {
-        return this.dungeonGenerator.generate(width, height);
-    }
-
-    public static Map buildMapFrom(char[][] array) {
-        MapFactory mapFactory = getInstance(array[0].length, array.length);
-        Map map = mapFactory.buildEmptyMap();
+    public static Map build(char[][] array) {
+        MapFactory mapFactory = new MapFactory(array[0].length, array.length, new EmptyMapGenerator());
+        Map map = mapFactory.build();
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[0].length; j++) {
                 char c = array[i][j];
-                Preconditions.checkArgument(c == '#' || c == ' ' || c == '.',
-                        "Map char array can only contain '#', '.' or ' ' :: given \'" + c + "\'");
-                MapCell cell = c == '#' ? Wall.getWall() : Floor.getFloor();
+                Preconditions.checkArgument(c == '#' || c == ' ' || c == '.' || c == '+',
+                        "Map char array can only contain '#', '.', '+', and ' ' :: given \'" + c + "\'");
+                MapCell cell = c == '#' ? Wall.getWall() : (c == '+' ? Door.getDoor() : Floor.getFloor());
                 map.setCell(j, array.length - 1 - i, cell);
             }
         }

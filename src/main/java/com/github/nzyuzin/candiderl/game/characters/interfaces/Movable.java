@@ -17,8 +17,8 @@
 
 package com.github.nzyuzin.candiderl.game.characters.interfaces;
 
-import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 public interface Movable {
-	void move(Position position);
+	void move(PositionOnMap position);
 }

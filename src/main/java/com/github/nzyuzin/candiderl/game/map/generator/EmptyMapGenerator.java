@@ -25,7 +25,7 @@ import com.google.common.base.Preconditions;
 
 import java.util.function.Supplier;
 
-public class EmptyMapGenerator implements MapGenerator {
+public class EmptyMapGenerator extends AbstractMapGenerator {
 
     private final Supplier<MapCell> floorSupplier;
     private final Supplier<MapCell> wallSupplier;

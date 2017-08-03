@@ -34,9 +34,18 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
+
     boolean hasAction();
     void addAction(GameAction action);
     void removeCurrentAction();
+
+    boolean canPerformAction();
+    List<Event> performAction();
+
+    boolean hasMessages();
+    void addMessage(String message);
+    String removeMessage();
+
     boolean isDead();
     Position getPosition();
 
@@ -64,11 +73,10 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     Optional<Item> getItem(ItemSlot slot);
     void setItem(ItemSlot slot, Item item);
 
-    boolean canPerformAction();
-    List<Event> performAction();
-    void hit(Position pos);
-
-    void move(Position pos);
+    void hit(PositionOnMap pos);
+    void move(PositionOnMap pos);
+    void openDoor(PositionOnMap pos);
+    void closeDoor(PositionOnMap pos);
 
     int rollDamageDice();
 

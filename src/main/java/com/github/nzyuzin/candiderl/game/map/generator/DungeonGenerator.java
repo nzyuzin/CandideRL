@@ -19,7 +19,6 @@ package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
-import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.collect.Lists;
@@ -27,7 +26,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Random;
 
-public class DungeonGenerator implements MapGenerator {
+public class DungeonGenerator extends AbstractMapGenerator {
 
     private final int averageRoomWidth;
     private final int averageRoomHeight;
@@ -68,8 +67,7 @@ public class DungeonGenerator implements MapGenerator {
             }
         }
         connectRooms(map, generatedRooms);
-        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
-        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));
+        placeStairs(map);
         return map;
     }
 

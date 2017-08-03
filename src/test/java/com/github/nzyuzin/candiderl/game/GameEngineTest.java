@@ -40,7 +40,7 @@ public class GameEngineTest {
     @Mock
     private GameUi gameUi;
 
-    private Map testMap = MapFactory.buildMapFrom(new char[][]{
+    private Map testMap = MapFactory.build(new char[][]{
             {'#', '#', '#', '#'},
             {'#', ' ', ' ', '#'},
             {'#', ' ', ' ', '#'},
@@ -49,13 +49,13 @@ public class GameEngineTest {
 
     @Test
     public void gameStartsAndExitsWithoutException() {
-        when(mapFactory.getMap()).thenReturn(testMap);
+        when(mapFactory.build()).thenReturn(testMap);
         when(gameUi.getInputChar()).thenReturn('q');
 
         GameEngine engine = GameEngine.getGameEngine("Tester", mapFactory, gameUi);
         engine.startGame();
 
-        verify(mapFactory, atLeastOnce()).getMap();
+        verify(mapFactory, atLeastOnce()).build();
         verify(gameUi, times(1)).getInputChar();
         verify(gameUi, atLeastOnce()).drawGame(any());
     }

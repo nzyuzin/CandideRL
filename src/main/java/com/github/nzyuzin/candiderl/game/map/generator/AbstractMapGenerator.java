@@ -15,27 +15,16 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'java'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl.game.map.generator;
 
-mainClassName = 'com.github.nzyuzin.candiderl.Main'
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 
-repositories {
-    mavenCentral()
-}
+public abstract class AbstractMapGenerator implements MapGenerator {
 
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
+    protected void placeStairs(final Map map) {
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
+        map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));
+    }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'com.squidpony:squidlib-util:3.0.0-b8'
-    compile 'org.slf4j:slf4j-log4j12:1.7.12'
-    compile 'com.google.guava:guava:18.0'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
 }

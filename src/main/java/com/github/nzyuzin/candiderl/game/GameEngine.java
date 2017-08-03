@@ -26,6 +26,7 @@ import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -61,7 +62,7 @@ public final class GameEngine {
     }
 
     private GameEngine(GameUi gameUi, MapFactory mapFactory, String playerName) {
-        final Map map = mapFactory.getMap();
+        final Map map = mapFactory.build();
         this.gameUi = gameUi;
         this.mapFactory = mapFactory;
         npcs = Lists.newArrayList();
@@ -152,35 +153,15 @@ public final class GameEngine {
         } if (KeyDefinitions.INVENTORY_KEY == input ) {
             showInventory();
         } else if (KeyDefinitions.VIEW_MODE_KEY == input) {
-            PositionOnMap lastPosition = gameInformation.getPlayer().getPositionOnMap();
-            gameUi.drawMapView(lastPosition);
-            char newInput = getInput();
-            while (newInput != KeyDefinitions.ESCAPE_KEY) {
-                if (KeyDefinitions.isDirectionKey(newInput)) {
-                    final Direction direction = KeyDefinitions.getDirectionFromKey(newInput);
-                    final PositionOnMap newPosition =
-                            new PositionOnMap(lastPosition.getPosition().apply(direction), lastPosition.getMap());
-                    if (lastPosition.getMap().isInside(newPosition.getPosition())) {
-                        lastPosition = newPosition;
-                        gameUi.drawMapView(lastPosition);
-                    }
-                } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
-                    final MapCell cell = lastPosition.getMapCell();
-                    if (cell.getGameCharacter() != null) {
-                        gameUi.drawExamineScreen(cell.getGameCharacter());
-                    } else if (!cell.getItems().isEmpty()) {
-                        gameUi.drawExamineScreen(cell.getItems().get(0));
-                    } else {
-                        gameUi.drawExamineScreen(cell);
-                    }
-                    getInput();
-                    gameUi.drawMapView(lastPosition);
-                }
-                newInput = getInput();
-            }
-            drawGameScreen();
+            enterViewMode();
         } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
-            npcController.chooseActionInDirection(gameInformation.getPlayer(), KeyDefinitions.getDirectionFromKey(input));
+            final Direction direction = KeyDefinitions.getDirectionFromKey(input);
+            final Player player = gameInformation.getPlayer();
+            npcController.chooseAction(player, player.getPositionOnMap().apply(direction));
+        } else if (KeyDefinitions.OPEN_DOOR_KEY == input) {
+            openCloseDoor(true);
+        } else if (KeyDefinitions.CLOSE_DOOR_KEY == input) {
+            openCloseDoor(false);
         } else if (KeyDefinitions.PICKUP_ITEM_KEY == input) {
             pickupItem();
         } else if (KeyDefinitions.STAIRS_UPWARDS_KEY == input || KeyDefinitions.STAIRS_DOWNWARDS_KEY == input) {
@@ -189,6 +170,68 @@ public final class GameEngine {
             advanceTime();
         } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
+        }
+    }
+
+    private void enterViewMode() {
+        PositionOnMap lastPosition = gameInformation.getPlayer().getPositionOnMap();
+        gameUi.drawMapView(lastPosition);
+        char newInput = getInput();
+        while (newInput != KeyDefinitions.ESCAPE_KEY) {
+            if (KeyDefinitions.isDirectionKey(newInput)) {
+                final Direction direction = KeyDefinitions.getDirectionFromKey(newInput);
+                final PositionOnMap newPosition =
+                        new PositionOnMap(lastPosition.getPosition().apply(direction), lastPosition.getMap());
+                if (lastPosition.getMap().isInside(newPosition.getPosition())) {
+                    lastPosition = newPosition;
+                    gameUi.drawMapView(lastPosition);
+                }
+            } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
+                final MapCell cell = lastPosition.getMapCell();
+                if (cell.getGameCharacter() != null) {
+                    gameUi.drawExamineScreen(cell.getGameCharacter());
+                } else if (!cell.getItems().isEmpty()) {
+                    gameUi.drawExamineScreen(cell.getItems().get(0));
+                } else {
+                    gameUi.drawExamineScreen(cell);
+                }
+                getInput();
+                gameUi.drawMapView(lastPosition);
+            }
+            newInput = getInput();
+        }
+        drawGameScreen();
+    }
+
+    private void openCloseDoor(boolean isOpen) {
+        final Player player = gameInformation.getPlayer();
+        gameInformation.addMessage((isOpen ? "Open" : "Close") + " in which direction?");
+        drawGameScreen();
+        char input = getInput();
+        while (!KeyDefinitions.isDirectionKey(input)) {
+            input = getInput();
+        }
+        final PositionOnMap doorPosition = player.getPositionOnMap().apply(KeyDefinitions.getDirectionFromKey(input));
+        if (!(doorPosition.getMapCell() instanceof Door)) {
+            gameInformation.addMessage("There is no door here!");
+            drawGameScreen();
+        } else {
+            final Door door = (Door) doorPosition.getMapCell();
+            if (isOpen) {
+                if (door.isOpen()) {
+                    gameInformation.addMessage("This door is already opened!");
+                    drawGameScreen();
+                } else {
+                    player.openDoor(doorPosition);
+                }
+            } else {
+                if (door.isClosed()) {
+                    gameInformation.addMessage("This door is already closed!");
+                    drawGameScreen();
+                } else {
+                    player.closeDoor(doorPosition);
+                }
+            }
         }
     }
 
@@ -209,7 +252,7 @@ public final class GameEngine {
                 if (stairs.getMatchingPosition().isPresent()) {
                     moveToNewMap(stairs.getMatchingPosition().get());
                 } else {
-                    final Map newMap = mapFactory.getMap();
+                    final Map newMap = mapFactory.build();
                     final Stairs newUpwardsStairs = (Stairs) newMap.getUpwardsStairs().getMapCell();
                     newUpwardsStairs.setMatchingStairs(currentPosition);
                     stairs.setMatchingStairs(newMap.getUpwardsStairs());
