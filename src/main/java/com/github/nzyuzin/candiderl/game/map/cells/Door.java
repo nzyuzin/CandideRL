@@ -48,12 +48,14 @@ public class Door extends AbstractMapCell {
     public void open() {
         isOpen = true;
         isPassable = true;
+        transparent = true;
         charOnMap = OPEN_CHAR;
     }
 
     public void close() {
         isOpen = false;
         isPassable = false;
+        transparent = false;
         charOnMap = CLOSED_CHAR;
     }
 }
