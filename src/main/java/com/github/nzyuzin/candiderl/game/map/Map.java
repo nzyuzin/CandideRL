@@ -85,13 +85,13 @@ public class Map {
     }
 
     public void removeGameCharacter(GameCharacter mob) {
-        Preconditions.checkState(mob.getMap().equals(this));
+        Preconditions.checkState(mob.getMap().equals(this), "Given character is not on this map!");
         MapCell cell = getCell(mob.getPosition());
         cell.setGameCharacter(null);
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
-        Preconditions.checkArgument(getCell(pos).getGameCharacter() == null);
+        Preconditions.checkArgument(getCell(pos).getGameCharacter() == null, "The map cell already contains a character!");
         getCell(pos).setGameCharacter(mob);
         mob.setPositionOnMap(new PositionOnMap(pos, this));
     }
