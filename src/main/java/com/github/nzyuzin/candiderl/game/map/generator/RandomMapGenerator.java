@@ -17,6 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.map.generator;
 
+import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
@@ -27,7 +28,8 @@ public class RandomMapGenerator extends AbstractMapGenerator {
     private final double filledCells;
     private final EmptyMapGenerator emptyMapGenerator;
 
-    public RandomMapGenerator(final double filledCells, final EmptyMapGenerator emptyMapGenerator) {
+    public RandomMapGenerator(NpcFactory npcFactory, double filledCells, EmptyMapGenerator emptyMapGenerator) {
+        super(npcFactory);
         this.filledCells = filledCells;
         this.emptyMapGenerator = emptyMapGenerator;
     }

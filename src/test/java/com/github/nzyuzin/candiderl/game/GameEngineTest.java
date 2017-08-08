@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,12 @@ public class GameEngineTest {
     @Mock
     private GameUi gameUi;
 
-    private Map testMap = MapFactory.build(new char[][]{
+    private Map testMap = new MapGenerator() {
+        @Override
+        public Map generate(int width, int height) { return null; }
+        @Override
+        public void spawnMobs(Map map, int number) { }
+    }.generate(new char[][]{
             {'#', '#', '#', '#'},
             {'#', ' ', ' ', '#'},
             {'#', ' ', ' ', '#'},

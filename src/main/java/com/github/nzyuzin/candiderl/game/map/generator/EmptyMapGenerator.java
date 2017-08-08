@@ -17,11 +17,16 @@
 
 package com.github.nzyuzin.candiderl.game.map.generator;
 
+import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.google.common.base.Preconditions;
 
 public class EmptyMapGenerator extends AbstractMapGenerator {
+
+    public EmptyMapGenerator(NpcFactory npcFactory) {
+        super(npcFactory);
+    }
 
     @Override
     public Map generate(final int width, final int height) {

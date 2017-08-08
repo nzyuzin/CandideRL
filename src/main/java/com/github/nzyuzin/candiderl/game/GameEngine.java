@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.ItemSlot;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
@@ -29,7 +30,6 @@ import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
@@ -40,7 +40,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -48,7 +47,6 @@ public final class GameEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
 
-    private final List<Npc> npcs;
     private final List<Event> events;
     private final GameUi gameUi;
     private final NpcController npcController;
@@ -65,38 +63,31 @@ public final class GameEngine {
         final Map map = mapFactory.build();
         this.gameUi = gameUi;
         this.mapFactory = mapFactory;
-        npcs = Lists.newArrayList();
         events = Lists.newArrayList();
         final Player player = new Player(playerName);
         int npcOperationalRange = 20; // arbitrary for now
-        npcController = new NpcController(player, npcOperationalRange);
-        if (GameConfig.SPAWN_MOBS) {
-            npcs.add(new Npc(
-                            "Troll",
-                            "A furious beast with sharp claws.",
-                            ColoredChar.getColoredChar('t', ColoredChar.RED))
-            );
-            for (Npc mob : npcs)
-                map.putGameCharacter(mob, map.getRandomFreePosition());
-        }
         map.putGameCharacter(player, map.getRandomFreePosition());
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1);
         player.addItem(broadsword);
         player.setItem(player.getItemSlots().get(0), broadsword);
+        npcController = new NpcController(player, npcOperationalRange);
         gameInformation = new GameInformation(player);
     }
 
     private void processActions() {
-        events.addAll(gameInformation.getPlayer().performAction());
-        for (Iterator<Npc> iterator = npcs.iterator(); iterator.hasNext(); ) {
-            Npc npc = iterator.next();
-            if (!npc.getPositionOnMap().getMap().equals(gameInformation.getPlayer().getPositionOnMap().getMap())) {
+        final Player player = gameInformation.getPlayer();
+        events.addAll(player.performAction());
+        for (final GameCharacter character : player.getMap().getCharacters()) {
+            if (!(character instanceof Npc)) {
+                continue;
+            }
+            final Npc npc = (Npc) character;
+            if (!npc.getPositionOnMap().getMap().equals(player.getMap())) {
                 // Skip mob if it is not on the same map as player
                 continue;
             }
             if (npc.isDead()) {
-                iterator.remove();
-                continue;
+                throw new AssertionError("Dead mob found on turn " + gameInformation.getCurrentTurn() + " name: " + npc.getName());
             } else npcController.chooseAction(npc);
             if (npc.canPerformAction()) {
                 events.addAll(npc.performAction());

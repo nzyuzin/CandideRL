@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.utility;
 
-import java.awt.*;
+import java.awt.Color;
 
 public final class ColoredChar {
 
@@ -31,6 +31,7 @@ public final class ColoredChar {
     public static final Color GREEN = Color.GREEN;
     public static final Color WHITE = Color.WHITE;
     public static final Color GRAY = Color.GRAY;
+    public static final Color ORANGE = Color.ORANGE;
 
     public static final Color STANDARD_BACKGROUND_COLOR = Color.black;
     public static final Color STANDARD_FOREGROUND_COLOR = Color.white;

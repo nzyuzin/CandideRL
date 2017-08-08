@@ -27,7 +27,10 @@ import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
+import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -39,11 +42,14 @@ public class Map {
     private PositionOnMap upwardsStairs;
     private PositionOnMap downwardsStairs;
 
+    private final List<GameCharacter> characters;
+
     public Map(int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
         map = new MapCell[width][height];
         mapWidth = width;
         mapHeight = height;
+        characters = Lists.newArrayList();
     }
 
     public PositionOnMap getUpwardsStairs() {
@@ -54,6 +60,10 @@ public class Map {
     public PositionOnMap getDownwardsStairs() {
         Preconditions.checkNotNull(downwardsStairs, "No downwards stairs on the map!");
         return downwardsStairs;
+    }
+
+    public ImmutableList<GameCharacter> getCharacters() {
+        return ImmutableList.copyOf(characters);
     }
 
     public MapCell getCell(Position pos) {
@@ -88,12 +98,14 @@ public class Map {
         Preconditions.checkState(mob.getMap().equals(this), "Given character is not on this map!");
         MapCell cell = getCell(mob.getPosition());
         cell.setGameCharacter(null);
+        characters.remove(mob);
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
         Preconditions.checkArgument(getCell(pos).getGameCharacter() == null, "The map cell already contains a character!");
         getCell(pos).setGameCharacter(mob);
         mob.setPositionOnMap(new PositionOnMap(pos, this));
+        characters.add(mob);
     }
 
     public void putItem(Item item, Position pos) {

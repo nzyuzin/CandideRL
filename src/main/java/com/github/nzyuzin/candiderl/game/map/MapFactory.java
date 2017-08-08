@@ -19,14 +19,7 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameConstants;
-import com.github.nzyuzin.candiderl.game.map.cells.Door;
-import com.github.nzyuzin.candiderl.game.map.cells.Floor;
-import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
-import com.github.nzyuzin.candiderl.game.map.cells.Wall;
-import com.github.nzyuzin.candiderl.game.map.generator.DungeonGenerator;
-import com.github.nzyuzin.candiderl.game.map.generator.EmptyMapGenerator;
 import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
-import com.google.common.base.Preconditions;
 import com.google.common.io.LineReader;
 
 import java.io.File;
@@ -50,35 +43,21 @@ public class MapFactory {
         this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, mapGenerator);
     }
 
-    public MapFactory() {
-        this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, new DungeonGenerator(3, 3));
-    }
-
     public Map build() {
+        final Map result;
         if (GameConfig.BUILD_MAP_FROM_FILE) {
             try {
-                return build(readMapFile());
+                result = mapGenerator.generate(readMapFile());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to read map file", e);
             }
         } else {
-            return mapGenerator.generate(width, height);
+            result = mapGenerator.generate(width, height);
         }
-    }
-
-    public static Map build(char[][] array) {
-        MapFactory mapFactory = new MapFactory(array[0].length, array.length, new EmptyMapGenerator());
-        Map map = mapFactory.build();
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array[0].length; j++) {
-                char c = array[i][j];
-                Preconditions.checkArgument(c == '#' || c == ' ' || c == '.' || c == '+',
-                        "Map char array can only contain '#', '.', '+', and ' ' :: given \'" + c + "\'");
-                MapCell cell = c == '#' ? Wall.getWall() : (c == '+' ? Door.getDoor() : Floor.getFloor());
-                map.setCell(j, array.length - 1 - i, cell);
-            }
+        if (GameConfig.SPAWN_MOBS) {
+            mapGenerator.spawnMobs(result, 2);
         }
-        return map;
+        return result;
     }
 
     private char[][] readMapFile() throws IOException {

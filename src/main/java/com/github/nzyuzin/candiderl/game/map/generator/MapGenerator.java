@@ -18,7 +18,29 @@
 package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.Door;
+import com.github.nzyuzin.candiderl.game.map.cells.Floor;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Wall;
+import com.google.common.base.Preconditions;
 
 public interface MapGenerator {
+
     Map generate(int width, int height);
+    default Map generate(char[][] array) {
+        final Map map = new Map(array[0].length, array.length);
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                final char c = array[i][j];
+                Preconditions.checkArgument(c == '#' || c == ' ' || c == '.' || c == '+',
+                        "Map char array can only contain '#', '.', '+', and ' ' :: given \'" + c + "\'");
+                final MapCell cell = c == '#' ? Wall.getWall() : (c == '+' ? Door.getDoor() : Floor.getFloor());
+                map.setCell(j, array.length - 1 - i, cell);
+            }
+        }
+        return map;
+    }
+
+    void spawnMobs(Map map, int number);
+
 }

@@ -17,17 +17,21 @@
 
 package com.github.nzyuzin.candiderl.game.map.generator;
 
+import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
 
 public class SquidDungeonGenerator extends AbstractMapGenerator {
+
+    public SquidDungeonGenerator(NpcFactory npcFactory) {
+        super(npcFactory);
+    }
 
     @Override
     public Map generate(int width, int height) {
         final ClassicRogueMapGenerator classicRogueMapGenerator =
                 new ClassicRogueMapGenerator(3, 3, width, height, 2, 5, 2, 5);
-        final Map map = MapFactory.build(classicRogueMapGenerator.generate());
+        final Map map = generate(classicRogueMapGenerator.generate());
         placeBorder(map);
         placeStairs(map);
         return map;
