@@ -91,6 +91,7 @@ public class Map {
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
+        Preconditions.checkArgument(getCell(pos).getGameCharacter() == null);
         getCell(pos).setGameCharacter(mob);
         mob.setPositionOnMap(new PositionOnMap(pos, this));
     }
