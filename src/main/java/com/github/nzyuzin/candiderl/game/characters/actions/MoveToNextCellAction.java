@@ -43,7 +43,7 @@ public final class MoveToNextCellAction extends AbstractGameAction {
     }
 
     protected List<Event> doExecute() {
-        position.getMap().moveGameCharacter(getPerformer(), position.getPosition());
+        position.getMap().moveGameCharacter(getPerformer(), position);
         return Collections.emptyList(); // TODO: change position event
     }
 }

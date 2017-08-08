@@ -100,9 +100,9 @@ public class Map {
         getCell(pos).putItem(item);
     }
 
-    public void moveGameCharacter(GameCharacter mob, Position pos) {
+    public void moveGameCharacter(GameCharacter mob, PositionOnMap pos) {
         removeGameCharacter(mob);
-        putGameCharacter(mob, pos);
+        pos.getMap().putGameCharacter(mob, pos.getPosition());
     }
 
     /**

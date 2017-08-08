@@ -50,17 +50,18 @@ public class MoveToNextCellActionTest {
 
         Position characterPosition = Position.getInstance(0, 1);
         Position targetPosition = Position.getInstance(0, 0);
+        PositionOnMap targetOnMap = new PositionOnMap(targetPosition, map);
         when(character.getPosition()).thenReturn(characterPosition);
         when(map.getCell(targetPosition)).thenReturn(targetCell);
         when(targetCell.getGameCharacter()).thenReturn(null);
         when(targetCell.isPassable()).thenReturn(true);
 
-        MoveToNextCellAction action = new MoveToNextCellAction(character, new PositionOnMap(targetPosition, map));
+        MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap);
 
         assertTrue(action.canBeExecuted());
         action.execute();
 
-        verify(map).moveGameCharacter(character, targetPosition);
+        verify(map).moveGameCharacter(character, targetOnMap);
 
         action.execute();
     }
