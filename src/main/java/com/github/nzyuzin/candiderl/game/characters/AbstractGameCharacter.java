@@ -304,15 +304,12 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void takeDamage(int damage) {
-        if (isDead()) {
-            return;
-        }
         /* TODO
          * if takes 0 as arguments - attacker missed,
          * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
          */
         currentHP -= damage;
-        if (currentHP < 0) {
+        if (isDead()) {
             getMap().putItem(this.die(), this.getPosition());
             getMap().removeGameCharacter(this);
         }
