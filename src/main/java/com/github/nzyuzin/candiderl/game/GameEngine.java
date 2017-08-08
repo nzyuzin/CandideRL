@@ -272,9 +272,7 @@ public final class GameEngine {
     private void moveToNewMap(final PositionOnMap newPosition) {
         final Player player = gameInformation.getPlayer();
         final Map currentMap = player.getPositionOnMap().getMap();
-        final Map newMap = newPosition.getMap();
-        currentMap.removeGameCharacter(player);
-        newMap.putGameCharacter(player, newPosition.getPosition());
+        currentMap.moveGameCharacter(player, newPosition);
     }
 
     private void pickupItem() {
