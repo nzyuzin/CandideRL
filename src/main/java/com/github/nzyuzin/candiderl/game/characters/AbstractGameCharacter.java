@@ -44,49 +44,36 @@ import java.util.Random;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
-    protected static final int DEFAULT_HP = 100;
-
-    protected static final class Attributes {
-        public short strength;
-        public short dexterity;
-        public short intelligence;
-        public short armor;
-
-        public Attributes() {
-            this.strength = 8;
-            this.armor = 0;
-            this.dexterity = 8;
-            this.intelligence = 8;
-        }
-    }
-
     private final Queue<GameAction> gameActions;
     private final Queue<String> gameMessages;
 
     protected PositionOnMap position;
     protected ColoredChar charOnMap;
 
-    protected int currentHP;
-    protected int maxHP;
+    protected int currentHp;
 
     protected List<Item> items;
-    protected List<ItemSlot> itemSlots;
+    protected List<BodyPart> bodyParts;
 
     protected double attackRate;
-    protected Attributes attributes;
+    protected MutableAttributes attributes;
     protected boolean canTakeDamage;
 
-    AbstractGameCharacter(String name, String description, int HP, List<ItemSlot> itemSlots) {
+    AbstractGameCharacter(String name, String description, Race race) {
         super(name, description);
-        maxHP = HP;
-        currentHP = HP;
+        this.currentHp = race.getMaxHp();
+        this.attributes = new MutableAttributes(race.getAttributes());
+        this.bodyParts = race.getBodyParts();
         this.canTakeDamage = true;
         this.attackRate = 1.0;
         this.items = Lists.newArrayListWithCapacity(52);
-        this.itemSlots = itemSlots;
-        attributes = new Attributes();
-        gameActions = new ArrayDeque<>();
-        gameMessages = new ArrayDeque<>();
+        this.gameActions = new ArrayDeque<>();
+        this.gameMessages = new ArrayDeque<>();
+    }
+
+    @Override
+    public MutableAttributes getAttributes() {
+        return attributes;
     }
 
     @Override
@@ -137,7 +124,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public boolean isDead() {
-        return currentHP <= 0;
+        return currentHp <= 0;
     }
 
     @Override
@@ -166,28 +153,8 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public int getCurrentHP() {
-        return currentHP;
-    }
-
-    @Override
-    public int getMaxHP() {
-        return maxHP;
-    }
-
-    @Override
-    public short getStrength() {
-        return attributes.strength;
-    }
-
-    @Override
-    public short getDexterity() {
-        return attributes.dexterity;
-    }
-
-    @Override
-    public short getIntelligence() {
-        return attributes.intelligence;
+    public int getCurrentHp() {
+        return currentHp;
     }
 
     @Override
@@ -203,7 +170,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public void removeItem(final Item item) {
         items.remove(item);
-        for (final ItemSlot slot : itemSlots) {
+        for (final BodyPart slot : bodyParts) {
             if (slot.getItem().isPresent() && slot.getItem().get() == item) {
                 slot.removeItem();
             }
@@ -226,23 +193,18 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public ImmutableList<ItemSlot> getItemSlots() {
-        return ImmutableList.copyOf(itemSlots);
+    public ImmutableList<BodyPart> getBodyParts() {
+        return ImmutableList.copyOf(bodyParts);
     }
 
     @Override
-    public Optional<Item> getItem(final ItemSlot slot) {
-        return itemSlots.get(itemSlots.indexOf(slot)).getItem();
+    public Optional<Item> getItem(final BodyPart slot) {
+        return bodyParts.get(bodyParts.indexOf(slot)).getItem();
     }
 
     @Override
-    public void setItem(final ItemSlot slot, final Item item) {
-        itemSlots.get(itemSlots.indexOf(slot)).setItem(item);
-    }
-
-    @Override
-    public short getArmor() {
-        return attributes.armor;
+    public void setItem(final BodyPart slot, final Item item) {
+        bodyParts.get(bodyParts.indexOf(slot)).setItem(item);
     }
 
     @Override
@@ -290,11 +252,11 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public int rollDamageDice() {
         final Random dice = new Random();
-        int baseDamage = dice.nextInt(this.attributes.strength);
-        for (final ItemSlot itemSlot : getItemSlots()) {
-            if (itemSlot.getType() == ItemSlot.Type.HAND && itemSlot.getItem().isPresent()) {
-                if (itemSlot.getItem().get() instanceof Weapon) {
-                    final Weapon weapon = (Weapon) itemSlot.getItem().get();
+        int baseDamage = dice.nextInt(this.getStrength());
+        for (final BodyPart bodyPart : getBodyParts(BodyPart.Type.HAND)) {
+            if (bodyPart.getItem().isPresent()) {
+                if (bodyPart.getItem().get() instanceof Weapon) {
+                    final Weapon weapon = (Weapon) bodyPart.getItem().get();
                     baseDamage += dice.nextInt(weapon.getDamage());
                 }
             }
@@ -308,7 +270,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
          * if takes 0 as arguments - attacker missed,
          * otherwise it should apply armor coefficient to damage and then subtract it from current hp.
          */
-        currentHP -= damage;
+        currentHp -= damage;
         if (isDead()) {
             getMap().putItem(this.die(), this.getPosition());
             getMap().removeGameCharacter(this);

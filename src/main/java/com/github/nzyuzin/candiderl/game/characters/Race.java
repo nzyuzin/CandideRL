@@ -18,37 +18,28 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
-import com.github.nzyuzin.candiderl.game.items.Item;
-import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
-public class ItemSlot extends AbstractGameObject {
+import java.util.List;
 
-    public enum Type {
-        HAND, BODY, HEAD, LEGS, RING, AMULET;
+public class Race extends AbstractGameObject implements HasAttributes {
+
+    private final List<BodyPart> bodyParts;
+    private final Attributes attributes;
+
+    public Race(String name, String description, List<BodyPart> bodyParts, Attributes attributes) {
+        super(name, description);
+        this.bodyParts = bodyParts;
+        this.attributes = attributes;
     }
 
-    private Optional<Item> gameItem = Optional.absent();
-    private final Type type;
-
-    public ItemSlot(String name, Type type) {
-        super(name, name);
-        this.type = type;
+    @Override
+    public Attributes getAttributes() {
+        return attributes;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public Optional<Item> getItem() {
-        return gameItem;
-    }
-
-    public void setItem(final Item item) {
-        this.gameItem = Optional.of(item);
-    }
-
-    public void removeItem() {
-        this.gameItem = Optional.absent();
+    public List<BodyPart> getBodyParts() {
+        return Lists.newArrayList(bodyParts);
     }
 
 }

@@ -18,8 +18,8 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
+import com.github.nzyuzin.candiderl.game.characters.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.characters.ItemSlot;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.events.Event;
@@ -69,7 +69,7 @@ public final class GameEngine {
         map.putGameCharacter(player, map.getRandomFreePosition());
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1);
         player.addItem(broadsword);
-        player.setItem(player.getItemSlots().get(0), broadsword);
+        player.setItem(player.getBodyParts(BodyPart.Type.HAND).get(0), broadsword);
         npcController = new NpcController(player, npcOperationalRange);
         gameInformation = new GameInformation(player);
     }
@@ -319,9 +319,9 @@ public final class GameEngine {
 
     private void wieldItem(final Item item) {
         Preconditions.checkArgument(gameInformation.getPlayer().getItems().contains(item), "Item should be in the inventory!");
-        for (final ItemSlot itemSlot : gameInformation.getPlayer().getItemSlots()) {
-            if (itemSlot.getType() == ItemSlot.Type.HAND && !itemSlot.getItem().isPresent()) {
-                itemSlot.setItem(item);
+        for (final BodyPart hand : gameInformation.getPlayer().getBodyParts(BodyPart.Type.HAND)) {
+            if (!hand.getItem().isPresent()) {
+                hand.setItem(item);
                 gameInformation.addMessage("You wield " + item);
                 drawGameScreen();
                 return;

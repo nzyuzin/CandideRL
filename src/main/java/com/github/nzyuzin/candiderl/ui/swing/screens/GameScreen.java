@@ -96,7 +96,7 @@ public class GameScreen extends AbstractDisplayedScreen {
             return;
         }
         if (mapRow == screenHeight - 4) {
-            final String health = String.format("HP: %d/%d", player.getCurrentHP(), player.getMaxHP());
+            final String health = String.format("HP: %d/%d", player.getCurrentHp(), player.getMaxHp());
             writeToStatsPanel(health);
             return;
         }

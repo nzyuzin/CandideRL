@@ -30,10 +30,14 @@ import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.List;
 
-public interface GameCharacter extends GameObject, Movable, Damageable, Visible {
+public interface GameCharacter extends GameObject, HasAttributes, Movable, Damageable, Visible {
+
+    @Override
+    MutableAttributes getAttributes();
 
     boolean hasAction();
     void addAction(GameAction action);
@@ -54,12 +58,7 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     MapCell getMapCell();
     void setPositionOnMap(PositionOnMap position);
 
-    int getCurrentHP();
-    int getMaxHP();
-    short getStrength();
-    short getDexterity();
-    short getIntelligence();
-    short getArmor();
+    int getCurrentHp();
 
     ImmutableList<Item> getItems();
     void addItem(Item item);
@@ -68,10 +67,14 @@ public interface GameCharacter extends GameObject, Movable, Damageable, Visible 
     void pickupItem(Item item);
     void dropItem(Item item);
 
-    ImmutableList<ItemSlot> getItemSlots();
+    ImmutableList<BodyPart> getBodyParts();
 
-    Optional<Item> getItem(ItemSlot slot);
-    void setItem(ItemSlot slot, Item item);
+    default ImmutableList<BodyPart> getBodyParts(BodyPart.Type type) {
+        return ImmutableList.copyOf(Iterables.filter(getBodyParts(), input -> type.equals(input.getType())));
+    }
+
+    Optional<Item> getItem(BodyPart slot);
+    void setItem(BodyPart slot, Item item);
 
     void hit(PositionOnMap pos);
     void move(PositionOnMap pos);

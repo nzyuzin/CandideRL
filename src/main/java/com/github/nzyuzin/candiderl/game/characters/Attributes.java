@@ -17,13 +17,40 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+public class Attributes {
 
-public class Npc extends AbstractGameCharacter {
+    protected int maxHp;
+    protected int strength;
+    protected int dexterity;
+    protected int intelligence;
+    protected int armor;
 
-    public Npc(String name, String description, Race race, ColoredChar onMap) {
-        super(name, description, race);
-        this.charOnMap = onMap;
+    public Attributes(int maxHp, int strength, int dexterity, int intelligence, int armor) {
+        this.maxHp = maxHp;
+        this.strength = strength;
+        this.dexterity = dexterity;
+        this.intelligence = intelligence;
+        this.armor = armor;
+    }
+
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getDexterity() {
+        return dexterity;
+    }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public int getArmor() {
+        return armor;
     }
 
 }

@@ -33,12 +33,14 @@ public class NpcFactory {
     public Npc getNpc() {
         final int roll = random.nextInt(2);
         if (roll == 0) {
-            return new Npc("Troll", "A furious beast with sharp claws.", ColoredChar.getColoredChar('t', ColoredChar.YELLOW));
+            return new Npc("Troll", "A furious beast with sharp claws.", Races.TROLL.get(),
+                    ColoredChar.getColoredChar('t', ColoredChar.YELLOW));
         } else if (roll == 1) {
-            return new Npc("Goblin", "A small green humanoid. Apparently not very strong.",
+            return new Npc("Goblin", "A small green humanoid. Apparently not very strong.", Races.GOBLIN.get(),
                     ColoredChar.getColoredChar('g', ColoredChar.GREEN));
         } else {
-            return new Npc("Rat", "A small rodent. It doesn't seem to like you.", ColoredChar.getColoredChar('r', Color.ORANGE));
+            return new Npc("Rat", "A small rodent. It doesn't seem to like you.", Races.RODENT.get(),
+                    ColoredChar.getColoredChar('r', Color.ORANGE));
         }
     }
 

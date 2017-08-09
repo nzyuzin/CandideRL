@@ -21,24 +21,13 @@ import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.google.common.collect.Lists;
-
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.AMULET;
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.BODY;
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.HAND;
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.HEAD;
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.LEGS;
-import static com.github.nzyuzin.candiderl.game.characters.ItemSlot.Type.RING;
 
 public final class Player extends AbstractGameCharacter {
 
     private FieldOfVision fov = null;
 
     public Player(final String name) {
-        super(name, "Yet another wanderer in forgotten land", DEFAULT_HP,
-                Lists.newArrayList(new ItemSlot("right hand", HAND), new ItemSlot("left hand", HAND),
-                        new ItemSlot("head", HEAD), new ItemSlot("body", BODY), new ItemSlot("legs", LEGS),
-                        new ItemSlot("left ring", RING), new ItemSlot("right ring", RING), new ItemSlot("amulet", AMULET)));
+        super(name, "Yet another wanderer in forgotten land", Races.HUMAN.get());
         this.charOnMap = ColoredChar .getColoredChar('@');
         fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }

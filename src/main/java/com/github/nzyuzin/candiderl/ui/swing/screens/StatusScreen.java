@@ -18,7 +18,7 @@
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
 import com.github.nzyuzin.candiderl.game.GameInformation;
-import com.github.nzyuzin.candiderl.game.characters.ItemSlot;
+import com.github.nzyuzin.candiderl.game.characters.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
@@ -31,7 +31,7 @@ public class StatusScreen extends AbstractDisplayedScreen {
     public void show(final GameInformation gameInfo) {
         clearScreen();
         final Player player = gameInfo.getPlayer();
-        writeBlackWhiteLine(player.getName() + "   HP: " + player.getCurrentHP() + "/" + player.getMaxHP());
+        writeBlackWhiteLine(player.getName() + "   HP: " + player.getCurrentHp() + "/" + player.getMaxHp());
         writeBlackWhiteLine("Str: " + player.getStrength());
         writeBlackWhiteLine("Dex: " + player.getDexterity());
         writeBlackWhiteLine("Int: " + player.getIntelligence());
@@ -39,10 +39,10 @@ public class StatusScreen extends AbstractDisplayedScreen {
         nextLine();
         fillLine('=');
         nextLine();
-        for (ItemSlot itemSlot : player.getItemSlots()) {
-            writeBlackWhite(itemSlot.getName() + ": ");
-            if (itemSlot.getItem().isPresent()) {
-                writeBlackWhite(itemSlot.getItem().get().getName());
+        for (BodyPart bodyPart : player.getBodyParts()) {
+            writeBlackWhite(bodyPart.getName() + ": ");
+            if (bodyPart.getItem().isPresent()) {
+                writeBlackWhite(bodyPart.getItem().get().getName());
             }
             nextLine();
         }
