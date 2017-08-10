@@ -58,7 +58,7 @@ public class MoveToNextCellActionTest {
 
         MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap);
 
-        assertTrue(action.canBeExecuted());
+        assertTrue(!action.failureReason().isPresent());
         action.execute();
 
         verify(map).moveGameCharacter(character, targetOnMap);

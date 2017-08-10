@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.Event;
+import com.google.common.base.Optional;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ abstract class AbstractGameAction implements GameAction {
         return performer;
     }
 
-    public abstract boolean canBeExecuted();
+    protected abstract List<Event> doExecute();
 
     public final List<Event> execute() {
         if (!executed) {
@@ -48,5 +49,16 @@ abstract class AbstractGameAction implements GameAction {
         }
     }
 
-    protected abstract List<Event> doExecute();
+    protected Optional<String> none() {
+        return Optional.absent();
+    }
+
+    protected Optional<String> failure(final String reason) {
+        return Optional.of(reason);
+    }
+
+    protected Optional<String> failure() {
+        return Optional.of("");
+    }
+
 }

@@ -33,7 +33,6 @@ import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,9 +101,7 @@ public final class GameEngine {
         while (eventsIterator.hasNext()) {
             final Event e = eventsIterator.next();
             e.occur();
-            if (!Strings.isNullOrEmpty(e.getTextualDescription())) {
-                gameInformation.addMessage(e.getTextualDescription());
-            }
+            gameInformation.addMessage(e.getTextualDescription());
             eventsIterator.remove();
         }
     }

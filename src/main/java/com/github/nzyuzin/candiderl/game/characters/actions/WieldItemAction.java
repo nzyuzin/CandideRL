@@ -22,10 +22,12 @@ import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.events.AbstractEventContext;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.google.common.base.Preconditions;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+
+import static com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart.Type.HAND;
 
 public class WieldItemAction extends AbstractGameAction {
 
@@ -37,10 +39,12 @@ public class WieldItemAction extends AbstractGameAction {
     }
 
     @Override
-    public boolean canBeExecuted() {
-        Preconditions.checkArgument(getPerformer().getItems().contains(item), "Item should be in the inventory!");
-        for (final BodyPart.Type bodyPart : item.getBodyPartTypes()) {
-            Preconditions.checkArgument(bodyPart == BodyPart.Type.HAND, "Cannot wield " + item + " in hands");
+    public Optional<String> failureReason() {
+        if (!getPerformer().getItems().contains(item)) {
+            return failure("Item is not in the inventory");
+        }
+        if (item.getBodyPartTypes().stream().filter(type -> type != HAND).count() > 0) {
+            return failure(item + " cannot be wielded only in hands");
         }
         final List<BodyPart> checkedParts = Lists.newArrayList();
         for (final BodyPart.Type neededPart : item.getBodyPartTypes()) {
@@ -53,10 +57,10 @@ public class WieldItemAction extends AbstractGameAction {
                     break;
                 }
                 //gameInformation.addMessage("You do not have free hands to wield that!");
-                return false; // we cannot find a free part to hold the item
+                return failure("Not enough hands to wield " + item);
             }
         }
-        return true;
+        return none();
     }
 
     @Override

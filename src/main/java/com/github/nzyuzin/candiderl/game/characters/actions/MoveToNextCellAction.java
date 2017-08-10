@@ -20,6 +20,7 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -36,10 +37,14 @@ public final class MoveToNextCellAction extends AbstractGameAction {
         this.position = position;
     }
 
-    public boolean canBeExecuted() {
-        return !getPerformer().isDead() && position.getMap().equals(getPerformer().getMap())
+    public Optional<String> failureReason() {
+        if (!getPerformer().isDead() && position.getMap().equals(getPerformer().getMap())
                 && getPerformer().getPosition().isAdjacentTo(position.getPosition())
-                && position.getMapCell().isPassable() && position.getMapCell().getGameCharacter() == null;
+                && position.getMapCell().isPassable() && position.getMapCell().getGameCharacter() == null) {
+            return none();
+        } else {
+            return failure();
+        }
     }
 
     protected List<Event> doExecute() {

@@ -18,10 +18,20 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.events.Event;
+import com.google.common.base.Optional;
 
 import java.util.List;
 
 public interface GameAction {
+    /**
+     * Executes the action
+     * @return list of events that should be processed after the execution
+     */
     List<Event> execute();
-    boolean canBeExecuted();
+
+    /**
+     * Checks if the action can be executed
+     * @return Optional.of(errorMessage) if the action cannot be executed. Optional.absent() otherwise
+     */
+    Optional<String> failureReason();
 }

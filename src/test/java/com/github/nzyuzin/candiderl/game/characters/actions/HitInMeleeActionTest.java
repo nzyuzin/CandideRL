@@ -22,6 +22,7 @@ import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,7 @@ public class HitInMeleeActionTest {
     public void testExecute() throws Exception {
         HitInMeleeAction action = new HitInMeleeAction(performer, target);
 
-        assertThat(action.canBeExecuted(), is(true));
+        assertThat(action.failureReason(), is(Optional.absent()));
 
         for (Event e : action.execute()) {
             e.occur();

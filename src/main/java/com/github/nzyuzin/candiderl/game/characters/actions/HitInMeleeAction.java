@@ -22,6 +22,7 @@ import com.github.nzyuzin.candiderl.game.events.CharacterEventContext;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.events.TakeDamageEvent;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -39,9 +40,13 @@ public class HitInMeleeAction extends AbstractGameAction {
         this.map = performer.getMap();
     }
 
-    public boolean canBeExecuted() {
-        return target != null && map.equals(target.getMap()) && !target.isDead() && !getPerformer().isDead()
-                && target.getPosition().distanceTo(getPerformer().getPosition()) < 2;
+    public Optional<String> failureReason() {
+        if (target != null && map.equals(target.getMap()) && !target.isDead() && !getPerformer().isDead()
+                && target.getPosition().distanceTo(getPerformer().getPosition()) < 2) {
+            return none();
+        } else {
+            return failure();
+        }
     }
 
     protected List<Event> doExecute() {

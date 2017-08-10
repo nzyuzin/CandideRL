@@ -22,6 +22,7 @@ import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.events.ExplosionEvent;
 import com.github.nzyuzin.candiderl.game.events.PositionedEventContext;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.base.Optional;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +36,8 @@ public class CastExplosionAction extends AbstractGameAction {
     }
 
     @Override
-    public boolean canBeExecuted() {
-        return true;
+    public Optional<String> failureReason() {
+        return none();
     }
 
     @Override

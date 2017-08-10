@@ -22,6 +22,7 @@ import com.github.nzyuzin.candiderl.game.events.AbstractEventContext;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
@@ -46,16 +47,21 @@ public class OpenCloseDoorAction extends AbstractGameAction {
     }
 
     @Override
-    public boolean canBeExecuted() {
+    public Optional<String> failureReason() {
         if (doorPosition.getMap() != getPerformer().getMap()
                 || doorPosition.getPosition().distanceTo(getPerformer().getPosition()) >= 2) {
-            return false;
+            return failure("No door there!");
         }
         if (type == Type.OPEN) {
-            return door.isClosed();
+            if (door.isClosed()) {
+                return none();
+            }
         } else {
-            return door.isOpen() && door.getGameCharacter() == null && door.getItems().isEmpty();
+            if (door.isOpen() && door.getGameCharacter() == null && door.getItems().isEmpty()) {
+                return none();
+            }
         }
+        return failure();
     }
 
     @Override

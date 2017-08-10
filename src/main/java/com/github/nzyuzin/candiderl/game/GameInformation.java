@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayDeque;
@@ -39,7 +40,9 @@ public final class GameInformation {
     }
 
     public void addMessage(String msg) {
-        gameMessages.addFirst(msg);
+        if (!Strings.isNullOrEmpty(msg)) {
+            gameMessages.addFirst(msg);
+        }
     }
 
     public List<String> getMessages() {

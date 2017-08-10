@@ -87,14 +87,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void addAction(GameAction action) {
-        if (action.canBeExecuted()) {
+        final Optional<String> errorMessage = action.failureReason();
+        if (!errorMessage.isPresent()) {
             gameActions.add(action);
+        } else {
+            gameMessages.add(errorMessage.get());
         }
     }
 
     @Override
     public boolean canPerformAction() {
-        return !isDead() && hasAction() && gameActions.peek().canBeExecuted();
+        return !isDead() && hasAction() && !gameActions.peek().failureReason().isPresent();
     }
 
     @Override
@@ -198,12 +201,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void wieldItem(Item item) {
-        final WieldItemAction wieldAction = new WieldItemAction(this, item);
-        if (wieldAction.canBeExecuted()) {
-            addAction(wieldAction);
-        } else {
-            addMessage("Cannot wield " + item);
-        }
+        addAction(new WieldItemAction(this, item));
     }
 
     @Override
@@ -223,44 +221,22 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void hit(final PositionOnMap pos) {
-        final HitInMeleeAction hitAction = new HitInMeleeAction(this, pos.getMapCell().getGameCharacter());
-        if (hitAction.canBeExecuted()) {
-            addAction(hitAction);
-        } else {
-            addMessage("Cannot hit there!");
-        }
+        addAction(new HitInMeleeAction(this, pos.getMapCell().getGameCharacter()));
     }
 
     @Override
     public void move(final PositionOnMap pos) {
-        final MoveToNextCellAction moveAction = new MoveToNextCellAction(this, pos);
-        if (moveAction.canBeExecuted()) {
-            addAction(moveAction);
-        } else {
-            addMessage("Cannot move there!");
-        }
+        addAction(new MoveToNextCellAction(this, pos));
     }
 
     @Override
     public void openDoor(PositionOnMap pos) {
-        final OpenCloseDoorAction doorAction =
-                new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN);
-        if (doorAction.canBeExecuted()) {
-            this.addAction(doorAction);
-        } else {
-            addMessage("Cannot open");
-        }
+        this.addAction(new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN));
     }
 
     @Override
     public void closeDoor(PositionOnMap pos) {
-        final OpenCloseDoorAction doorAction =
-                new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE);
-        if (doorAction.canBeExecuted()) {
-            this.addAction(doorAction);
-        } else {
-            addMessage("Cannot close");
-        }
+        this.addAction(new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE));
     }
 
     @Override
