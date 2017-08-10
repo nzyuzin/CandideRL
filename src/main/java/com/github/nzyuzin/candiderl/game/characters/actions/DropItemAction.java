@@ -18,48 +18,35 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
 
-abstract class AbstractAction implements Action {
-    private final GameCharacter performer;
-    private boolean executed;
+public class DropItemAction extends AbstractAction {
 
-    public AbstractAction(GameCharacter subject) {
-        this.performer = subject;
-    }
+    private final Item item;
 
-    protected GameCharacter getPerformer() {
-        return performer;
+    public DropItemAction(GameCharacter subject, Item item) {
+        super(subject);
+        this.item = item;
     }
 
     @Nonnull
-    protected abstract ActionResult doExecute();
-
-    @Nonnull
-    public final ActionResult execute() {
-        if (!executed) {
-            try {
-                return doExecute();
-            } finally {
-                executed = true;
-            }
+    @Override
+    public Optional<String> failureReason() {
+        if (!getPerformer().getItems().contains(item)) {
+            return failure("No such item in the inventory!");
         } else {
-            throw new ActionAlreadyExecutedException();
+            return none();
         }
     }
 
-    protected Optional<String> none() {
-        return Optional.absent();
+    @Nonnull
+    @Override
+    protected ActionResult doExecute() {
+        getPerformer().getMapCell().putItem(item);
+        getPerformer().removeItem(item);
+        return new ActionResult(getPerformer() + " drops " + item);
     }
-
-    protected Optional<String> failure(final String reason) {
-        return Optional.of(reason);
-    }
-
-    protected Optional<String> failure() {
-        return Optional.of("");
-    }
-
 }

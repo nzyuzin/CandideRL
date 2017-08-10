@@ -114,8 +114,8 @@ public final class GameEngine {
         processActions();
         processEvents();
         applyMapEffects();
-        gameUi.drawGame(gameInformation);
         gameInformation.incrementTurn();
+        gameUi.drawGame(gameInformation);
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
         }

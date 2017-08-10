@@ -20,21 +20,25 @@ package com.github.nzyuzin.candiderl.game.characters;
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.Action;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
+import com.github.nzyuzin.candiderl.game.characters.actions.DropItemAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.PickupItemAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.TraverseStairsAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -190,17 +194,12 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void pickupItem(final Item item) {
-        final MapCell currentCell = getMapCell();
-        Preconditions.checkArgument(currentCell.getItems().contains(item), "No such item on the current cell!");
-        currentCell.removeItem(item);
-        this.addItem(item);
+        addAction(new PickupItemAction(this, item));
     }
 
     @Override
     public void dropItem(final Item item) {
-        Preconditions.checkArgument(getItems().contains(item), "No such item in the inventory!");
-        getMapCell().putItem(item);
-        this.removeItem(item);
+        addAction(new DropItemAction(this, item));
     }
 
     @Override
@@ -231,6 +230,11 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public void move(final PositionOnMap pos) {
         addAction(new MoveToNextCellAction(this, pos));
+    }
+
+    @Override
+    public void traverseStairs(Stairs.Type type, MapFactory mapFactory) {
+        addAction(new TraverseStairsAction(this, type, mapFactory));
     }
 
     @Override

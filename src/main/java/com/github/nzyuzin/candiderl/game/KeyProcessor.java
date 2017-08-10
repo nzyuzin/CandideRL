@@ -19,7 +19,6 @@ package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
@@ -132,29 +131,25 @@ public class KeyProcessor {
 
     private void openCloseDoor(boolean isOpen) {
         final Player player = gameInformation.getPlayer();
-        gameInformation.addMessage((isOpen ? "Open" : "Close") + " in which direction?");
-        drawGameScreen();
+        reportMessage((isOpen ? "Open" : "Close") + " in which direction?");
         char input = getInput();
         while (!KeyDefinitions.isDirectionKey(input)) {
             input = getInput();
         }
         final PositionOnMap doorPosition = player.getPositionOnMap().apply(KeyDefinitions.getDirectionFromKey(input));
         if (!(doorPosition.getMapCell() instanceof Door)) {
-            gameInformation.addMessage("There is no door here!");
-            drawGameScreen();
+            reportMessage("There is no door here!");
         } else {
             final Door door = (Door) doorPosition.getMapCell();
             if (isOpen) {
                 if (door.isOpen()) {
-                    gameInformation.addMessage("This door is already opened!");
-                    drawGameScreen();
+                    reportMessage("This door is already opened!");
                 } else {
                     player.openDoor(doorPosition);
                 }
             } else {
                 if (door.isClosed()) {
-                    gameInformation.addMessage("This door is already closed!");
-                    drawGameScreen();
+                    reportMessage("This door is already closed!");
                 } else {
                     player.closeDoor(doorPosition);
                 }
@@ -163,43 +158,8 @@ public class KeyProcessor {
     }
 
     private void processStairs(final char direction) {
-        final PositionOnMap currentPosition = gameInformation.getPlayer().getPositionOnMap();
-        final String directionStr = KeyDefinitions.STAIRS_UPWARDS_KEY == direction ? "upwards" : "downwards";
-        if (currentPosition.getMapCell() instanceof Stairs) {
-            final Stairs stairs = (Stairs) currentPosition.getMapCell();
-            if (direction == KeyDefinitions.STAIRS_UPWARDS_KEY && stairs.getType() == Stairs.Type.UP) {
-                if (stairs.getMatchingPosition().isPresent()) {
-                    moveToNewMap(stairs.getMatchingPosition().get());
-                    gameInformation.decrementDepth();
-                    gameInformation.addMessage("You walk up the stairs");
-                } else {
-                    gameInformation.addMessage("The stairs lead to the surface, it's too early to go there for you");
-                }
-            } else if (direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY && stairs.getType() == Stairs.Type.DOWN) {
-                if (stairs.getMatchingPosition().isPresent()) {
-                    moveToNewMap(stairs.getMatchingPosition().get());
-                } else {
-                    final Map newMap = mapFactory.build();
-                    final Stairs newUpwardsStairs = (Stairs) newMap.getUpwardsStairs().getMapCell();
-                    newUpwardsStairs.setMatchingStairs(currentPosition);
-                    stairs.setMatchingStairs(newMap.getUpwardsStairs());
-                    moveToNewMap(newMap.getUpwardsStairs());
-                }
-                gameInformation.incrementDepth();
-                gameInformation.addMessage("You walk down the stairs");
-            } else {
-                gameInformation.addMessage("You can't go " + directionStr + " here!");
-            }
-        } else {
-            gameInformation.addMessage("You can't go " + directionStr + " here!");
-        }
-        drawGameScreen();
-    }
-
-    private void moveToNewMap(final PositionOnMap newPosition) {
-        final Player player = gameInformation.getPlayer();
-        final Map currentMap = player.getPositionOnMap().getMap();
-        currentMap.moveGameCharacter(player, newPosition);
+        final Stairs.Type type = direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY ? Stairs.Type.DOWN : Stairs.Type.UP;
+        gameInformation.getPlayer().traverseStairs(type, mapFactory);
     }
 
     private void pickupItem() {
@@ -208,9 +168,9 @@ public class KeyProcessor {
         if (!playerCell.getItems().isEmpty()) {
             final Item item = playerCell.getItems().get(0);
             player.pickupItem(item);
-            gameInformation.addMessage("You pick up " + item);
+        } else {
+            reportMessage("There is nothing to pick up");
         }
-        drawGameScreen();
     }
 
     private void showInventory() {
@@ -240,7 +200,6 @@ public class KeyProcessor {
         while(input != KeyDefinitions.ESCAPE_KEY) {
             if (input == KeyDefinitions.DROP_ITEM_KEY) {
                 gameInformation.getPlayer().dropItem(item);
-                gameInformation.addMessage("You drop " + item);
                 return true;
             } else if (input == KeyDefinitions.WIELD_ITEM_KEY) {
                 gameInformation.getPlayer().wieldItem(item);
@@ -251,6 +210,11 @@ public class KeyProcessor {
         }
         ui.showInventory(gameInformation);
         return false;
+    }
+
+    private void reportMessage(final String msg) {
+        gameInformation.addMessage(msg);
+        drawGameScreen();
     }
 
     private void drawGameScreen() {

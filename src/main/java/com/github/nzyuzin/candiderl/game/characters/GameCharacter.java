@@ -26,7 +26,9 @@ import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
@@ -79,6 +81,7 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
 
     void hit(PositionOnMap pos);
     void move(PositionOnMap pos);
+    void traverseStairs(Stairs.Type type, MapFactory mapFactory);
     void openDoor(PositionOnMap pos);
     void closeDoor(PositionOnMap pos);
 
