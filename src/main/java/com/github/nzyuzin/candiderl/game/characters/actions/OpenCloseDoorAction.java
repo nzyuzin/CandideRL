@@ -26,7 +26,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
-import java.util.List;
 
 public class OpenCloseDoorAction extends AbstractGameAction {
 
@@ -65,9 +64,9 @@ public class OpenCloseDoorAction extends AbstractGameAction {
     }
 
     @Override
-    protected List<Event> doExecute() {
+    protected ActionResult doExecute() {
         if (type == Type.OPEN) {
-            return Collections.singletonList(new Event<AbstractEventContext>() {
+            return new ActionResult(new Event<AbstractEventContext>() {
                 @Override
                 public void occur() {
                     door.open();
@@ -79,7 +78,7 @@ public class OpenCloseDoorAction extends AbstractGameAction {
                 }
             });
         } else {
-            return Collections.singletonList(new Event<AbstractEventContext>() {
+            return new ActionResult(Collections.singletonList(new Event<AbstractEventContext>() {
                 @Override
                 public void occur() {
                     door.close();
@@ -89,7 +88,7 @@ public class OpenCloseDoorAction extends AbstractGameAction {
                 public String getTextualDescription() {
                     return "You close the door";
                 }
-            });
+            }));
         }
     }
 }

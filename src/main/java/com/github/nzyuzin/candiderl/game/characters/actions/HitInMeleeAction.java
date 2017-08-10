@@ -19,14 +19,10 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.CharacterEventContext;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.events.TakeDamageEvent;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 public class HitInMeleeAction extends AbstractGameAction {
 
@@ -49,8 +45,8 @@ public class HitInMeleeAction extends AbstractGameAction {
         }
     }
 
-    protected List<Event> doExecute() {
+    protected ActionResult doExecute() {
         int damage = getPerformer().rollDamageDice();
-        return Lists.newArrayList(new TakeDamageEvent(new CharacterEventContext(target), damage));
+        return new ActionResult(new TakeDamageEvent(new CharacterEventContext(target), damage));
     }
 }

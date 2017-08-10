@@ -75,7 +75,7 @@ public final class GameEngine {
 
     private void processActions() {
         final Player player = gameInformation.getPlayer();
-        events.addAll(player.performAction());
+        events.addAll(player.performAction().getEvents());
         for (final GameCharacter character : player.getMap().getCharacters()) {
             if (!(character instanceof Npc)) {
                 continue;
@@ -89,7 +89,7 @@ public final class GameEngine {
                 throw new AssertionError("Dead mob found on turn " + gameInformation.getCurrentTurn() + " name: " + npc.getName());
             } else npcController.chooseAction(npc);
             if (npc.canPerformAction()) {
-                events.addAll(npc.performAction());
+                events.addAll(npc.performAction().getEvents());
             } else {
                 npc.removeCurrentAction();
             }

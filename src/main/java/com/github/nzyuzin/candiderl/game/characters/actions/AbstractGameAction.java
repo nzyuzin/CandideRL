@@ -18,10 +18,7 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.google.common.base.Optional;
-
-import java.util.List;
 
 abstract class AbstractGameAction implements GameAction {
     private final GameCharacter performer;
@@ -35,9 +32,9 @@ abstract class AbstractGameAction implements GameAction {
         return performer;
     }
 
-    protected abstract List<Event> doExecute();
+    protected abstract ActionResult doExecute();
 
-    public final List<Event> execute() {
+    public final ActionResult execute() {
         if (!executed) {
             try {
                 return doExecute();

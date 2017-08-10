@@ -17,17 +17,14 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.google.common.base.Optional;
-
-import java.util.List;
 
 public interface GameAction {
     /**
      * Executes the action
      * @return list of events that should be processed after the execution
      */
-    List<Event> execute();
+    ActionResult execute();
 
     /**
      * Checks if the action can be executed

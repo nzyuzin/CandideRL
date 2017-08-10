@@ -18,13 +18,13 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
@@ -40,7 +40,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
@@ -97,14 +96,14 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public boolean canPerformAction() {
-        return !isDead() && hasAction() && !gameActions.peek().failureReason().isPresent();
+        return !isDead() && hasAction();
     }
 
     @Override
-    public List<Event> performAction() {
+    public ActionResult performAction() {
         // TODO make use of action points
         if (gameActions.isEmpty()) {
-            return Collections.emptyList();
+            return ActionResult.EMPTY;
         }
         return gameActions.poll().execute();
     }

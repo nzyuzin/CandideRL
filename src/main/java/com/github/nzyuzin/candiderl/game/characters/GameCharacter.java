@@ -18,12 +18,12 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.GameObject;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
@@ -32,8 +32,6 @@ import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-
-import java.util.List;
 
 public interface GameCharacter extends GameObject, HasAttributes, Movable, Damageable, Visible {
 
@@ -45,7 +43,7 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     void removeCurrentAction();
 
     boolean canPerformAction();
-    List<Event> performAction();
+    ActionResult performAction();
 
     boolean hasMessages();
     void addMessage(String message);

@@ -18,14 +18,10 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.events.ExplosionEvent;
 import com.github.nzyuzin.candiderl.game.events.PositionedEventContext;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CastExplosionAction extends AbstractGameAction {
     private final PositionOnMap position;
@@ -41,8 +37,8 @@ public class CastExplosionAction extends AbstractGameAction {
     }
 
     @Override
-    protected List<Event> doExecute() {
+    protected ActionResult doExecute() {
         PositionedEventContext context = new PositionedEventContext(position);
-        return Collections.singletonList(new ExplosionEvent(context, 3, 10));
+        return new ActionResult(new ExplosionEvent(context, 3, 10));
     }
 }

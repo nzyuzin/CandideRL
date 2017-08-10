@@ -64,8 +64,8 @@ public class WieldItemAction extends AbstractGameAction {
     }
 
     @Override
-    protected List<Event> doExecute() {
-        return Lists.newArrayList(new Event<AbstractEventContext>() {
+    protected ActionResult doExecute() {
+        return new ActionResult(new Event<AbstractEventContext>() {
             @Override
             public void occur() {
                 for (final BodyPart.Type neededPart : item.getBodyPartTypes()) {

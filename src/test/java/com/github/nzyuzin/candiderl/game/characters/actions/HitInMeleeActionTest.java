@@ -63,7 +63,7 @@ public class HitInMeleeActionTest {
 
         assertThat(action.failureReason(), is(Optional.absent()));
 
-        for (Event e : action.execute()) {
+        for (Event e : action.execute().getEvents()) {
             e.occur();
         }
 
