@@ -152,9 +152,7 @@ public final class GameEngine {
         } else if (KeyDefinitions.VIEW_MODE_KEY == input) {
             enterViewMode();
         } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
-            final Direction direction = KeyDefinitions.getDirectionFromKey(input);
-            final Player player = gameInformation.getPlayer();
-            npcController.chooseAction(player, player.getPositionOnMap().apply(direction));
+            processDirectionKey(input);
         } else if (KeyDefinitions.OPEN_DOOR_KEY == input) {
             openCloseDoor(true);
         } else if (KeyDefinitions.CLOSE_DOOR_KEY == input) {
@@ -167,6 +165,24 @@ public final class GameEngine {
             advanceTime();
         } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
+        }
+    }
+
+    private void processDirectionKey(final char input) {
+        final Direction direction = KeyDefinitions.getDirectionFromKey(input);
+        final Player player = gameInformation.getPlayer();
+        final PositionOnMap position = player.getPositionOnMap().apply(direction);
+        final MapCell mapCell = position.getMapCell();
+        if (mapCell.isPassable()) {
+            if (mapCell.getGameCharacter() == null) {
+                player.move(position);
+            } else {
+                player.hit(position);
+            }
+        } else {
+            if (mapCell instanceof Door && ((Door) mapCell).isClosed()) {
+                player.openDoor(position);
+            }
         }
     }
 

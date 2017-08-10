@@ -18,9 +18,6 @@
 package com.github.nzyuzin.candiderl.game.ai;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.map.cells.Door;
-import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 public class NpcController {
 
@@ -38,21 +35,6 @@ public class NpcController {
             mob.hit(target.getPositionOnMap());
         } else {
             moveToTarget(mob);
-        }
-    }
-
-    public void chooseAction(GameCharacter mob, PositionOnMap position) {
-        final MapCell mapCell = position.getMapCell();
-        if (mapCell.isPassable()) {
-            if (mapCell.getGameCharacter() == null) {
-                mob.move(position);
-            } else {
-                mob.hit(position);
-            }
-        } else {
-            if (mapCell instanceof Door && ((Door) mapCell).isClosed()) {
-                mob.openDoor(position);
-            }
         }
     }
 
