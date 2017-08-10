@@ -22,7 +22,7 @@ import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
-public final class MoveToNextCellAction extends AbstractGameAction {
+public final class MoveToNextCellAction extends AbstractAction {
 
     private final PositionOnMap position;
 

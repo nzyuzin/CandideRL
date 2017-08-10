@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.ai.NpcController;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
@@ -75,7 +76,7 @@ public final class GameEngine {
 
     private void processActions() {
         final Player player = gameInformation.getPlayer();
-        events.addAll(player.performAction().getEvents());
+        processAction(player);
         for (final GameCharacter character : player.getMap().getCharacters()) {
             if (!(character instanceof Npc)) {
                 continue;
@@ -87,13 +88,21 @@ public final class GameEngine {
             }
             if (npc.isDead()) {
                 throw new AssertionError("Dead mob found on turn " + gameInformation.getCurrentTurn() + " name: " + npc.getName());
-            } else npcController.chooseAction(npc);
+            } else {
+                npcController.chooseAction(npc);
+            }
             if (npc.canPerformAction()) {
-                events.addAll(npc.performAction().getEvents());
+                processAction(npc);
             } else {
                 npc.removeCurrentAction();
             }
         }
+    }
+
+    private void processAction(GameCharacter gameCharacter) {
+        final ActionResult actionResult = gameCharacter.performAction();
+        events.addAll(actionResult.getEvents());
+        gameInformation.addMessage(actionResult.getMessage());
     }
 
     private void processEvents() {

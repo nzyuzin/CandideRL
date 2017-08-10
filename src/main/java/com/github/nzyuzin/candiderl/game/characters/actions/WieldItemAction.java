@@ -19,8 +19,6 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
-import com.github.nzyuzin.candiderl.game.events.AbstractEventContext;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -29,7 +27,7 @@ import java.util.List;
 
 import static com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart.Type.HAND;
 
-public class WieldItemAction extends AbstractGameAction {
+public class WieldItemAction extends AbstractAction {
 
     private final Item item;
 
@@ -65,23 +63,14 @@ public class WieldItemAction extends AbstractGameAction {
 
     @Override
     protected ActionResult doExecute() {
-        return new ActionResult(new Event<AbstractEventContext>() {
-            @Override
-            public void occur() {
-                for (final BodyPart.Type neededPart : item.getBodyPartTypes()) {
-                    for (final BodyPart hand : getPerformer().getBodyParts(neededPart)) {
-                        if (!hand.getItem().isPresent()) {
-                            hand.setItem(item);
-                            break;
-                        }
-                    }
+        for (final BodyPart.Type neededPart : item.getBodyPartTypes()) {
+            for (final BodyPart hand : getPerformer().getBodyParts(neededPart)) {
+                if (!hand.getItem().isPresent()) {
+                    hand.setItem(item);
+                    break;
                 }
             }
-
-            @Override
-            public String getTextualDescription() {
-                return "You wield " + item;
-            }
-        });
+        }
+        return new ActionResult(getPerformer() + "wields " + item);
     }
 }

@@ -19,7 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.google.common.base.Optional;
 
-public interface GameAction {
+public interface Action {
     /**
      * Executes the action
      * @return list of events that should be processed after the execution

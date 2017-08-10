@@ -18,8 +18,8 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.characters.actions.Action;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
-import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
@@ -47,7 +47,7 @@ import java.util.Set;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
-    private final Queue<GameAction> gameActions;
+    private final Queue<Action> actions;
     private final Queue<String> gameMessages;
 
     protected PositionOnMap position;
@@ -70,7 +70,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         this.canTakeDamage = true;
         this.attackRate = 1.0;
         this.items = Lists.newArrayListWithCapacity(52);
-        this.gameActions = new ArrayDeque<>();
+        this.actions = new ArrayDeque<>();
         this.gameMessages = new ArrayDeque<>();
     }
 
@@ -81,14 +81,14 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public boolean hasAction() {
-        return !gameActions.isEmpty();
+        return !actions.isEmpty();
     }
 
     @Override
-    public void addAction(GameAction action) {
+    public void addAction(Action action) {
         final Optional<String> errorMessage = action.failureReason();
         if (!errorMessage.isPresent()) {
-            gameActions.add(action);
+            actions.add(action);
         } else {
             gameMessages.add(errorMessage.get());
         }
@@ -102,10 +102,15 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     @Override
     public ActionResult performAction() {
         // TODO make use of action points
-        if (gameActions.isEmpty()) {
+        if (actions.isEmpty()) {
             return ActionResult.EMPTY;
         }
-        return gameActions.poll().execute();
+        final Action action = actions.poll();
+        if (action.failureReason().isPresent()) {
+            return new ActionResult(action.failureReason().get());
+        } else {
+            return action.execute();
+        }
     }
 
     @Override
@@ -125,7 +130,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void removeCurrentAction() {
-        gameActions.poll();
+        actions.poll();
     }
 
     @Override

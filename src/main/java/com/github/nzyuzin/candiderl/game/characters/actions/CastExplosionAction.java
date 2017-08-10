@@ -23,7 +23,7 @@ import com.github.nzyuzin.candiderl.game.events.PositionedEventContext;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 
-public class CastExplosionAction extends AbstractGameAction {
+public class CastExplosionAction extends AbstractAction {
     private final PositionOnMap position;
 
     public CastExplosionAction(GameCharacter subject, PositionOnMap position) {

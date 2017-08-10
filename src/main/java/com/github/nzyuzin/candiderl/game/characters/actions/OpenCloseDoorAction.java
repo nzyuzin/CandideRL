@@ -18,16 +18,12 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.events.AbstractEventContext;
-import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
-import java.util.Collections;
-
-public class OpenCloseDoorAction extends AbstractGameAction {
+public class OpenCloseDoorAction extends AbstractAction {
 
     public enum Type {
         OPEN, CLOSE;
@@ -66,29 +62,11 @@ public class OpenCloseDoorAction extends AbstractGameAction {
     @Override
     protected ActionResult doExecute() {
         if (type == Type.OPEN) {
-            return new ActionResult(new Event<AbstractEventContext>() {
-                @Override
-                public void occur() {
-                    door.open();
-                }
-
-                @Override
-                public String getTextualDescription() {
-                    return "You open the door";
-                }
-            });
+            door.open();
+            return new ActionResult(getPerformer() + " opens the door");
         } else {
-            return new ActionResult(Collections.singletonList(new Event<AbstractEventContext>() {
-                @Override
-                public void occur() {
-                    door.close();
-                }
-
-                @Override
-                public String getTextualDescription() {
-                    return "You close the door";
-                }
-            }));
+            door.close();
+            return new ActionResult(getPerformer() + " closes the door");
         }
     }
 }

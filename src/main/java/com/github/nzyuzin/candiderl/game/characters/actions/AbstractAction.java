@@ -20,11 +20,11 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.google.common.base.Optional;
 
-abstract class AbstractGameAction implements GameAction {
+abstract class AbstractAction implements Action {
     private final GameCharacter performer;
     private boolean executed;
 
-    public AbstractGameAction(GameCharacter subject) {
+    public AbstractAction(GameCharacter subject) {
         this.performer = subject;
     }
 
