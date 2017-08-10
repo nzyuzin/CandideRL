@@ -46,7 +46,6 @@ public class HitInMeleeAction extends AbstractAction {
     protected ActionResult doExecute() {
         int damage = getPerformer().rollDamageDice();
         target.takeDamage(damage);
-        final String message = String.format("%s receives %s points of damage!", target, damage);
-        return new ActionResult(message);
+        return new ActionResult(describeAction(getPerformer(), "hit", target, damage + " damage"));
     }
 }

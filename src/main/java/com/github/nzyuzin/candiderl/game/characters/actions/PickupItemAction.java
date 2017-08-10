@@ -48,6 +48,6 @@ public class PickupItemAction extends AbstractAction {
         final MapCell cell = getPerformer().getMapCell();
         cell.removeItem(item);
         getPerformer().addItem(item);
-        return new ActionResult(getPerformer() + " picks up " + item);
+        return new ActionResult(describeAction(getPerformer(), "pick up", item));
     }
 }

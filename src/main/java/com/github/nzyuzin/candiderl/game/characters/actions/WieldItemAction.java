@@ -71,6 +71,6 @@ public class WieldItemAction extends AbstractAction {
                 }
             }
         }
-        return new ActionResult(getPerformer() + " wields " + item);
+        return new ActionResult(describeAction(getPerformer(), "wield", item));
     }
 }

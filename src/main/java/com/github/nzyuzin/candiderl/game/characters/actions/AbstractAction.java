@@ -17,7 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
+import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
@@ -60,6 +62,36 @@ abstract class AbstractAction implements Action {
 
     protected Optional<String> failure() {
         return Optional.of("");
+    }
+
+    protected String describeAction(final GameCharacter performer, final String verb, final GameObject object) {
+        return describeAction(performer, verb, object, "");
+    }
+
+    protected String describeAction(GameCharacter performer, String verb, GameObject object, String optionalInfo) {
+        final String objectString = object instanceof Player ? "you" : object.toString();
+        return describeAction(performer, verb, objectString, optionalInfo);
+    }
+
+    protected String describeAction(GameCharacter performer, String verb, String objectString) {
+        return describeAction(performer, verb, objectString, "");
+    }
+
+    protected String describeAction(GameCharacter performer, String verb, String objectString, String optionalInfo) {
+        final String performerString = performer instanceof Player ? "You" : performer.toString();
+        final String verbString;
+        if (performer instanceof Player) {
+            verbString = verb;
+        } else {
+            if (verb.contains(" ")) {
+                final int spaceIndex = verb.indexOf(' ');
+                verbString = verb.substring(0, spaceIndex) + "s" + verb.substring(spaceIndex);
+            } else {
+                verbString = verb + "s";
+            }
+        }
+        return performerString + " " + verbString + " " + objectString
+                + (!optionalInfo.isEmpty() ? " (" +  optionalInfo + ")" : "");
     }
 
 }

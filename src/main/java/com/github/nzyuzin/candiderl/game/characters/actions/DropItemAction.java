@@ -47,6 +47,6 @@ public class DropItemAction extends AbstractAction {
     protected ActionResult doExecute() {
         getPerformer().getMapCell().putItem(item);
         getPerformer().removeItem(item);
-        return new ActionResult(getPerformer() + " drops " + item);
+        return new ActionResult(describeAction(getPerformer(), "drop", item));
     }
 }

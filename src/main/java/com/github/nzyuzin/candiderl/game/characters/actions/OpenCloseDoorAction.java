@@ -70,10 +70,10 @@ public class OpenCloseDoorAction extends AbstractAction {
     protected ActionResult doExecute() {
         if (type == Type.OPEN) {
             door.open();
-            return new ActionResult(getPerformer() + " opens the door");
+            return new ActionResult(describeAction(getPerformer(), "open", "the door"));
         } else {
             door.close();
-            return new ActionResult(getPerformer() + " closes the door");
+            return new ActionResult(describeAction(getPerformer(), "close", "the door"));
         }
     }
 }

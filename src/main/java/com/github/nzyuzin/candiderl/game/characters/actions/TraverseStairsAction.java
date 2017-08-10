@@ -60,7 +60,7 @@ public class TraverseStairsAction extends AbstractAction {
         final Stairs stairs = (Stairs) getPerformer().getMapCell();
         if (type == Stairs.Type.UP) {
             moveToNewMap(stairs.getMatchingPosition().get());
-            return new ActionResult("You walk up the stairs");
+            return new ActionResult(describeAction(getPerformer(), "walk up", "the stairs"));
         } else {
             if (stairs.getMatchingPosition().isPresent()) {
                 moveToNewMap(stairs.getMatchingPosition().get());
@@ -71,7 +71,7 @@ public class TraverseStairsAction extends AbstractAction {
                 stairs.setMatchingStairs(newMap.getUpwardsStairs());
                 moveToNewMap(newMap.getUpwardsStairs());
             }
-            return new ActionResult("You walk down the stairs");
+            return new ActionResult(describeAction(getPerformer(), "walk down", "the stairs"));
         }
     }
 
