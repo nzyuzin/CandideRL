@@ -23,16 +23,9 @@ import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
 import com.github.nzyuzin.candiderl.game.events.Event;
-import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
-import com.github.nzyuzin.candiderl.game.map.cells.Door;
-import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
-import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
-import com.github.nzyuzin.candiderl.game.utility.Direction;
-import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -48,19 +41,13 @@ public final class GameEngine {
     private final List<Event> events;
     private final GameUi gameUi;
     private final NpcController npcController;
-
-    private final MapFactory mapFactory;
+    private final KeyProcessor keyProcessor;
 
     private final GameInformation gameInformation;
 
-    public static GameEngine getGameEngine(String playerName, MapFactory mapFactory, GameUi gameUi) {
-        return new GameEngine(gameUi, mapFactory, playerName);
-    }
-
-    private GameEngine(GameUi gameUi, MapFactory mapFactory, String playerName) {
+    public GameEngine(GameUi gameUi, MapFactory mapFactory, String playerName) {
         final Map map = mapFactory.build();
         this.gameUi = gameUi;
-        this.mapFactory = mapFactory;
         events = Lists.newArrayList();
         final Player player = new Player(playerName);
         int npcOperationalRange = 20; // arbitrary for now
@@ -70,6 +57,7 @@ public final class GameEngine {
         player.wieldItem(broadsword);
         npcController = new NpcController(player, npcOperationalRange);
         gameInformation = new GameInformation(player);
+        this.keyProcessor = new KeyProcessor(gameUi, gameInformation, mapFactory);
         processActions();
         processEvents();
     }
@@ -116,7 +104,7 @@ public final class GameEngine {
     }
 
     private void applyMapEffects() {
-        gameInformation.getPlayer().getPositionOnMap().getMap().applyEffects();
+        gameInformation.getPlayer().getMap().applyEffects();
     }
 
     private void advanceTime() {
@@ -126,228 +114,10 @@ public final class GameEngine {
         processActions();
         processEvents();
         applyMapEffects();
-        drawGameScreen();
+        gameUi.drawGame(gameInformation);
         gameInformation.incrementTurn();
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
-        }
-    }
-
-    private char getInput() {
-        final char input = gameUi.getInputChar();
-        if (log.isTraceEnabled()) {
-            log.trace("handleInput input = {}, {}", input, (int) input);
-        }
-        return input;
-    }
-
-    private void handleInput() throws GameClosedException {
-        final char input = getInput();
-        if (KeyDefinitions.STATUS_KEY == input) {
-            gameUi.showStatus(gameInformation);
-            getInput(); // Skip one char to close the status screen
-            drawGameScreen();
-        } if (KeyDefinitions.INVENTORY_KEY == input ) {
-            showInventory();
-        } else if (KeyDefinitions.VIEW_MODE_KEY == input) {
-            enterViewMode();
-        } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
-            processDirectionKey(input);
-        } else if (KeyDefinitions.OPEN_DOOR_KEY == input) {
-            openCloseDoor(true);
-        } else if (KeyDefinitions.CLOSE_DOOR_KEY == input) {
-            openCloseDoor(false);
-        } else if (KeyDefinitions.PICKUP_ITEM_KEY == input) {
-            pickupItem();
-        } else if (KeyDefinitions.STAIRS_UPWARDS_KEY == input || KeyDefinitions.STAIRS_DOWNWARDS_KEY == input) {
-            processStairs(input);
-        } else if (KeyDefinitions.isSkipTurnChar(input)) {
-            advanceTime();
-        } else if (KeyDefinitions.isExitChar(input)) {
-            throw new GameClosedException();
-        }
-    }
-
-    private void processDirectionKey(final char input) {
-        final Direction direction = KeyDefinitions.getDirectionFromKey(input);
-        final Player player = gameInformation.getPlayer();
-        final PositionOnMap position = player.getPositionOnMap().apply(direction);
-        final MapCell mapCell = position.getMapCell();
-        if (mapCell.isPassable()) {
-            if (mapCell.getGameCharacter() == null) {
-                player.move(position);
-            } else {
-                player.hit(position);
-            }
-        } else {
-            if (mapCell instanceof Door && ((Door) mapCell).isClosed()) {
-                player.openDoor(position);
-            }
-        }
-    }
-
-    private void enterViewMode() {
-        PositionOnMap lastPosition = gameInformation.getPlayer().getPositionOnMap();
-        gameUi.drawMapView(lastPosition);
-        char newInput = getInput();
-        while (newInput != KeyDefinitions.ESCAPE_KEY) {
-            if (KeyDefinitions.isDirectionKey(newInput)) {
-                final Direction direction = KeyDefinitions.getDirectionFromKey(newInput);
-                final PositionOnMap newPosition =
-                        new PositionOnMap(lastPosition.getPosition().apply(direction), lastPosition.getMap());
-                if (lastPosition.getMap().isInside(newPosition.getPosition())) {
-                    lastPosition = newPosition;
-                    gameUi.drawMapView(lastPosition);
-                }
-            } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
-                final MapCell cell = lastPosition.getMapCell();
-                if (cell.getGameCharacter() != null) {
-                    gameUi.drawExamineScreen(cell.getGameCharacter());
-                } else if (!cell.getItems().isEmpty()) {
-                    gameUi.drawExamineScreen(cell.getItems().get(0));
-                } else {
-                    gameUi.drawExamineScreen(cell);
-                }
-                getInput();
-                gameUi.drawMapView(lastPosition);
-            }
-            newInput = getInput();
-        }
-        drawGameScreen();
-    }
-
-    private void openCloseDoor(boolean isOpen) {
-        final Player player = gameInformation.getPlayer();
-        gameInformation.addMessage((isOpen ? "Open" : "Close") + " in which direction?");
-        drawGameScreen();
-        char input = getInput();
-        while (!KeyDefinitions.isDirectionKey(input)) {
-            input = getInput();
-        }
-        final PositionOnMap doorPosition = player.getPositionOnMap().apply(KeyDefinitions.getDirectionFromKey(input));
-        if (!(doorPosition.getMapCell() instanceof Door)) {
-            gameInformation.addMessage("There is no door here!");
-            drawGameScreen();
-        } else {
-            final Door door = (Door) doorPosition.getMapCell();
-            if (isOpen) {
-                if (door.isOpen()) {
-                    gameInformation.addMessage("This door is already opened!");
-                    drawGameScreen();
-                } else {
-                    player.openDoor(doorPosition);
-                }
-            } else {
-                if (door.isClosed()) {
-                    gameInformation.addMessage("This door is already closed!");
-                    drawGameScreen();
-                } else {
-                    player.closeDoor(doorPosition);
-                }
-            }
-        }
-    }
-
-    private void processStairs(final char direction) {
-        final PositionOnMap currentPosition = gameInformation.getPlayer().getPositionOnMap();
-        final String directionStr = KeyDefinitions.STAIRS_UPWARDS_KEY == direction ? "upwards" : "downwards";
-        if (currentPosition.getMapCell() instanceof Stairs) {
-            final Stairs stairs = (Stairs) currentPosition.getMapCell();
-            if (direction == KeyDefinitions.STAIRS_UPWARDS_KEY && stairs.getType() == Stairs.Type.UP) {
-                if (stairs.getMatchingPosition().isPresent()) {
-                    moveToNewMap(stairs.getMatchingPosition().get());
-                    gameInformation.decrementDepth();
-                    gameInformation.addMessage("You walk up the stairs");
-                } else {
-                    gameInformation.addMessage("The stairs lead to the surface, it's too early to go there for you");
-                }
-            } else if (direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY && stairs.getType() == Stairs.Type.DOWN) {
-                if (stairs.getMatchingPosition().isPresent()) {
-                    moveToNewMap(stairs.getMatchingPosition().get());
-                } else {
-                    final Map newMap = mapFactory.build();
-                    final Stairs newUpwardsStairs = (Stairs) newMap.getUpwardsStairs().getMapCell();
-                    newUpwardsStairs.setMatchingStairs(currentPosition);
-                    stairs.setMatchingStairs(newMap.getUpwardsStairs());
-                    moveToNewMap(newMap.getUpwardsStairs());
-                }
-                gameInformation.incrementDepth();
-                gameInformation.addMessage("You walk down the stairs");
-            } else {
-                gameInformation.addMessage("You can't go " + directionStr + " here!");
-            }
-        } else {
-            gameInformation.addMessage("You can't go " + directionStr + " here!");
-        }
-        drawGameScreen();
-    }
-
-    private void moveToNewMap(final PositionOnMap newPosition) {
-        final Player player = gameInformation.getPlayer();
-        final Map currentMap = player.getPositionOnMap().getMap();
-        currentMap.moveGameCharacter(player, newPosition);
-    }
-
-    private void pickupItem() {
-        final Player player = gameInformation.getPlayer();
-        final MapCell playerCell = player.getMapCell();
-        if (!playerCell.getItems().isEmpty()) {
-            final Item item = playerCell.getItems().get(0);
-            player.pickupItem(item);
-            gameInformation.addMessage("You pick up " + item);
-        }
-        drawGameScreen();
-    }
-
-    private void showInventory() {
-        gameUi.showInventory(gameInformation);
-        char newInput = getInput();
-        final List<Item> playerItems = gameInformation.getPlayer().getItems();
-        while (newInput != KeyDefinitions.ESCAPE_KEY) {
-            final int inventoryItem = newInput - 'a';
-            if (inventoryItem >= 0 && inventoryItem < 52 && inventoryItem < playerItems.size()) {
-                if (showItem(playerItems.get(inventoryItem))) {
-                    break;
-                }
-            }
-            newInput = getInput();
-        }
-        drawGameScreen();
-    }
-
-    /**
-     * Displays chosen item
-     * @param item
-     * @return true if escape to game screen should be performed, false if returning to previous screen
-     */
-    private boolean showItem(final Item item) {
-        gameUi.showItem(item);
-        char input = getInput();
-        while(input != KeyDefinitions.ESCAPE_KEY) {
-            if (input == KeyDefinitions.DROP_ITEM_KEY) {
-                gameInformation.getPlayer().dropItem(item);
-                gameInformation.addMessage("You drop " + item);
-                return true;
-            } else if (input == KeyDefinitions.WIELD_ITEM_KEY) {
-                gameInformation.getPlayer().wieldItem(item);
-                return true;
-            }
-
-            input = getInput();
-        }
-        gameUi.showInventory(gameInformation);
-        return false;
-    }
-
-    private void drawGameScreen() {
-        long initTime = 0;
-        if (log.isTraceEnabled()) {
-            log.trace("drawUi start");
-            initTime = System.currentTimeMillis();
-        }
-        gameUi.drawGame(gameInformation);
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("drawUi end :: time=%d", System.currentTimeMillis() - initTime));
         }
     }
 
@@ -356,10 +126,10 @@ public final class GameEngine {
             log.debug("Game starts");
         }
         gameUi.showAnnouncement("Greetings " + gameInformation.getPlayer().getName() + ", your journey awaits!");
-        drawGameScreen();
+        gameUi.drawGame(gameInformation);
         try {
             while (true) {
-                handleInput();
+                keyProcessor.handleInput();
                 if (gameInformation.getPlayer().canPerformAction()) {
                     advanceTime();
                 }

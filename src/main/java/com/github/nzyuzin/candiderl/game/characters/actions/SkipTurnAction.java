@@ -17,21 +17,22 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.google.common.base.Optional;
 
-import javax.annotation.Nonnull;
+public class SkipTurnAction extends AbstractAction {
 
-public interface Action {
+    public SkipTurnAction(GameCharacter subject) {
+        super(subject);
+    }
 
-    /**
-     * Checks if the action can be executed
-     * @return Optional.of(errorMessage) if the action cannot be executed. Optional.absent() otherwise
-     */
-    @Nonnull Optional<String> failureReason();
+    @Override
+    public Optional<String> failureReason() {
+        return Optional.absent();
+    }
 
-    /**
-     * Executes the action
-     * @return list of events that should be processed after the execution
-     */
-    @Nonnull ActionResult execute();
+    @Override
+    protected ActionResult doExecute() {
+        return ActionResult.EMPTY;
+    }
 }

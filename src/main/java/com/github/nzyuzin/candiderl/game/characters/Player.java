@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.characters.actions.SkipTurnAction;
 import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -34,6 +35,10 @@ public final class Player extends AbstractGameCharacter {
 
     public ColoredChar[][] getVisibleMap(int width, int height) {
         return fov.getVisibleCells(width, height);
+    }
+
+    public void skipTurn() {
+        addAction(new SkipTurnAction(this));
     }
 
 }

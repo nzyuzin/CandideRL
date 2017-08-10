@@ -58,7 +58,7 @@ public class GameEngineTest {
         when(mapFactory.build()).thenReturn(testMap);
         when(gameUi.getInputChar()).thenReturn('q');
 
-        GameEngine engine = GameEngine.getGameEngine("Tester", mapFactory, gameUi);
+        GameEngine engine = new GameEngine(gameUi, mapFactory, "Tester");
         engine.startGame();
 
         verify(mapFactory, atLeastOnce()).build();

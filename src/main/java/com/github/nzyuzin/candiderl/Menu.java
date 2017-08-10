@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static com.github.nzyuzin.candiderl.game.GameEngine.getGameEngine;
-
 public class Menu {
 
     private static final Logger log = LoggerFactory.getLogger(Menu.class);
@@ -95,7 +93,7 @@ public class Menu {
     private void startGame(final String playerName) {
         MapFactory mapFactory = new MapFactory(new SquidDungeonGenerator(new NpcFactory(new Random())));
         try {
-            GameEngine engine = getGameEngine(playerName, mapFactory, gameUi);
+            GameEngine engine = new GameEngine(gameUi, mapFactory, playerName);
             engine.startGame();
             quit();
         } catch (Exception ex) {
