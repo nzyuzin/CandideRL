@@ -18,7 +18,9 @@
 package com.github.nzyuzin.candiderl.game.items;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.google.common.collect.ImmutableList;
 
 abstract class AbstractItem extends AbstractGameObject implements Item {
 
@@ -45,4 +47,8 @@ abstract class AbstractItem extends AbstractGameObject implements Item {
         return charOnMap;
     }
 
+    @Override
+    public ImmutableList<BodyPart.Type> getBodyPartTypes() {
+        return ImmutableList.of();
+    }
 }

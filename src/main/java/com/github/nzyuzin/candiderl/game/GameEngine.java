@@ -18,7 +18,6 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.ai.NpcController;
-import com.github.nzyuzin.candiderl.game.characters.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Npc;
 import com.github.nzyuzin.candiderl.game.characters.Player;
@@ -34,7 +33,6 @@ import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.github.nzyuzin.candiderl.ui.GameUi;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
@@ -67,11 +65,13 @@ public final class GameEngine {
         final Player player = new Player(playerName);
         int npcOperationalRange = 20; // arbitrary for now
         map.putGameCharacter(player, map.getRandomFreePosition());
-        final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.Sword, 10, 1, 1);
+        final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.TWO_HANDED, 10, 1, 1);
         player.addItem(broadsword);
-        player.setItem(player.getBodyParts(BodyPart.Type.HAND).get(0), broadsword);
+        player.wieldItem(broadsword);
         npcController = new NpcController(player, npcOperationalRange);
         gameInformation = new GameInformation(player);
+        processActions();
+        processEvents();
     }
 
     private void processActions() {
@@ -307,7 +307,7 @@ public final class GameEngine {
                 gameInformation.addMessage("You drop " + item);
                 return true;
             } else if (input == KeyDefinitions.WIELD_ITEM_KEY) {
-                wieldItem(item);
+                gameInformation.getPlayer().wieldItem(item);
                 return true;
             }
 
@@ -315,20 +315,6 @@ public final class GameEngine {
         }
         gameUi.showInventory(gameInformation);
         return false;
-    }
-
-    private void wieldItem(final Item item) {
-        Preconditions.checkArgument(gameInformation.getPlayer().getItems().contains(item), "Item should be in the inventory!");
-        for (final BodyPart hand : gameInformation.getPlayer().getBodyParts(BodyPart.Type.HAND)) {
-            if (!hand.getItem().isPresent()) {
-                hand.setItem(item);
-                gameInformation.addMessage("You wield " + item);
-                drawGameScreen();
-                return;
-            }
-        }
-        gameInformation.addMessage("You do not have free hands to wield that!");
-        drawGameScreen();
     }
 
     private void drawGameScreen() {

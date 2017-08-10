@@ -15,11 +15,13 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.characters;
+package com.github.nzyuzin.candiderl.game.characters.bodyparts;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.google.common.base.Optional;
+
+import javax.annotation.Nonnull;
 
 public class BodyPart extends AbstractGameObject {
 
@@ -43,7 +45,7 @@ public class BodyPart extends AbstractGameObject {
         return gameItem;
     }
 
-    public void setItem(final Item item) {
+    public void setItem(@Nonnull final Item item) {
         this.gameItem = Optional.of(item);
     }
 

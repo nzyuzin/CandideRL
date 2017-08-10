@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.google.common.collect.Lists;
 
 import java.util.List;

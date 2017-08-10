@@ -22,6 +22,8 @@ import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
@@ -35,12 +37,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
@@ -193,6 +197,16 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public void wieldItem(Item item) {
+        final WieldItemAction wieldAction = new WieldItemAction(this, item);
+        if (wieldAction.canBeExecuted()) {
+            addAction(wieldAction);
+        } else {
+            addMessage("Cannot wield " + item);
+        }
+    }
+
+    @Override
     public ImmutableList<BodyPart> getBodyParts() {
         return ImmutableList.copyOf(bodyParts);
     }
@@ -253,15 +267,22 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     public int rollDamageDice() {
         final Random dice = new Random();
         int baseDamage = dice.nextInt(this.getStrength());
+        for (final Weapon weapon : getWeapons()) {
+            baseDamage += dice.nextInt(weapon.getDamage());
+        }
+        return (int) (baseDamage * attackRate);
+    }
+
+    private Set<Weapon> getWeapons() {
+        final Set<Weapon> weapons = Sets.newHashSet();
         for (final BodyPart bodyPart : getBodyParts(BodyPart.Type.HAND)) {
             if (bodyPart.getItem().isPresent()) {
                 if (bodyPart.getItem().get() instanceof Weapon) {
-                    final Weapon weapon = (Weapon) bodyPart.getItem().get();
-                    baseDamage += dice.nextInt(weapon.getDamage());
+                    weapons.add((Weapon) bodyPart.getItem().get());
                 }
             }
         }
-        return (int) (baseDamage * attackRate);
+        return weapons;
     }
 
     @Override

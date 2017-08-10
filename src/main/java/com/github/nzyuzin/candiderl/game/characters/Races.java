@@ -17,6 +17,8 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.Hand;
 import com.google.common.collect.Lists;
 
 public enum Races {
@@ -27,8 +29,8 @@ public enum Races {
             new BodyPart("neck", BodyPart.Type.NECK),
             new BodyPart("left arm", BodyPart.Type.ARM),
             new BodyPart("right arm", BodyPart.Type.ARM),
-            new BodyPart("left hand", BodyPart.Type.HAND),
-            new BodyPart("right hand", BodyPart.Type.HAND),
+            new Hand("left hand"),
+            new Hand("right hand"),
             new BodyPart("left leg", BodyPart.Type.LEG),
             new BodyPart("right leg", BodyPart.Type.LEG),
             new BodyPart("left foot", BodyPart.Type.FOOT),
@@ -55,8 +57,8 @@ public enum Races {
             new BodyPart("neck", BodyPart.Type.NECK),
             new BodyPart("left arm", BodyPart.Type.ARM),
             new BodyPart("right arm", BodyPart.Type.ARM),
-            new BodyPart("left hand", BodyPart.Type.HAND),
-            new BodyPart("right hand", BodyPart.Type.HAND),
+            new Hand("left hand"),
+            new Hand("right hand"),
             new BodyPart("left leg", BodyPart.Type.LEG),
             new BodyPart("right leg", BodyPart.Type.LEG),
             new BodyPart("left foot", BodyPart.Type.FOOT),
@@ -69,8 +71,6 @@ public enum Races {
             new BodyPart("neck", BodyPart.Type.NECK),
             new BodyPart("left arm", BodyPart.Type.ARM),
             new BodyPart("right arm", BodyPart.Type.ARM),
-            new BodyPart("left hand", BodyPart.Type.HAND),
-            new BodyPart("right hand", BodyPart.Type.HAND),
             new BodyPart("left leg", BodyPart.Type.LEG),
             new BodyPart("right leg", BodyPart.Type.LEG),
             new BodyPart("left foot", BodyPart.Type.FOOT),

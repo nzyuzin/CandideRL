@@ -17,13 +17,11 @@
 
 package com.github.nzyuzin.candiderl.game.items;
 
-import com.github.nzyuzin.candiderl.game.GameObject;
-import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
+import com.google.common.collect.ImmutableList;
 
-public interface Item extends GameObject, Visible, Equippable {
+public interface Equippable {
 
-	 int getWeight();
-
-	 int getSize();
-
+    ImmutableList<BodyPart.Type> getBodyPartTypes();
+    
 }

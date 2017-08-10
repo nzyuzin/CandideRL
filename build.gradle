@@ -36,6 +36,7 @@ dependencies {
     compile 'com.squidpony:squidlib-util:3.0.0-b8'
     compile 'org.slf4j:slf4j-log4j12:1.7.12'
     compile 'com.google.guava:guava:18.0'
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.+'
 }

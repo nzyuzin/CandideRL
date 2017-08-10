@@ -18,8 +18,8 @@
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
 import com.github.nzyuzin.candiderl.game.GameInformation;
-import com.github.nzyuzin.candiderl.game.characters.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
 public class StatusScreen extends AbstractDisplayedScreen {

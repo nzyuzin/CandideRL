@@ -17,12 +17,26 @@
 
 package com.github.nzyuzin.candiderl.game.items;
 
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.google.common.collect.ImmutableList;
 
 public class Weapon extends AbstractItem {
 
     public enum Type {
-        Sword
+
+        ONE_HANDED(ImmutableList.of(BodyPart.Type.HAND)),
+        TWO_HANDED(ImmutableList.of(BodyPart.Type.HAND, BodyPart.Type.HAND));
+
+        Type(ImmutableList<BodyPart.Type> bodyPartTypes) {
+            this.bodyPartTypes = bodyPartTypes;
+        }
+
+        private ImmutableList<BodyPart.Type> bodyPartTypes;
+
+        public ImmutableList<BodyPart.Type> getBodyPartTypes() {
+            return bodyPartTypes;
+        }
     }
 
     private final Type type;
@@ -32,6 +46,11 @@ public class Weapon extends AbstractItem {
         super(name, description, ColoredChar.getColoredChar('/'), weight, size);
         this.type = type;
         this.damage = damage;
+    }
+
+    @Override
+    public ImmutableList<BodyPart.Type> getBodyPartTypes() {
+        return type.getBodyPartTypes();
     }
 
     public Type getType() {

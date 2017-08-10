@@ -15,15 +15,35 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl.game.items;
+package com.github.nzyuzin.candiderl.game.characters.bodyparts;
 
-import com.github.nzyuzin.candiderl.game.GameObject;
-import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
+import com.github.nzyuzin.candiderl.game.items.Item;
+import com.google.common.base.Optional;
 
-public interface Item extends GameObject, Visible, Equippable {
+import javax.annotation.Nonnull;
 
-	 int getWeight();
+public class Hand extends BodyPart {
 
-	 int getSize();
+    private Optional<Item> ring;
 
+    public Hand(String name) {
+        super(name, Type.HAND);
+        this.ring = Optional.absent();
+    }
+
+    public Hand() {
+        this("hand");
+    }
+
+    public Optional<Item> getRing() {
+        return ring;
+    }
+
+    public void setRing(@Nonnull Item ring) {
+        this.ring = Optional.of(ring);
+    }
+
+    public void removeRing() {
+        this.ring = Optional.absent();
+    }
 }

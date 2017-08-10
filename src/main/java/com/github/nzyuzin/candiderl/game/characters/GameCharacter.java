@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.GameAction;
+import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Damageable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
@@ -66,6 +67,8 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
 
     void pickupItem(Item item);
     void dropItem(Item item);
+
+    void wieldItem(Item item);
 
     ImmutableList<BodyPart> getBodyParts();
 
