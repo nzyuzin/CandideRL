@@ -50,13 +50,20 @@ public class OpenCloseDoorAction extends AbstractAction {
         if (type == Type.OPEN) {
             if (door.isClosed()) {
                 return none();
+            } else {
+                return failure("The door is already open");
             }
         } else {
-            if (door.isOpen() && door.getGameCharacter() == null && door.getItems().isEmpty()) {
-                return none();
+            if (door.isOpen()) {
+                if (door.getGameCharacter() == null && door.getItems().isEmpty()) {
+                    return none();
+                } else {
+                    return failure("There is something in the way");
+                }
+            } else {
+                return failure("The door is already closed");
             }
         }
-        return failure();
     }
 
     @Override
