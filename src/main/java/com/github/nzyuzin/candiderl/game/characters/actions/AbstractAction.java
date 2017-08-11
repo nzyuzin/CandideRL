@@ -42,7 +42,7 @@ abstract class AbstractAction implements Action {
         this.performer = performer;
         this.creationTime = currentTime;
         this.delay = delay;
-        this.priority = 100;
+        this.priority = priority;
     }
 
     @Nonnull
