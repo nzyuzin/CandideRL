@@ -45,8 +45,6 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     ActionResult performAction();
     int getActionDelay();
 
-    String describeAction();
-
     ImmutableList<String> pollMessages();
 
     boolean isDead();

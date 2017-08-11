@@ -131,15 +131,6 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public String describeAction() {
-        if (action.isPresent()) {
-            return action.get().toString();
-        } else {
-            return "NO_ACTION";
-        }
-    }
-
-    @Override
     public boolean isDead() {
         return currentHp <= 0;
     }
