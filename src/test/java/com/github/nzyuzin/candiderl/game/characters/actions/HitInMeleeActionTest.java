@@ -59,7 +59,7 @@ public class HitInMeleeActionTest {
 
     @Test(expected = ActionAlreadyExecutedException.class)
     public void testExecute() throws Exception {
-        HitInMeleeAction action = new HitInMeleeAction(performer, target);
+        HitInMeleeAction action = new HitInMeleeAction(performer, target, 0, 100);
 
         assertThat(action.failureReason(), is(Optional.absent()));
 

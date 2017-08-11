@@ -26,11 +26,15 @@ public final class MoveToNextCellAction extends AbstractAction {
 
     private final PositionOnMap position;
 
-    public MoveToNextCellAction(GameCharacter subject, PositionOnMap position) {
-        super(subject);
+    public MoveToNextCellAction(GameCharacter subject, PositionOnMap position, int currentTime, int delay) {
+        super(subject, currentTime, delay, 70);
         Preconditions.checkNotNull(position);
         Preconditions.checkNotNull(subject);
         this.position = position;
+    }
+
+    public PositionOnMap getPosition() {
+        return position;
     }
 
     public Optional<String> failureReason() {

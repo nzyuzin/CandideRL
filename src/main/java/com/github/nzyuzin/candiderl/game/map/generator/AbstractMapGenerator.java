@@ -17,18 +17,11 @@
 
 package com.github.nzyuzin.candiderl.game.map.generator;
 
-import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 
 public abstract class AbstractMapGenerator implements MapGenerator {
-
-    private final NpcFactory npcFactory;
-
-    public AbstractMapGenerator(NpcFactory npcFactory) {
-        this.npcFactory = npcFactory;
-    }
 
     protected void placeStairs(final Map map) {
         map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
@@ -43,13 +36,6 @@ public abstract class AbstractMapGenerator implements MapGenerator {
         for (int i = 0; i < map.getWidth(); i++) {
             map.setCell(i, 0, Wall.getWall());
             map.setCell(i, map.getHeight() - 1, Wall.getWall());
-        }
-    }
-
-    @Override
-    public void spawnMobs(final Map map, final int number) {
-        for (int i = 0; i < number; i++) {
-            map.putGameCharacter(npcFactory.getNpc(), map.getRandomFreePosition());
         }
     }
 

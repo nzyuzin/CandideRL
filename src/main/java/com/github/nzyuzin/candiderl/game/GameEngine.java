@@ -17,90 +17,46 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import com.github.nzyuzin.candiderl.game.ai.NpcController;
-import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.characters.Npc;
+import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.characters.Player;
-import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
-import com.github.nzyuzin.candiderl.game.events.Event;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
+import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
 import com.github.nzyuzin.candiderl.ui.GameUi;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Random;
 
 public final class GameEngine {
 
     private static final Logger log = LoggerFactory.getLogger(GameEngine.class);
 
-    private final List<Event> events;
     private final GameUi gameUi;
-    private final NpcController npcController;
     private final KeyProcessor keyProcessor;
+    private final ActionProcessor actionProcessor;
 
     private final GameInformation gameInformation;
 
-    public GameEngine(GameUi gameUi, MapFactory mapFactory, String playerName) {
-        final Map map = mapFactory.build();
+    public GameEngine(GameUi gameUi, MapGenerator mapGenerator, String playerName) {
         this.gameUi = gameUi;
-        events = Lists.newArrayList();
-        final Player player = new Player(playerName);
-        int npcOperationalRange = 20; // arbitrary for now
+        final ActionFactory actionFactory = new ActionFactory();
+        final Player player = new Player(playerName, actionFactory);
+        this.gameInformation = new GameInformation(player);
+        actionFactory.setGameInformation(gameInformation);
+        this.keyProcessor = new KeyProcessor(gameUi, gameInformation);
+        this.actionProcessor = new ActionProcessor(gameInformation);
+        final MapFactory mapFactory = new MapFactory(mapGenerator, new NpcFactory(new Random(), actionFactory));
+        actionFactory.setMapFactory(mapFactory);
+        final Map map = mapFactory.build();
         map.putGameCharacter(player, map.getRandomFreePosition());
+
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.TWO_HANDED, 10, 1, 1);
         player.addItem(broadsword);
-        player.wieldItem(broadsword);
-        npcController = new NpcController(player, npcOperationalRange);
-        gameInformation = new GameInformation(player);
-        this.keyProcessor = new KeyProcessor(gameUi, gameInformation, mapFactory);
-        processActions();
-        processEvents();
-    }
-
-    private void processActions() {
-        final Player player = gameInformation.getPlayer();
-        processAction(player);
-        for (final GameCharacter character : player.getMap().getCharacters()) {
-            if (!(character instanceof Npc)) {
-                continue;
-            }
-            final Npc npc = (Npc) character;
-            if (!npc.getPositionOnMap().getMap().equals(player.getMap())) {
-                // Skip mob if it is not on the same map as player
-                continue;
-            }
-            if (npc.isDead()) {
-                throw new AssertionError("Dead mob found on turn " + gameInformation.getCurrentTurn() + " name: " + npc.getName());
-            } else {
-                npcController.chooseAction(npc);
-            }
-            if (npc.canPerformAction()) {
-                processAction(npc);
-            } else {
-                npc.removeCurrentAction();
-            }
-        }
-    }
-
-    private void processAction(GameCharacter gameCharacter) {
-        final ActionResult actionResult = gameCharacter.performAction();
-        events.addAll(actionResult.getEvents());
-        gameInformation.addMessage(actionResult.getMessage());
-    }
-
-    private void processEvents() {
-        final ListIterator<Event> eventsIterator = events.listIterator();
-        while (eventsIterator.hasNext()) {
-            final Event e = eventsIterator.next();
-            e.occur();
-            gameInformation.addMessage(e.getTextualDescription());
-            eventsIterator.remove();
-        }
+        new WieldItemAction(player, broadsword, 0).execute();
     }
 
     private void applyMapEffects() {
@@ -109,12 +65,12 @@ public final class GameEngine {
 
     private void advanceTime() {
         if (log.isTraceEnabled()) {
-            log.trace("advanceTime begin currentTurn = {}", gameInformation.getCurrentTurn());
+            log.trace("advanceTime begin currentTurn = {}", gameInformation.getCurrentTime());
         }
-        processActions();
-        processEvents();
+        actionProcessor.scheduleActions();
+        actionProcessor.processActions();
+        actionProcessor.processEvents();
         applyMapEffects();
-        gameInformation.incrementTurn();
         gameUi.drawGame(gameInformation);
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
@@ -130,8 +86,12 @@ public final class GameEngine {
         try {
             while (true) {
                 keyProcessor.handleInput();
-                if (gameInformation.getPlayer().canPerformAction()) {
+                if (gameInformation.getPlayer().hasAction()) {
                     advanceTime();
+                } else {
+                    for (final String message : gameInformation.getPlayer().pollMessages()) {
+                        gameInformation.addMessage(message);
+                    }
                 }
             }
         } catch (GameClosedException gameClosedException) {

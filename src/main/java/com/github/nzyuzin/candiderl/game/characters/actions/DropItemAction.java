@@ -27,8 +27,8 @@ public class DropItemAction extends AbstractAction {
 
     private final Item item;
 
-    public DropItemAction(GameCharacter subject, Item item) {
-        super(subject);
+    public DropItemAction(GameCharacter subject, Item item, int currentTime) {
+        super(subject, currentTime, 100);
         this.item = item;
     }
 

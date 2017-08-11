@@ -33,8 +33,8 @@ public class OpenCloseDoorAction extends AbstractAction {
     private final Door door;
     private final Type type;
 
-    public OpenCloseDoorAction(GameCharacter subject, PositionOnMap doorPosition, Type type) {
-        super(subject);
+    public OpenCloseDoorAction(GameCharacter subject, PositionOnMap doorPosition, Type type, int currentTime) {
+        super(subject, currentTime, 100);
         Preconditions.checkArgument(doorPosition.getMapCell() instanceof Door, "There's no door on the given position!");
         this.doorPosition = doorPosition;
         this.door = (Door) doorPosition.getMapCell();

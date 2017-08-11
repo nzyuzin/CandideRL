@@ -17,21 +17,34 @@
 
 package com.github.nzyuzin.candiderl.game.ai;
 
+import com.github.nzyuzin.candiderl.game.GameInformation;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
+import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 public class NpcController {
 
     private final GameCharacter target;
     private final int operationalRange;
+    private final GameInformation gameInformation;
 
-    public NpcController(GameCharacter target, int operationalRange) {
-        this.operationalRange = operationalRange;
+    public NpcController(GameCharacter target, int operationalRange, GameInformation gameInformation) {
         this.target = target;
+        this.operationalRange = operationalRange;
+        this.gameInformation = gameInformation;
     }
 
-    public void chooseAction(GameCharacter mob) {
+    public void act(GameCharacter mob) {
         if (target.isDead()) return;
         if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
+            if (target.getAction().isPresent() && target.getAction().get() instanceof MoveToNextCellAction) {
+                final MoveToNextCellAction moveAction = (MoveToNextCellAction) target.getAction().get();
+                if (mob.getPositionOnMap().distanceTo(moveAction.getPosition()) >= 2
+                        && moveAction.getExecutionTime() <= gameInformation.getCurrentTime() + mob.getAttackDelay()) {
+                    mob.move(target.getPositionOnMap());
+                    return;
+                }
+            }
             mob.hit(target.getPositionOnMap());
         } else {
             moveToTarget(mob);
@@ -39,13 +52,14 @@ public class NpcController {
     }
 
     private void moveToTarget(GameCharacter mob) {
-        // TODO: implementation of path-finding and corresponding AI actions has to be re-thought and rewritten
         if (mob.getPosition().distanceTo(target.getPosition()) > operationalRange)
             return;
-
         final PathFinder path =
-                new PathFinder(target.getPosition(), operationalRange, target.getPositionOnMap().getMap());
-        mob.move(mob.getPositionOnMap().newPosition(path.findNextMove(mob.getPosition())));
+                new PathFinder(target.getPosition(), operationalRange, target.getMap());
+        final Position newPosition = path.findNextMove(mob.getPosition());
+        if (!newPosition.equals(mob.getPosition())) {
+            mob.move(mob.getPositionOnMap().newPosition(newPosition));
+        }
     }
 
 }

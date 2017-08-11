@@ -17,7 +17,6 @@
 
 package com.github.nzyuzin.candiderl.game.map.generator;
 
-import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -36,8 +35,7 @@ public class DungeonGenerator extends AbstractMapGenerator {
 
     private Map map;
 
-    public DungeonGenerator(NpcFactory npcFactory, int averageRoomWidth, int averageRoomHeight, EmptyMapGenerator emptyMapGenerator) {
-        super(npcFactory);
+    public DungeonGenerator(int averageRoomWidth, int averageRoomHeight, EmptyMapGenerator emptyMapGenerator) {
         this.averageRoomWidth = averageRoomWidth;
         this.averageRoomHeight = averageRoomHeight;
         this.emptyMapGenerator = emptyMapGenerator;

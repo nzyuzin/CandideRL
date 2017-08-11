@@ -42,47 +42,41 @@ public class PathFinder {
     /**
      * Fills distance array up using breadth-first-search
      *
-     * @param position position to calculate distances from
+     * @param target position to calculate distances from
      */
-    private void calculateDistances(Position position) {
+    private void calculateDistances(Position target) {
         Queue<Position> positionsToProcess = new ArrayDeque<>();
 
         distance = new int[map.getWidth()][map.getHeight()];
-        boolean[][] checked = new boolean[distance.length][distance[0].length];
+        boolean[][] marked = new boolean[distance.length][distance[0].length];
 
         for (int i = 0; i < distance.length; i++)
             for (int j = 0; j < distance[0].length; j++)
                 distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 
-        checked[position.getX()][position.getY()] = true;
-        distance[position.getX()][position.getY()] = 0;
+        marked[target.getX()][target.getY()] = true;
+        distance[target.getX()][target.getY()] = 0;
 
-        Position p;
+        while (target != null) {
 
-        while (position != null) {
-
-            if ( distance[position.getX()][position.getY()] >= distanceLimit ) {
-                position = positionsToProcess.poll();
+            if (distance[target.getX()][target.getY()] >= distanceLimit) {
+                target = positionsToProcess.poll();
                 continue;
             }
 
-            for (int i = position.getX() - 1; i <= position.getX() + 1; i++)
-                for (int j = position.getY() - 1; j <= position.getY() + 1; j++)
-                    if ( insideArray(i, j) && !checked[i][j] ) {
-                        p = Position.getInstance(i, j);
-                        if (map.getCell(p).isPassable()) {
+            for (int i = target.getX() - 1; i <= target.getX() + 1; i++)
+                for (int j = target.getY() - 1; j <= target.getY() + 1; j++)
+                    if (insideArray(i, j) && !marked[i][j]) {
+                        Position p = Position.getInstance(i, j);
+                        if (map.getCell(p).isPassable() && map.getCell(p).getGameCharacter() == null) {
                             positionsToProcess.add(p);
-                            distance[i][j] = distance[position.getX()][position.getY()] + 1;
-                            checked[i][j] = true;
+                            distance[i][j] = distance[target.getX()][target.getY()] + 1;
+                            marked[i][j] = true;
                         }
                     }
 
-            position = positionsToProcess.poll();
+            target = positionsToProcess.poll();
         }
-    }
-
-    private boolean insideArray(int x, int y) {
-        return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
     }
 
     public Position findNextMove(Position from) {
@@ -99,11 +93,15 @@ public class PathFinder {
 
                 if (map.getCell(p).getGameCharacter() == null && (distance[x][y] < distance[best.getX()][best.getY()]
                         || distance[x][y] == distance[best.getX()][best.getY()]
-                        && p == target.closestBetweenTwo(p, best))) {
+                        && p == target.closestBetweenTwo(p, best) && distance[x][y] != distanceLimit)) {
                     best = p;
                 }
             }
         return best;
+    }
+
+    private boolean insideArray(int x, int y) {
+        return x < distance.length && x >= 0 && y < distance[0].length && y >= 0;
     }
 
 }

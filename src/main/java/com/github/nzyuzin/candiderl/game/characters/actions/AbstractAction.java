@@ -21,19 +21,53 @@ import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
 
 abstract class AbstractAction implements Action {
     private final GameCharacter performer;
+    private final int delay;
+    private final int creationTime;
+    private final int priority;
     private boolean executed;
 
-    public AbstractAction(GameCharacter subject) {
-        this.performer = subject;
+    public AbstractAction(@Nonnull GameCharacter performer, int currentTime, int delay) {
+        this(performer, currentTime, delay, 100);
     }
 
-    protected GameCharacter getPerformer() {
+    public AbstractAction(@Nonnull GameCharacter performer, int currentTime, int delay, int priority) {
+        Preconditions.checkNotNull(performer);
+        Preconditions.checkArgument(delay >= 0);
+        this.performer = performer;
+        this.creationTime = currentTime;
+        this.delay = delay;
+        this.priority = 100;
+    }
+
+    @Nonnull
+    public GameCharacter getPerformer() {
         return performer;
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public int getCreationTime() {
+        return creationTime;
+    }
+
+    @Override
+    public int getExecutionTime() {
+        return creationTime + delay;
+    }
+
+    @Override
+    public int getDelay() {
+        return delay;
     }
 
     @Nonnull
@@ -94,4 +128,23 @@ abstract class AbstractAction implements Action {
                 + (!optionalInfo.isEmpty() ? " (" +  optionalInfo + ")" : "");
     }
 
+    @Override
+    public int compareTo(Action o) {
+        final int timeComparison = this.getExecutionTime() - o.getExecutionTime();
+        if (timeComparison == 0) { // player acts the first if the time is the same
+            if (this.getPerformer() instanceof Player) {
+                return -1;
+            } else if (o.getPerformer() instanceof Player) {
+                return 1;
+            } else {
+                return this.getPriority() - o.getPriority();
+            }
+        }
+        return timeComparison;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

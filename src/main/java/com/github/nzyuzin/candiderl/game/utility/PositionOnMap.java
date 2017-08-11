@@ -17,6 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.utility;
 
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 
@@ -41,6 +42,10 @@ public class PositionOnMap {
         return getMap().getCell(position);
     }
 
+    public GameCharacter getGameCharacter() {
+        return getMapCell().getGameCharacter();
+    }
+
     public int getX() {
         return position.getX();
     }
@@ -51,6 +56,14 @@ public class PositionOnMap {
 
     public PositionOnMap apply(final Direction direction) {
         return new PositionOnMap(this.position.apply(direction), this.map);
+    }
+
+    public double distanceTo(PositionOnMap other) {
+        if (!this.getMap().equals(other.getMap())) {
+            return Double.MAX_VALUE;
+        } else {
+            return this.getPosition().distanceTo(other.getPosition());
+        }
     }
 
     public PositionOnMap newPosition(final Position position) {

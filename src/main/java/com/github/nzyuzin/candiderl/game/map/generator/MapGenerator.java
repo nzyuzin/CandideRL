@@ -41,6 +41,4 @@ public interface MapGenerator {
         return map;
     }
 
-    void spawnMobs(Map map, int number);
-
 }

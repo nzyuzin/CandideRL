@@ -18,8 +18,6 @@
 package com.github.nzyuzin.candiderl;
 
 import com.github.nzyuzin.candiderl.game.GameEngine;
-import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.generator.SquidDungeonGenerator;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.ui.GameUi;
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 public class Menu {
 
@@ -91,9 +88,8 @@ public class Menu {
     }
 
     private void startGame(final String playerName) {
-        MapFactory mapFactory = new MapFactory(new SquidDungeonGenerator(new NpcFactory(new Random())));
         try {
-            GameEngine engine = new GameEngine(gameUi, mapFactory, playerName);
+            GameEngine engine = new GameEngine(gameUi, new SquidDungeonGenerator(), playerName);
             engine.startGame();
             quit();
         } catch (Exception ex) {

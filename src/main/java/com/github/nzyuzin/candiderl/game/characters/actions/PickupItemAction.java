@@ -28,8 +28,8 @@ public class PickupItemAction extends AbstractAction {
 
     private final Item item;
 
-    public PickupItemAction(GameCharacter subject, Item item) {
-        super(subject);
+    public PickupItemAction(GameCharacter subject, Item item, int currentTime) {
+        super(subject, currentTime, 100);
         this.item = item;
     }
 

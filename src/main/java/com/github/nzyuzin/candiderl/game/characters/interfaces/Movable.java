@@ -21,4 +21,5 @@ import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 
 public interface Movable {
 	void move(PositionOnMap position);
+	int getMovementDelay();
 }

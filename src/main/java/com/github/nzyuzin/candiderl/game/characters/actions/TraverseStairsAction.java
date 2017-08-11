@@ -31,8 +31,8 @@ public class TraverseStairsAction extends AbstractAction {
     private final Stairs.Type type;
     private final MapFactory mapFactory;
 
-    public TraverseStairsAction(GameCharacter subject, Stairs.Type type, MapFactory mapFactory) {
-        super(subject);
+    public TraverseStairsAction(GameCharacter subject, Stairs.Type type, MapFactory mapFactory, int currentTime) {
+        super(subject, currentTime, 100);
         this.type = type;
         this.mapFactory = mapFactory;
     }

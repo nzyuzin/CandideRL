@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameConstants;
+import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
 import com.google.common.io.LineReader;
 
@@ -32,15 +33,17 @@ public class MapFactory {
     private final int width;
     private final int height;
     private final MapGenerator mapGenerator;
+    private final NpcFactory npcFactory;
 
-    public MapFactory(int width, int height, MapGenerator mapGenerator) {
+    public MapFactory(int width, int height, MapGenerator mapGenerator, NpcFactory npcFactory) {
         this.width = width;
         this.height = height;
         this.mapGenerator = mapGenerator;
+        this.npcFactory = npcFactory;
     }
 
-    public MapFactory(MapGenerator mapGenerator) {
-        this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, mapGenerator);
+    public MapFactory(MapGenerator mapGenerator, NpcFactory npcFactory) {
+        this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, mapGenerator, npcFactory);
     }
 
     public Map build() {
@@ -55,9 +58,15 @@ public class MapFactory {
             result = mapGenerator.generate(width, height);
         }
         if (GameConfig.SPAWN_MOBS) {
-            mapGenerator.spawnMobs(result, 2);
+            spawnMobs(result, 2);
         }
         return result;
+    }
+
+    private void spawnMobs(final Map map, final int number) {
+        for (int i = 0; i < number; i++) {
+            map.putGameCharacter(npcFactory.getNpc(), map.getRandomFreePosition());
+        }
     }
 
     private char[][] readMapFile() throws IOException {

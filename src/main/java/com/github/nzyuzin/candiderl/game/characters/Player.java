@@ -18,17 +18,19 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-import com.github.nzyuzin.candiderl.game.characters.actions.SkipTurnAction;
+import com.github.nzyuzin.candiderl.game.characters.actions.Action;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.google.common.base.Optional;
 
 public final class Player extends AbstractGameCharacter {
 
     private FieldOfVision fov = null;
 
-    public Player(final String name) {
-        super(name, "Yet another wanderer in forgotten land", Races.HUMAN.get());
+    public Player(final String name, final ActionFactory actionFactory) {
+        super(name, "Yet another wanderer in forgotten land", Races.HUMAN.get(), actionFactory);
         this.charOnMap = ColoredChar .getColoredChar('@');
         fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
     }
@@ -38,7 +40,16 @@ public final class Player extends AbstractGameCharacter {
     }
 
     public void skipTurn() {
-        addAction(new SkipTurnAction(this));
+        setAction(getActionFactory().newSkipTurnAction(this));
     }
 
+    @Override
+    public void setAction(Action action) {
+        final Optional<String> errorMessage = action.failureReason();
+        if (!errorMessage.isPresent()) {
+            super.setAction(action);
+        } else {
+            addMessage(errorMessage.get());
+        }
+    }
 }

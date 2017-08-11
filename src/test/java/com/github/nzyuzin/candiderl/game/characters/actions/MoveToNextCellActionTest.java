@@ -56,7 +56,7 @@ public class MoveToNextCellActionTest {
         when(targetCell.getGameCharacter()).thenReturn(null);
         when(targetCell.isPassable()).thenReturn(true);
 
-        MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap);
+        MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap, 0, 100);
 
         assertTrue(!action.failureReason().isPresent());
         action.execute();

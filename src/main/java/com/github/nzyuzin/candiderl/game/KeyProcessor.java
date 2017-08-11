@@ -19,7 +19,6 @@ package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
@@ -38,12 +37,10 @@ public class KeyProcessor {
 
     private final GameUi ui;
     private final GameInformation gameInformation;
-    private final MapFactory mapFactory;
 
-    public KeyProcessor(GameUi ui, GameInformation gameInformation, MapFactory mapFactory) {
+    public KeyProcessor(GameUi ui, GameInformation gameInformation) {
         this.ui = ui;
         this.gameInformation = gameInformation;
-        this.mapFactory = mapFactory;
     }
 
     public void handleInput() throws GameClosedException {
@@ -159,7 +156,7 @@ public class KeyProcessor {
 
     private void processStairs(final char direction) {
         final Stairs.Type type = direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY ? Stairs.Type.DOWN : Stairs.Type.UP;
-        gameInformation.getPlayer().traverseStairs(type, mapFactory);
+        gameInformation.getPlayer().traverseStairs(type);
     }
 
     private void pickupItem() {

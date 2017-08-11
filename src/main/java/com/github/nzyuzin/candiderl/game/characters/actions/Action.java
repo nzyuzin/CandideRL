@@ -17,11 +17,18 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
 
-public interface Action {
+public interface Action extends Comparable<Action> {
+
+    /**
+     * Returns the character that performs the action
+     * @return character performing the action
+     */
+    @Nonnull GameCharacter getPerformer();
 
     /**
      * Checks if the action can be executed
@@ -34,4 +41,28 @@ public interface Action {
      * @return list of events that should be processed after the execution
      */
     @Nonnull ActionResult execute();
+
+    /**
+     * Returns the time at which the action was created
+     * @return time in turn units at which the action was created
+     */
+    int getCreationTime();
+
+    /**
+     * Return the time at which the action is predicted to be executed
+     * @return time in turn units at which the action is predicted to be executed
+     */
+    int getExecutionTime();
+
+    /**
+     * Returns the time needed to execute the action
+     * @return an amount of turn units that takes to execute the action
+     */
+    int getDelay();
+
+    /**
+     * Returns action priority compared to other actions. 100 is the default value
+     * @return action priority
+     */
+    int getPriority();
 }

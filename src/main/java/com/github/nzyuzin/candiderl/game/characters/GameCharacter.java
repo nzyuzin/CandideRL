@@ -26,7 +26,6 @@ import com.github.nzyuzin.candiderl.game.characters.interfaces.Movable;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -41,15 +40,14 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     MutableAttributes getAttributes();
 
     boolean hasAction();
-    void addAction(Action action);
-    void removeCurrentAction();
-
-    boolean canPerformAction();
+    Optional<Action> getAction();
+    void setAction(Action action);
     ActionResult performAction();
+    int getActionDelay();
 
-    boolean hasMessages();
-    void addMessage(String message);
-    String removeMessage();
+    String describeAction();
+
+    ImmutableList<String> pollMessages();
 
     boolean isDead();
     Position getPosition();
@@ -80,8 +78,10 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     void setItem(BodyPart slot, Item item);
 
     void hit(PositionOnMap pos);
+    int getAttackDelay();
+
     void move(PositionOnMap pos);
-    void traverseStairs(Stairs.Type type, MapFactory mapFactory);
+    void traverseStairs(Stairs.Type type);
     void openDoor(PositionOnMap pos);
     void closeDoor(PositionOnMap pos);
 

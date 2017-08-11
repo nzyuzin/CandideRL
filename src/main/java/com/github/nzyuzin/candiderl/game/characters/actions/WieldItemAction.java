@@ -31,8 +31,8 @@ public class WieldItemAction extends AbstractAction {
 
     private final Item item;
 
-    public WieldItemAction(GameCharacter subject, Item item) {
-        super(subject);
+    public WieldItemAction(GameCharacter subject, Item item, int currentTime) {
+        super(subject, currentTime, 100);
         this.item = item;
     }
 

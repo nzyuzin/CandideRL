@@ -26,8 +26,8 @@ import com.google.common.base.Optional;
 public class CastExplosionAction extends AbstractAction {
     private final PositionOnMap position;
 
-    public CastExplosionAction(GameCharacter subject, PositionOnMap position) {
-        super(subject);
+    public CastExplosionAction(GameCharacter subject, PositionOnMap position, int currentTime) {
+        super(subject, currentTime, 100);
         this.position = position;
     }
 

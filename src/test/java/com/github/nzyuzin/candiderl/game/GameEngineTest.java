@@ -17,9 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
-import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
+import com.github.nzyuzin.candiderl.game.map.generator.EmptyMapGenerator;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,32 +34,15 @@ import static org.mockito.Mockito.when;
 public class GameEngineTest {
 
     @Mock
-    private MapFactory mapFactory;
-
-    @Mock
     private GameUi gameUi;
-
-    private Map testMap = new MapGenerator() {
-        @Override
-        public Map generate(int width, int height) { return null; }
-        @Override
-        public void spawnMobs(Map map, int number) { }
-    }.generate(new char[][]{
-            {'#', '#', '#', '#'},
-            {'#', ' ', ' ', '#'},
-            {'#', ' ', ' ', '#'},
-            {'#', '#', '#', '#'}
-    });
 
     @Test
     public void gameStartsAndExitsWithoutException() {
-        when(mapFactory.build()).thenReturn(testMap);
         when(gameUi.getInputChar()).thenReturn('q');
 
-        GameEngine engine = new GameEngine(gameUi, mapFactory, "Tester");
+        GameEngine engine = new GameEngine(gameUi, new EmptyMapGenerator(), "Tester");
         engine.startGame();
 
-        verify(mapFactory, atLeastOnce()).build();
         verify(gameUi, times(1)).getInputChar();
         verify(gameUi, atLeastOnce()).drawGame(any());
     }

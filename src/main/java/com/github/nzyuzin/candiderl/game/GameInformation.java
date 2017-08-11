@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -27,13 +28,13 @@ import java.util.List;
 
 public final class GameInformation {
 
-    private int currentTurn;
+    private int time;
     private int depth;
     private final Deque<String> gameMessages;
     private final Player player;
 
     public GameInformation(final Player player) {
-        this.currentTurn = 0;
+        this.time = 0;
         this.depth = 1;
         this.gameMessages = new ArrayDeque<>(10);
         this.player = player;
@@ -49,12 +50,17 @@ public final class GameInformation {
         return Lists.newArrayList(gameMessages);
     }
 
-    public void incrementTurn() {
-        currentTurn++;
+    public void setTime(final int time) {
+        Preconditions.checkArgument(time >= this.time);
+        this.time = time;
+    }
+
+    public int getCurrentTime() {
+        return time;
     }
 
     public int getCurrentTurn() {
-        return currentTurn;
+        return time / 100;
     }
 
     public void incrementDepth() {

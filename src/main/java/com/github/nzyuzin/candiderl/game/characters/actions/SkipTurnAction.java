@@ -22,8 +22,8 @@ import com.google.common.base.Optional;
 
 public class SkipTurnAction extends AbstractAction {
 
-    public SkipTurnAction(GameCharacter subject) {
-        super(subject);
+    public SkipTurnAction(GameCharacter subject, int currentTime) {
+        super(subject, currentTime, 100);
     }
 
     @Override

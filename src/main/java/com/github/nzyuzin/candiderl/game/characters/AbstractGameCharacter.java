@@ -19,20 +19,14 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.characters.actions.Action;
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
-import com.github.nzyuzin.candiderl.game.characters.actions.DropItemAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.HitInMeleeAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.characters.actions.OpenCloseDoorAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.PickupItemAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.TraverseStairsAction;
-import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.items.MiscItem;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
@@ -51,7 +45,8 @@ import java.util.Set;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
-    private final Queue<Action> actions;
+    private final ActionFactory actionFactory;
+
     private final Queue<String> gameMessages;
 
     protected PositionOnMap position;
@@ -59,23 +54,28 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     protected int currentHp;
 
+    protected Optional<Action> action;
+
     protected List<Item> items;
     protected List<BodyPart> bodyParts;
 
-    protected double attackRate;
     protected MutableAttributes attributes;
     protected boolean canTakeDamage;
 
-    AbstractGameCharacter(String name, String description, Race race) {
+    AbstractGameCharacter(String name, String description, Race race, ActionFactory actionFactory) {
         super(name, description);
         this.currentHp = race.getMaxHp();
         this.attributes = new MutableAttributes(race.getAttributes());
         this.bodyParts = race.getBodyParts();
         this.canTakeDamage = true;
-        this.attackRate = 1.0;
         this.items = Lists.newArrayListWithCapacity(52);
-        this.actions = new ArrayDeque<>();
+        this.action = Optional.absent();
         this.gameMessages = new ArrayDeque<>();
+        this.actionFactory = actionFactory;
+    }
+
+    protected ActionFactory getActionFactory() {
+        return actionFactory;
     }
 
     @Override
@@ -84,32 +84,40 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
+    public ImmutableList<String> pollMessages() {
+        final ImmutableList<String> result = ImmutableList.copyOf(gameMessages);
+        gameMessages.clear();
+        return result;
+    }
+
+    protected void addMessage(final String message) {
+        gameMessages.add(message);
+    }
+
+    @Override
     public boolean hasAction() {
-        return !actions.isEmpty();
+        return action.isPresent();
     }
 
     @Override
-    public void addAction(Action action) {
-        final Optional<String> errorMessage = action.failureReason();
-        if (!errorMessage.isPresent()) {
-            actions.add(action);
-        } else {
-            gameMessages.add(errorMessage.get());
+    public Optional<Action> getAction() {
+        return action;
+    }
+
+    @Override
+    public void setAction(Action action) {
+        if (!this.isDead()) {
+            this.action = Optional.of(action);
         }
-    }
-
-    @Override
-    public boolean canPerformAction() {
-        return !isDead() && hasAction();
     }
 
     @Override
     public ActionResult performAction() {
-        // TODO make use of action points
-        if (actions.isEmpty()) {
+        if (!action.isPresent()) {
             return ActionResult.EMPTY;
         }
-        final Action action = actions.poll();
+        final Action action = this.action.get();
+        this.action = Optional.absent();
         if (action.failureReason().isPresent()) {
             return new ActionResult(action.failureReason().get());
         } else {
@@ -118,23 +126,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public boolean hasMessages() {
-        return !gameMessages.isEmpty();
+    public int getActionDelay() {
+        return action.isPresent() ? action.get().getDelay() : 0;
     }
 
     @Override
-    public void addMessage(String message) {
-        gameMessages.add(message);
-    }
-
-    @Override
-    public String removeMessage() {
-        return gameMessages.poll();
-    }
-
-    @Override
-    public void removeCurrentAction() {
-        actions.poll();
+    public String describeAction() {
+        if (action.isPresent()) {
+            return action.get().toString();
+        } else {
+            return "NO_ACTION";
+        }
     }
 
     @Override
@@ -194,17 +196,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void pickupItem(final Item item) {
-        addAction(new PickupItemAction(this, item));
+        setAction(actionFactory.newPickupItemAction(this, item));
     }
 
     @Override
     public void dropItem(final Item item) {
-        addAction(new DropItemAction(this, item));
+        setAction(actionFactory.newDropItemAction(this, item));
     }
 
     @Override
     public void wieldItem(Item item) {
-        addAction(new WieldItemAction(this, item));
+        setAction(actionFactory.newWieldItemAction(this, item));
     }
 
     @Override
@@ -224,27 +226,37 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void hit(final PositionOnMap pos) {
-        addAction(new HitInMeleeAction(this, pos.getMapCell().getGameCharacter()));
+        setAction(actionFactory.newHitAction(this, pos.getGameCharacter(), getAttackDelay()));
+    }
+
+    @Override
+    public int getAttackDelay() {
+        return 100;
     }
 
     @Override
     public void move(final PositionOnMap pos) {
-        addAction(new MoveToNextCellAction(this, pos));
+        setAction(actionFactory.newMoveAction(this, pos, getMovementDelay()));
     }
 
     @Override
-    public void traverseStairs(Stairs.Type type, MapFactory mapFactory) {
-        addAction(new TraverseStairsAction(this, type, mapFactory));
+    public int getMovementDelay() {
+        return 100;
+    }
+
+    @Override
+    public void traverseStairs(Stairs.Type type) {
+        setAction(actionFactory.newTraverseStairsAction(this, type));
     }
 
     @Override
     public void openDoor(PositionOnMap pos) {
-        this.addAction(new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN));
+        this.setAction(actionFactory.newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN));
     }
 
     @Override
     public void closeDoor(PositionOnMap pos) {
-        this.addAction(new OpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE));
+        this.setAction(actionFactory.newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE));
     }
 
     @Override
@@ -254,7 +266,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         for (final Weapon weapon : getWeapons()) {
             baseDamage += dice.nextInt(weapon.getDamage());
         }
-        return (int) (baseDamage * attackRate);
+        return baseDamage;
     }
 
     private Set<Weapon> getWeapons() {

@@ -17,6 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
+import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 import java.awt.Color;
@@ -24,23 +25,25 @@ import java.util.Random;
 
 public class NpcFactory {
 
-    private Random random;
+    private final Random random;
+    private final ActionFactory actionFactory;
 
-    public NpcFactory(final Random random) {
+    public NpcFactory(Random random, ActionFactory actionFactory) {
         this.random = random;
+        this.actionFactory = actionFactory;
     }
 
     public Npc getNpc() {
         final int roll = random.nextInt(2);
         if (roll == 0) {
             return new Npc("Troll", "A furious beast with sharp claws.", Races.TROLL.get(),
-                    ColoredChar.getColoredChar('t', ColoredChar.YELLOW));
+                    ColoredChar.getColoredChar('t', ColoredChar.YELLOW), actionFactory);
         } else if (roll == 1) {
             return new Npc("Goblin", "A small green humanoid. Apparently not very strong.", Races.GOBLIN.get(),
-                    ColoredChar.getColoredChar('g', ColoredChar.GREEN));
+                    ColoredChar.getColoredChar('g', ColoredChar.GREEN), actionFactory);
         } else {
             return new Npc("Rat", "A small rodent. It doesn't seem to like you.", Races.RODENT.get(),
-                    ColoredChar.getColoredChar('r', Color.ORANGE));
+                    ColoredChar.getColoredChar('r', Color.ORANGE), actionFactory);
         }
     }
 
