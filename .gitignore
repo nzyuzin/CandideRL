@@ -4,7 +4,6 @@
 bin
 *.iml
 *.xml
-*.properties
-!log4j.properties
+config.properties
 build
 .gradle
