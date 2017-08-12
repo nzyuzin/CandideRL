@@ -32,6 +32,6 @@ public class Explosion extends AbstractMapCellEffect {
     @Override
     public void apply(MapCell cell) {
         super.apply(cell);
-        cell.getGameCharacter().takeDamage(explosionPower);
+        cell.getGameCharacter().get().takeDamage(explosionPower);
     }
 }

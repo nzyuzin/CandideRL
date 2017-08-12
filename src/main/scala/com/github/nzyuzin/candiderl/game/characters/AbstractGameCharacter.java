@@ -217,7 +217,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void hit(final PositionOnMap pos) {
-        setAction(actionFactory.newHitAction(this, pos.getGameCharacter(), getAttackDelay()));
+        setAction(actionFactory.newHitAction(this, pos.getGameCharacter().get(), getAttackDelay()));
     }
 
     @Override

@@ -20,6 +20,7 @@ package com.github.nzyuzin.candiderl.game.utility;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import scala.Option;
 
 public class PositionOnMap {
     private Position position;
@@ -42,7 +43,7 @@ public class PositionOnMap {
         return getMap().getCell(position);
     }
 
-    public GameCharacter getGameCharacter() {
+    public Option<GameCharacter> getGameCharacter() {
         return getMapCell().getGameCharacter();
     }
 

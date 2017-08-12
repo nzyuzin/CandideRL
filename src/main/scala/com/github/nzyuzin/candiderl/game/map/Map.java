@@ -102,7 +102,7 @@ public class Map {
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
-        Preconditions.checkArgument(getCell(pos).getGameCharacter() == null, "The map cell already contains a character!");
+        Preconditions.checkArgument(getCell(pos).getGameCharacter().isEmpty(), "The map cell already contains a character!");
         getCell(pos).setGameCharacter(mob);
         mob.setPositionOnMap(new PositionOnMap(pos, this));
         characters.add(mob);
@@ -125,7 +125,7 @@ public class Map {
      */
     public Position getRandomFreePosition() {
         Position pos = getRandomPositionInsideMap();
-        while (getCell(pos).getGameCharacter() != null || !getCell(pos).isPassable() || !(getCell(pos) instanceof Floor)) {
+        while (getCell(pos).getGameCharacter().isDefined() || !getCell(pos).isPassable() || !(getCell(pos) instanceof Floor)) {
             pos = getRandomPositionInsideMap();
         }
         return pos;

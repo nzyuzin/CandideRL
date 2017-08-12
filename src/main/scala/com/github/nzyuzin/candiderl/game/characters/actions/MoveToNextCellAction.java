@@ -40,7 +40,7 @@ public final class MoveToNextCellAction extends AbstractAction {
     public Optional<String> failureReason() {
         if (!getPerformer().isDead() && position.getMap().equals(getPerformer().getMap())
                 && getPerformer().getPosition().isAdjacentTo(position.getPosition())
-                && position.getMapCell().isPassable() && position.getMapCell().getGameCharacter() == null) {
+                && position.getMapCell().isPassable() && position.getMapCell().getGameCharacter().isEmpty()) {
             return none();
         } else {
             return failure();

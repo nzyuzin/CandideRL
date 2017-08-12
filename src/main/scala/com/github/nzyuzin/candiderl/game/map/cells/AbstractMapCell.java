@@ -23,6 +23,7 @@ import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.google.common.collect.Lists;
+import scala.Option;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     protected boolean transparent;
     protected boolean isPassable;
 
-    protected GameCharacter gameCharacter = null;
+    protected Option<GameCharacter> gameCharacter = Option.empty();
     protected List<Item> items = null;
     protected List<MapCellEffect> effects = null;
 
@@ -47,8 +48,8 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public ColoredChar getChar() {
-        if (gameCharacter != null)
-            return gameCharacter.getChar();
+        if (gameCharacter.isDefined())
+            return gameCharacter.get().getChar();
         else if (!items.isEmpty())
             return items.get(0).getChar();
         else
@@ -67,12 +68,12 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public MapCell setGameCharacter(GameCharacter mob) {
-        this.gameCharacter = mob;
+        this.gameCharacter = Option.apply(mob);
         return this;
     }
 
     @Override
-    public GameCharacter getGameCharacter() {
+    public Option<GameCharacter> getGameCharacter() {
         return gameCharacter;
     }
 

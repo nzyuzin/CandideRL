@@ -84,7 +84,7 @@ public class KeyProcessor {
         final PositionOnMap position = player.getPositionOnMap().apply(direction);
         final MapCell mapCell = position.getMapCell();
         if (mapCell.isPassable()) {
-            if (mapCell.getGameCharacter() == null) {
+            if (mapCell.getGameCharacter().isEmpty()) {
                 player.move(position);
             } else {
                 player.hit(position);
@@ -111,8 +111,8 @@ public class KeyProcessor {
                 }
             } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
                 final MapCell cell = lastPosition.getMapCell();
-                if (cell.getGameCharacter() != null) {
-                    ui.drawExamineScreen(cell.getGameCharacter());
+                if (cell.getGameCharacter().isDefined()) {
+                    ui.drawExamineScreen(cell.getGameCharacter().get());
                 } else if (!cell.getItems().isEmpty()) {
                     ui.drawExamineScreen(cell.getItems().get(0));
                 } else {
