@@ -21,7 +21,6 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.Event;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
-import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;

@@ -54,23 +54,23 @@ public class PathFinder {
             for (int j = 0; j < distance[0].length; j++)
                 distance[i][j] = distanceLimit; // Initializing array of distances with maximal value
 
-        marked[target.getX()][target.getY()] = true;
-        distance[target.getX()][target.getY()] = 0;
+        marked[target.x()][target.y()] = true;
+        distance[target.x()][target.y()] = 0;
 
         while (target != null) {
 
-            if (distance[target.getX()][target.getY()] >= distanceLimit) {
+            if (distance[target.x()][target.y()] >= distanceLimit) {
                 target = positionsToProcess.poll();
                 continue;
             }
 
-            for (int i = target.getX() - 1; i <= target.getX() + 1; i++)
-                for (int j = target.getY() - 1; j <= target.getY() + 1; j++)
+            for (int i = target.x() - 1; i <= target.x() + 1; i++)
+                for (int j = target.y() - 1; j <= target.y() + 1; j++)
                     if (insideArray(i, j) && !marked[i][j]) {
                         Position p = Position.getInstance(i, j);
                         if (map.getCell(p).isPassable() && map.getCell(p).getGameCharacter() == null) {
                             positionsToProcess.add(p);
-                            distance[i][j] = distance[target.getX()][target.getY()] + 1;
+                            distance[i][j] = distance[target.x()][target.y()] + 1;
                             marked[i][j] = true;
                         }
                     }
@@ -82,8 +82,8 @@ public class PathFinder {
     public Position findNextMove(Position from) {
         Position best = from;
         Position p;
-        for (int x = from.getX() - 1; x <= from.getX() + 1; x++)
-            for (int y = from.getY() - 1; y <= from.getY() + 1; y++) {
+        for (int x = from.x() - 1; x <= from.x() + 1; x++)
+            for (int y = from.y() - 1; y <= from.y() + 1; y++) {
 
                 if (!insideArray(x, y)) {
                     continue;
@@ -91,8 +91,8 @@ public class PathFinder {
 
                 p = Position.getInstance(x, y);
 
-                if (map.getCell(p).getGameCharacter() == null && (distance[x][y] < distance[best.getX()][best.getY()]
-                        || distance[x][y] == distance[best.getX()][best.getY()]
+                if (map.getCell(p).getGameCharacter() == null && (distance[x][y] < distance[best.x()][best.y()]
+                        || distance[x][y] == distance[best.x()][best.y()]
                         && p == target.closestBetweenTwo(p, best) && distance[x][y] != distanceLimit)) {
                     best = p;
                 }

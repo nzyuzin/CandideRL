@@ -46,14 +46,6 @@ public class PositionOnMap {
         return getMapCell().getGameCharacter();
     }
 
-    public int getX() {
-        return position.getX();
-    }
-
-    public int getY() {
-        return position.getY();
-    }
-
     public PositionOnMap apply(final Direction direction) {
         return new PositionOnMap(this.position.apply(direction), this.map);
     }
