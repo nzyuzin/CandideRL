@@ -20,6 +20,7 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
