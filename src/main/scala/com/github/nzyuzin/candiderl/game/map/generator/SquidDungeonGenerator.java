@@ -15,17 +15,21 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.nzyuzin.candiderl;
+package com.github.nzyuzin.candiderl.game.map.generator;
 
-import com.github.nzyuzin.candiderl.ui.GameUi;
-import com.github.nzyuzin.candiderl.ui.swing.SwingGameUi;
+import com.github.nzyuzin.candiderl.game.map.Map;
+import squidpony.squidgrid.mapping.DungeonGenerator;
 
-public class Main {
+public class SquidDungeonGenerator extends AbstractMapGenerator {
 
-    public static void main(String[] args) {
-        GameUi ui = new SwingGameUi("CandideRL");
-        final Menu menu = new Menu(ui);
-        menu.start();
+    @Override
+    public Map generate(int width, int height) {
+        final DungeonGenerator dungeonGenerator = new DungeonGenerator(width, height);
+        dungeonGenerator.addDoors(20, true);
+        final Map map = generate(dungeonGenerator.generate());
+        System.out.println(dungeonGenerator.toString());
+        placeBorder(map);
+        placeStairs(map);
+        return map;
     }
-
 }

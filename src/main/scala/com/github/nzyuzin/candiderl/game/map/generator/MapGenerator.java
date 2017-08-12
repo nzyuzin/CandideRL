@@ -18,17 +18,24 @@
 package com.github.nzyuzin.candiderl.game.map.generator;
 
 import com.github.nzyuzin.candiderl.game.map.Map;
-import squidpony.squidgrid.mapping.ClassicRogueMapGenerator;
+import com.github.nzyuzin.candiderl.game.map.cells.Door;
+import com.github.nzyuzin.candiderl.game.map.cells.Floor;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 
-public class SquidDungeonGenerator extends AbstractMapGenerator {
+public interface MapGenerator {
 
-    @Override
-    public Map generate(int width, int height) {
-        final ClassicRogueMapGenerator classicRogueMapGenerator =
-                new ClassicRogueMapGenerator(3, 3, width, height, 2, 5, 2, 5);
-        final Map map = generate(classicRogueMapGenerator.generate());
-        placeBorder(map);
-        placeStairs(map);
+    Map generate(int width, int height);
+    default Map generate(char[][] array) {
+        final Map map = new Map(array[0].length, array.length);
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                final char c = array[i][j];
+                final MapCell cell = c == '#' ? Wall.getWall() : (c == '+' ? Door.getDoor() : Floor.getFloor());
+                map.setCell(j, array.length - 1 - i, cell);
+            }
+        }
         return map;
     }
+
 }

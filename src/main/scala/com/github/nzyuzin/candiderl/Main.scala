@@ -14,15 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.github.nzyuzin.candiderl
 
-package com.github.nzyuzin.candiderl.game.fov;
+import com.github.nzyuzin.candiderl.ui.swing.SwingGameUi
 
-import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-
-public interface FieldOfVision {
-
-    boolean isSeen(Position p);
-    ColoredChar[][] getVisibleCells(int width, int height);
-
+object Main {
+  def main(args: Array[String]): Unit = {
+    val ui = new SwingGameUi("CandideRL")
+    val menu = new Menu(ui)
+    menu.start()
+  }
 }

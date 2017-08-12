@@ -15,29 +15,14 @@
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'scala'
-apply plugin: 'application'
+package com.github.nzyuzin.candiderl.game.fov;
 
-mainClassName = 'com.github.nzyuzin.candiderl.Main'
+import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
-repositories {
-    mavenCentral()
-}
+public interface FieldOfVision {
 
-jar {
-    baseName = 'CandideRL'
-    version = '0.1.0'
-}
+    boolean isSeen(Position p);
+    ColoredChar[][] getVisibleCells(int width, int height);
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-    compile 'org.scala-lang:scala-library:2.12.3'
-    compile 'com.squidpony:squidlib-util:3.0.0-b8'
-    compile 'org.slf4j:slf4j-log4j12:1.7.12'
-    compile 'com.google.guava:guava:18.0'
-    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.+'
 }
