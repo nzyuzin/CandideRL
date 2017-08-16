@@ -71,8 +71,8 @@ public class GameConfig {
 
     private enum ConfigHelper {
         DEFAULT_FONT("default_font", Font.MONOSPACED),
-        MAP_WIDTH("map_width", "600"),
-        MAP_HEIGHT("map_height", "500"),
+        MAP_WIDTH("map_width", "50"),
+        MAP_HEIGHT("map_height", "50"),
         VIEW_DISTANCE_LIMIT("view_distance_limit", "10"),
         DEFAULT_MAP_WINDOW_WIDTH("default_map_window_width", "80"),
         DEFAULT_MAP_WINDOW_HEIGHT("default_map_window_height", "25"),
