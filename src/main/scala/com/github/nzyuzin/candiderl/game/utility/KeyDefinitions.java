@@ -61,6 +61,15 @@ public final class KeyDefinitions {
         DIRECTION_KEYS.put('u', Direction.NORTHEAST);
         DIRECTION_KEYS.put('b', Direction.SOUTHWEST);
         DIRECTION_KEYS.put('n', Direction.SOUTHEAST);
+
+        DIRECTION_KEYS.put('2', Direction.SOUTH);
+        DIRECTION_KEYS.put('8', Direction.NORTH);
+        DIRECTION_KEYS.put('4', Direction.WEST);
+        DIRECTION_KEYS.put('6', Direction.EAST);
+        DIRECTION_KEYS.put('7', Direction.NORTHWEST);
+        DIRECTION_KEYS.put('9', Direction.NORTHEAST);
+        DIRECTION_KEYS.put('1', Direction.SOUTHWEST);
+        DIRECTION_KEYS.put('3', Direction.SOUTHEAST);
     }
 
     public static final char STAIRS_UPWARDS_KEY = '<';
