@@ -17,6 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.map;
 
+import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.Floor;
@@ -34,7 +35,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class Map {
+public class Map implements GameObject {
+
+    private final String name;
+
     private final int mapWidth;
     private final int mapHeight;
     private final MapCell[][] map;
@@ -44,12 +48,23 @@ public class Map {
 
     private final List<GameCharacter> characters;
 
-    public Map(int width, int height) {
+    public Map(String name, int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
-        map = new MapCell[width][height];
-        mapWidth = width;
-        mapHeight = height;
-        characters = Lists.newArrayList();
+        this.name = name;
+        this.map = new MapCell[width][height];
+        this.mapWidth = width;
+        this.mapHeight = height;
+        this.characters = Lists.newArrayList();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.name;
     }
 
     public PositionOnMap getUpwardsStairs() {

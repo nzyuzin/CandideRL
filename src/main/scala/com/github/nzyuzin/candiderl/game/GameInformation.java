@@ -29,13 +29,11 @@ import java.util.List;
 public final class GameInformation {
 
     private int time;
-    private int depth;
     private final Deque<String> gameMessages;
     private final Player player;
 
     public GameInformation(final Player player) {
         this.time = 0;
-        this.depth = 1;
         this.gameMessages = new ArrayDeque<>(10);
         this.player = player;
     }
@@ -61,18 +59,6 @@ public final class GameInformation {
 
     public int getCurrentTurn() {
         return time / 100;
-    }
-
-    public void incrementDepth() {
-        depth++;
-    }
-
-    public void decrementDepth() {
-        depth--;
-    }
-
-    public int getDepth() {
-        return depth;
     }
 
     public Player getPlayer() {

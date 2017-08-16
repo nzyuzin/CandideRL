@@ -23,10 +23,10 @@ import squidpony.squidgrid.mapping.DungeonGenerator;
 public class SquidDungeonGenerator extends AbstractMapGenerator {
 
     @Override
-    public Map generate(int width, int height) {
+    public Map generate(String name, int width, int height) {
         final DungeonGenerator dungeonGenerator = new DungeonGenerator(width, height);
         dungeonGenerator.addDoors(20, true);
-        final Map map = generate(dungeonGenerator.generate());
+        final Map map = generate(name, dungeonGenerator.generate());
         System.out.println(dungeonGenerator.toString());
         placeBorder(map);
         placeStairs(map);

@@ -33,9 +33,9 @@ public class RandomMapGenerator extends AbstractMapGenerator {
     }
 
     @Override
-    public Map generate(final int width, final int height) {
+    public Map generate(final String name, final int width, final int height) {
         Preconditions.checkArgument(filledCells < 1 && filledCells > 0);
-        final Map map = emptyMapGenerator.generate(width, height);
+        final Map map = emptyMapGenerator.generate(name, width, height);
         for (int i = 0; i < height * width * filledCells; i++) {
             map.setCell(map.getRandomFreePosition(), Wall.getWall());
         }

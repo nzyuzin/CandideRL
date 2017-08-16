@@ -105,7 +105,7 @@ public class GameScreen extends AbstractDisplayedScreen {
             return;
         }
         if (mapRow == screenHeight - 8) {
-            writeToStatsPanel("Depth: " + gameInfo.getDepth());
+            writeToStatsPanel("Map: " + gameInfo.getPlayer().getMap().getName());
             return;
         }
         writeToStatsPanel("");

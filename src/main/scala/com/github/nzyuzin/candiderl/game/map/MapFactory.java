@@ -35,11 +35,14 @@ public class MapFactory {
     private final MapGenerator mapGenerator;
     private final NpcFactory npcFactory;
 
+    private int mapCounter;
+
     public MapFactory(int width, int height, MapGenerator mapGenerator, NpcFactory npcFactory) {
         this.width = width;
         this.height = height;
         this.mapGenerator = mapGenerator;
         this.npcFactory = npcFactory;
+        this.mapCounter = 0;
     }
 
     public MapFactory(MapGenerator mapGenerator, NpcFactory npcFactory) {
@@ -50,12 +53,12 @@ public class MapFactory {
         final Map result;
         if (GameConfig.BUILD_MAP_FROM_FILE) {
             try {
-                result = mapGenerator.generate(readMapFile());
+                result = mapGenerator.generate(getMapName(), readMapFile());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to read map file", e);
             }
         } else {
-            result = mapGenerator.generate(width, height);
+            result = mapGenerator.generate(getMapName(), width, height);
         }
         if (GameConfig.SPAWN_MOBS) {
             spawnMobs(result, 2);
@@ -81,6 +84,10 @@ public class MapFactory {
             result.add(line.toCharArray());
         }
         return result.toArray(new char[result.size()][]);
+    }
+
+    private String getMapName() {
+        return "D:" + mapCounter++;
     }
 
 }

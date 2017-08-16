@@ -25,9 +25,10 @@ import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 
 public interface MapGenerator {
 
-    Map generate(int width, int height);
-    default Map generate(char[][] array) {
-        final Map map = new Map(array[0].length, array.length);
+    Map generate(String name, int width, int height);
+
+    default Map generate(String name, char[][] array) {
+        final Map map = new Map(name, array[0].length, array.length);
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[0].length; j++) {
                 final char c = array[i][j];
