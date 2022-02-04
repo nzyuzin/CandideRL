@@ -89,7 +89,8 @@ public class ActionProcessor {
     }
 
     private void processAction(GameCharacter gameCharacter) {
-        log.debug(gameCharacter + " performs " + gameCharacter.getAction() + " at " + gameInformation.getCurrentTime());
+        log.trace(gameCharacter + " performs " + gameCharacter.getAction()
+                + " at " + gameInformation.getCurrentTime());
         final ActionResult actionResult = gameCharacter.performAction();
         events.addAll(actionResult.getEvents());
         for (final String message : gameCharacter.pollMessages()) {

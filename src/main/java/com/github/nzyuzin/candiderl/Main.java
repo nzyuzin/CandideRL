@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with CandideRL.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.nzyuzin.candiderl
+package com.github.nzyuzin.candiderl;
 
-import com.github.nzyuzin.candiderl.ui.swing.SwingGameUi
+import com.github.nzyuzin.candiderl.ui.swing.SwingGameUi;
 
-object Main {
-  def main(args: Array[String]): Unit = {
-    val ui = new SwingGameUi("CandideRL")
-    val menu = new Menu(ui)
-    menu.start()
+public class Main {
+  public static void main(String[] args) {
+    SwingGameUi ui = new SwingGameUi("CandideRL");
+    Menu menu = new Menu(ui);
+    menu.start();
   }
 }

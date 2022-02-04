@@ -26,7 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import scala.Option;
+
+import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ public class MoveToNextCellActionTest {
         PositionOnMap targetOnMap = new PositionOnMap(targetPosition, map);
         when(character.getPosition()).thenReturn(characterPosition);
         when(map.getCell(targetPosition)).thenReturn(targetCell);
-        when(targetCell.getGameCharacter()).thenReturn(Option.empty());
+        when(targetCell.getGameCharacter()).thenReturn(Optional.empty());
         when(targetCell.isPassable()).thenReturn(true);
 
         MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap, 0, 100);

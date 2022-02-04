@@ -43,7 +43,7 @@ public class ShadowCastingStrategy implements FovStrategy {
         // watcher is supposed to be in center of seen array
         Position watcherPos = Position.getInstance(seen.length / 2, seen[0].length / 2);
 
-        seen[watcherPos.x()][watcherPos.y()] = true;
+        seen[watcherPos.getX()][watcherPos.getY()] = true;
 
         for (int i = 0; i < directions.length; i++) {
             positionsQueue.add(watcherPos.apply(directions[i]));
@@ -53,16 +53,16 @@ public class ShadowCastingStrategy implements FovStrategy {
 
                 if (!isInsideSeenArray(pos)
                         || watcherPos.distanceTo(pos) > viewDistance
-                        || marked[pos.x()][pos.y()])
+                        || marked[pos.getX()][pos.getY()])
                     continue;
 
-                marked[pos.x()][pos.y()] = true;
+                marked[pos.getX()][pos.getY()] = true;
                 Position cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
-                seen[pos.x()][pos.y()] = !(seen[cellBetweenWatcher.x()][cellBetweenWatcher.y()] != null
-                        && !seen[cellBetweenWatcher.x()][cellBetweenWatcher.y()]
-                        && !transparent[cellBetweenWatcher.x()][cellBetweenWatcher.y()]);
+                seen[pos.getX()][pos.getY()] = !(seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                        && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
+                        && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]);
 
-                if (transparent[pos.x()][pos.y()]) {
+                if (transparent[pos.getX()][pos.getY()]) {
                     for (int j = i - 1 + directions.length; j <= i + 1 + directions.length; j++) {
                         Position newPosition = pos.apply(directions[j % directions.length]);
                         if (newPosition != null) {
@@ -79,12 +79,12 @@ public class ShadowCastingStrategy implements FovStrategy {
                             break;
                         }
                         cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
-                        if (seen[cellBetweenWatcher.x()][cellBetweenWatcher.y()] != null
-                                && !seen[cellBetweenWatcher.x()][cellBetweenWatcher.y()]
-                                || !transparent[cellBetweenWatcher.x()][cellBetweenWatcher.y()]) {
-                            seen[pos.x()][pos.y()] = false;
+                        if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
+                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
+                                || !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
+                            seen[pos.getX()][pos.getY()] = false;
                         }
-                        marked[pos.x()][pos.y()] = true;
+                        marked[pos.getX()][pos.getY()] = true;
                     }
                 }
             }
@@ -94,7 +94,7 @@ public class ShadowCastingStrategy implements FovStrategy {
     }
 
     private boolean isInsideSeenArray(Position pos) {
-        return isInsideSeenArray(pos.x(), pos.y());
+        return isInsideSeenArray(pos.getX(), pos.getY());
     }
 
     private boolean isInsideSeenArray(int x, int y) {

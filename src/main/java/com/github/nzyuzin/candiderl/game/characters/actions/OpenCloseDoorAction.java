@@ -55,7 +55,7 @@ public class OpenCloseDoorAction extends AbstractAction {
             }
         } else {
             if (door.isOpen()) {
-                if (door.getGameCharacter().isEmpty() && door.getItems().isEmpty()) {
+                if (!door.getGameCharacter().isPresent() && door.getItems().isEmpty()) {
                     return none();
                 } else {
                     return failure("There is something in the way");

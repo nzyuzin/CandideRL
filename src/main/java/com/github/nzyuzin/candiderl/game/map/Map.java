@@ -82,7 +82,7 @@ public class Map implements GameObject {
     }
 
     public MapCell getCell(Position pos) {
-        return getCell(pos.x(), pos.y());
+        return getCell(pos.getX(), pos.getY());
     }
 
     public MapCell getCell(int x, int y) {
@@ -92,7 +92,7 @@ public class Map implements GameObject {
     }
 
     public void setCell(Position pos, MapCell cell) {
-        setCell(pos.x(), pos.y(), cell);
+        setCell(pos.getX(), pos.getY(), cell);
     }
 
     public void setCell(int x, int y, MapCell cell) {
@@ -117,7 +117,7 @@ public class Map implements GameObject {
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
-        Preconditions.checkArgument(getCell(pos).getGameCharacter().isEmpty(), "The map cell already contains a character!");
+        Preconditions.checkArgument(!getCell(pos).getGameCharacter().isPresent(), "The map cell already contains a character!");
         getCell(pos).setGameCharacter(mob);
         mob.setPositionOnMap(new PositionOnMap(pos, this));
         characters.add(mob);
@@ -140,7 +140,7 @@ public class Map implements GameObject {
      */
     public Position getRandomFreePosition() {
         Position pos = getRandomPositionInsideMap();
-        while (getCell(pos).getGameCharacter().isDefined() || !getCell(pos).isPassable() || !(getCell(pos) instanceof Floor)) {
+        while (getCell(pos).getGameCharacter().isPresent() || !getCell(pos).isPassable() || !(getCell(pos) instanceof Floor)) {
             pos = getRandomPositionInsideMap();
         }
         return pos;
@@ -163,10 +163,10 @@ public class Map implements GameObject {
 
     private MapCell[][] getPartOfMap(Position pos, int width, int height) {
         return getPartOfMap(
-                pos.x() - (int) Math.floor(width / 2.0),
-                pos.x() + (int) Math.ceil(width / 2.0),
-                pos.y() - (int) Math.floor(height / 2.0),
-                pos.y() + (int) Math.ceil(height / 2.0)
+                pos.getX() - (int) Math.floor(width / 2.0),
+                pos.getX() + (int) Math.ceil(width / 2.0),
+                pos.getY() - (int) Math.floor(height / 2.0),
+                pos.getY() + (int) Math.ceil(height / 2.0)
         );
     }
 
@@ -214,7 +214,7 @@ public class Map implements GameObject {
     }
 
     public boolean isInside(Position pos) {
-        return pos.x() >= 0 && pos.x() < mapWidth && pos.y() >= 0 && pos.y() < mapHeight;
+        return pos.getX() >= 0 && pos.getX() < mapWidth && pos.getY() >= 0 && pos.getY() < mapHeight;
     }
 
     private Position getRandomPositionInsideMap() {

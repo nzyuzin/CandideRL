@@ -22,9 +22,9 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.interfaces.Visible;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
-import scala.Option;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MapCell extends GameObject, Visible {
 
@@ -34,7 +34,7 @@ public interface MapCell extends GameObject, Visible {
 
     MapCell setGameCharacter(GameCharacter mob);
 
-    Option<GameCharacter> getGameCharacter();
+    Optional<GameCharacter> getGameCharacter();
 
     void putItem(Item item);
 
