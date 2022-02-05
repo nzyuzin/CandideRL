@@ -35,7 +35,6 @@ public final class GameState implements Serializable {
 
     private Player player;
     private int time;
-    private int nextMapId;
 
     private final Deque<String> gameMessages;
     private final List<Map> dungeon;
@@ -43,7 +42,6 @@ public final class GameState implements Serializable {
     public GameState(final GameFactories gameFactories) {
         this.gameFactories = gameFactories;
         this.time = 0;
-        this.nextMapId = 0;
         this.gameMessages = new ArrayDeque<>(10);
         this.dungeon = new ArrayList<>();
     }
@@ -53,14 +51,13 @@ public final class GameState implements Serializable {
     }
 
     public int getNextMapId() {
-        return nextMapId;
+        return dungeon.size();
     }
 
     public void addMap(Map map) {
         Preconditions.checkNotNull(map);
-        Preconditions.checkArgument(map.getId() == nextMapId);
+        Preconditions.checkArgument(map.getId() == getNextMapId());
         dungeon.add(map);
-        this.nextMapId++;
     }
 
     public Map getMap(int id) {
