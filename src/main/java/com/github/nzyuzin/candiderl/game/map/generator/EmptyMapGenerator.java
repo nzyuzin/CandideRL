@@ -24,9 +24,9 @@ import com.google.common.base.Preconditions;
 public class EmptyMapGenerator extends AbstractMapGenerator {
 
     @Override
-    public Map generate(final String name, final int width, final int height) {
+    public Map generate(final String name, int id, final int width, final int height) {
         Preconditions.checkArgument(width >= 3 && height >= 3, "Width and height should be at least 3!");
-        final Map map = new Map(name, width, height);
+        final Map map = new Map(name, id, width, height);
         for (int i = 1; i < width - 1; i++)
             for (int j = 1; j < height - 1; j++)
                 map.setCell(i, j, Floor.getFloor());

@@ -17,11 +17,13 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
 import java.util.List;
@@ -41,19 +43,20 @@ public class GameScreen extends AbstractDisplayedScreen {
         this.statsWidth = statsWidth;
     }
 
-    public void draw(final GameInformation gameInfo) {
+    public void draw(final GameState gameInfo) {
         if (log.isTraceEnabled()) {
             log.trace("drawUi begin");
         }
         getGameWindow().resetCursor();
         final Player player = gameInfo.getPlayer();
-        final PositionOnMap playerPosition = player.getPositionOnMap();
+        final Position playerPosition = player.getPosition();
         final ColoredChar[][] visibleMap;
         if (!player.isDead()) {
-            visibleMap = player.getVisibleMap(mapWidth, mapHeight);
+            final FieldOfVision fov = gameInfo.getGameFactories().getFovFactory().getFov();
+            visibleMap = fov.getVisibleCells(mapWidth, mapHeight, player, GameConfig.VIEW_DISTANCE_LIMIT);
         } else {
-            visibleMap = playerPosition.getMap().getVisibleChars(
-                    playerPosition.getPosition(), mapWidth, mapHeight);
+            visibleMap = player.getMap().getVisibleChars(
+                    playerPosition, mapWidth, mapHeight);
         }
         final int screenHeight = mapHeight + messagesHeight;
         final List<String> messages = gameInfo.getMessages();
@@ -82,7 +85,7 @@ public class GameScreen extends AbstractDisplayedScreen {
         }
     }
 
-    private void drawStatsPanelRow(GameInformation gameInfo, int screenHeight, int mapRow) {
+    private void drawStatsPanelRow(GameState gameInfo, int screenHeight, int mapRow) {
         final GameCharacter player = gameInfo.getPlayer();
         if (mapRow == 0 || mapRow == screenHeight - 1) {
             for (int k = 0; k < statsWidth; k++) {

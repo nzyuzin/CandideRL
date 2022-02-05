@@ -17,13 +17,14 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 public class Npc extends AbstractGameCharacter {
 
-    public Npc(String name, String description, Race race, ColoredChar onMap, ActionFactory actionFactory) {
-        super(name, description, race, actionFactory);
+    public Npc(GameState gameState, String name, String description, Race race, ColoredChar onMap) {
+        super(gameState, name, description, race);
         this.charOnMap = onMap;
     }
 

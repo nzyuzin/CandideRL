@@ -17,8 +17,9 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 
 import java.awt.Color;
@@ -29,12 +30,11 @@ public class ViewMapScreen extends AbstractDisplayedScreen {
         super(gameWindow);
     }
 
-    public void draw(final PositionOnMap viewPoint) {
+    public void draw(final Map map, final Position viewPoint) {
         clearScreen();
         final int mapViewWidth = getGameWindow().getColumns();
         final int mapViewHeight = getGameWindow().getRows() - 1;
-        final ColoredChar[][] visibleMap = viewPoint.getMap()
-                .getVisibleChars(viewPoint.getPosition(), mapViewWidth, mapViewHeight);
+        final ColoredChar[][] visibleMap = map.getVisibleChars(viewPoint, mapViewWidth, mapViewHeight);
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
         for (int i = mapViewHeight - 1; i >= 0; i--) {

@@ -21,7 +21,6 @@ import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -52,18 +51,17 @@ public class MoveToNextCellActionTest {
 
         Position characterPosition = Position.getInstance(0, 1);
         Position targetPosition = Position.getInstance(0, 0);
-        PositionOnMap targetOnMap = new PositionOnMap(targetPosition, map);
         when(character.getPosition()).thenReturn(characterPosition);
         when(map.getCell(targetPosition)).thenReturn(targetCell);
         when(targetCell.getGameCharacter()).thenReturn(Optional.empty());
         when(targetCell.isPassable()).thenReturn(true);
 
-        MoveToNextCellAction action = new MoveToNextCellAction(character, targetOnMap, 0, 100);
+        MoveToNextCellAction action = new MoveToNextCellAction(character, targetPosition, 0, 100);
 
         assertTrue(!action.failureReason().isPresent());
         action.execute();
 
-        verify(map).moveGameCharacter(character, targetOnMap);
+        verify(map).moveGameCharacter(character, targetPosition);
 
         action.execute();
     }

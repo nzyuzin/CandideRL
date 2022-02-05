@@ -37,12 +37,11 @@ public class FovFactory {
         }
     }
 
-    public static FovFactory getInstance() {
-        return new FovFactory();
+    public FovFactory() {
     }
 
-    public FieldOfVision getFOV(GameCharacter watcher, int viewDistance) {
-        return new FieldOfVisionImpl(watcher, viewDistance, Strategies.SHADOW_CASTING.getImplementation());
+    public FieldOfVision getFov() {
+        return new FieldOfVisionImpl(Strategies.SHADOW_CASTING.getImplementation());
     }
 
 }

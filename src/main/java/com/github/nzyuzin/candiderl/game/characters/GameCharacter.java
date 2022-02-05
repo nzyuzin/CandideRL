@@ -29,7 +29,6 @@ import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -48,12 +47,12 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     ImmutableList<String> pollMessages();
 
     boolean isDead();
-    Position getPosition();
 
+    Position getPosition();
+    void setPosition(Position pos);
     Map getMap();
-    PositionOnMap getPositionOnMap();
+    void setMap(Map map);
     MapCell getMapCell();
-    void setPositionOnMap(PositionOnMap position);
 
     int getCurrentHp();
 
@@ -75,13 +74,13 @@ public interface GameCharacter extends GameObject, HasAttributes, Movable, Damag
     Optional<Item> getItem(BodyPart slot);
     void setItem(BodyPart slot, Item item);
 
-    void hit(PositionOnMap pos);
+    void hit(Position pos);
     int getAttackDelay();
 
-    void move(PositionOnMap pos);
+    void move(Position pos);
     void traverseStairs(Stairs.Type type);
-    void openDoor(PositionOnMap pos);
-    void closeDoor(PositionOnMap pos);
+    void openDoor(Position pos);
+    void closeDoor(Position pos);
 
     int rollDamageDice();
 

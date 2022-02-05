@@ -17,11 +17,12 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.Map;
-import com.github.nzyuzin.candiderl.game.map.MapFactory;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
@@ -29,20 +30,20 @@ import javax.annotation.Nonnull;
 public class TraverseStairsAction extends AbstractAction {
 
     private final Stairs.Type type;
-    private final MapFactory mapFactory;
+    private final GameState gameState;
 
-    public TraverseStairsAction(GameCharacter subject, Stairs.Type type, MapFactory mapFactory, int currentTime) {
+    public TraverseStairsAction(GameCharacter subject, Stairs.Type type, GameState gameState, int currentTime) {
         super(subject, currentTime, 100);
         this.type = type;
-        this.mapFactory = mapFactory;
+        this.gameState = gameState;
     }
 
     @Nonnull
     @Override
     public Optional<String> failureReason() {
-        final PositionOnMap currentPosition = getPerformer().getPositionOnMap();
+        final MapCell currentCell = getPerformer().getMapCell();
         final String directionStr = type == Stairs.Type.UP ? "upwards" : "downwards";
-        if (currentPosition.getMapCell() instanceof Stairs && type == ((Stairs) currentPosition.getMapCell()).getType()) {
+        if (currentCell instanceof Stairs && type == ((Stairs) currentCell).getType()) {
             final Stairs stairs = (Stairs) getPerformer().getMapCell();
             if (type == Stairs.Type.UP && !stairs.getMatchingPosition().isPresent()) {
                 return failure("The stairs lead to the surface, it's too early to go there for you");
@@ -59,24 +60,26 @@ public class TraverseStairsAction extends AbstractAction {
     protected ActionResult doExecute() {
         final Stairs stairs = (Stairs) getPerformer().getMapCell();
         if (type == Stairs.Type.UP) {
-            moveToNewMap(stairs.getMatchingPosition().get());
+            moveToNewMap(stairs.getMatchingMap().get(), stairs.getMatchingPosition().get());
             return new ActionResult(describeAction(getPerformer(), "walk up", "the stairs"));
         } else {
             if (stairs.getMatchingPosition().isPresent()) {
-                moveToNewMap(stairs.getMatchingPosition().get());
+                moveToNewMap(stairs.getMatchingMap().get(), stairs.getMatchingPosition().get());
             } else {
-                final Map newMap = mapFactory.build();
-                final Stairs newUpwardsStairs = (Stairs) newMap.getUpwardsStairs().getMapCell();
-                newUpwardsStairs.setMatchingStairs(getPerformer().getPositionOnMap());
-                stairs.setMatchingStairs(newMap.getUpwardsStairs());
-                moveToNewMap(newMap.getUpwardsStairs());
+                final Map newMap = gameState.getGameFactories().getMapFactory().build(gameState);
+                gameState.addMap(newMap);
+                final Stairs newUpwardsStairs = (Stairs) newMap.getCell(newMap.getUpwardsStairs());
+                newUpwardsStairs.setMatchingStairs(getPerformer().getMap(), getPerformer().getPosition());
+                stairs.setMatchingStairs(newMap, newMap.getUpwardsStairs());
+                moveToNewMap(newMap, newMap.getUpwardsStairs());
             }
             return new ActionResult(describeAction(getPerformer(), "walk down", "the stairs"));
         }
     }
 
-    private void moveToNewMap(final PositionOnMap newPosition) {
-        final Map currentMap = getPerformer().getPositionOnMap().getMap();
-        currentMap.moveGameCharacter(getPerformer(), newPosition);
+    private void moveToNewMap(final Map newMap, final Position newPosition) {
+        final Map currentMap = getPerformer().getMap();
+        currentMap.removeGameCharacter(getPerformer());
+        newMap.putGameCharacter(getPerformer(), newPosition);
     }
 }

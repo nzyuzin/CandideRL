@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.actions.Action;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionResult;
@@ -31,7 +32,6 @@ import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -45,11 +45,11 @@ import java.util.Set;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
-    private final ActionFactory actionFactory;
-
     private final Queue<String> gameMessages;
+    private final GameState gameState;
 
-    protected PositionOnMap position;
+    protected Position position;
+    protected int mapId;
     protected ColoredChar charOnMap;
 
     protected int currentHp;
@@ -62,8 +62,9 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     protected MutableAttributes attributes;
     protected boolean canTakeDamage;
 
-    AbstractGameCharacter(String name, String description, Race race, ActionFactory actionFactory) {
+    AbstractGameCharacter(GameState gameState, String name, String description, Race race) {
         super(name, description);
+        this.gameState = gameState;
         this.currentHp = race.getMaxHp();
         this.attributes = new MutableAttributes(race.getAttributes());
         this.bodyParts = race.getBodyParts();
@@ -71,11 +72,6 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         this.items = Lists.newArrayListWithCapacity(52);
         this.action = Optional.absent();
         this.gameMessages = new ArrayDeque<>();
-        this.actionFactory = actionFactory;
-    }
-
-    protected ActionFactory getActionFactory() {
-        return actionFactory;
     }
 
     @Override
@@ -92,6 +88,10 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     protected void addMessage(final String message) {
         gameMessages.add(message);
+    }
+
+    protected ActionFactory getActionFactory() {
+        return gameState.getGameFactories().getActionFactory();
     }
 
     @Override
@@ -137,27 +137,27 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public Position getPosition() {
-        return position.getPosition();
-    }
-
-    @Override
-    public Map getMap() {
-        return position.getMap();
-    }
-
-    @Override
-    public PositionOnMap getPositionOnMap() {
         return position;
     }
 
     @Override
-    public void setPositionOnMap(PositionOnMap position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
     @Override
+    public Map getMap() {
+        return gameState.getMap(this.mapId);
+    }
+
+    @Override
+    public void setMap(final Map map) {
+        this.mapId = map.getId();
+    }
+
+    @Override
     public MapCell getMapCell() {
-        return getPositionOnMap().getMapCell();
+        return getMap().getCell(getPosition());
     }
 
     @Override
@@ -187,17 +187,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void pickupItem(final Item item) {
-        setAction(actionFactory.newPickupItemAction(this, item));
+        setAction(getActionFactory().newPickupItemAction(this, item));
     }
 
     @Override
     public void dropItem(final Item item) {
-        setAction(actionFactory.newDropItemAction(this, item));
+        setAction(getActionFactory().newDropItemAction(this, item));
     }
 
     @Override
     public void wieldItem(Item item) {
-        setAction(actionFactory.newWieldItemAction(this, item));
+        setAction(getActionFactory().newWieldItemAction(this, item));
     }
 
     @Override
@@ -216,8 +216,9 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public void hit(final PositionOnMap pos) {
-        setAction(actionFactory.newHitAction(this, pos.getGameCharacter().get(), getAttackDelay()));
+    public void hit(final Position pos) {
+        final GameCharacter target = getMap().getCell(pos).getGameCharacter().get();
+        setAction(getActionFactory().newHitAction(this, target, getAttackDelay()));
     }
 
     @Override
@@ -226,8 +227,8 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
     }
 
     @Override
-    public void move(final PositionOnMap pos) {
-        setAction(actionFactory.newMoveAction(this, pos, getMovementDelay()));
+    public void move(final Position pos) {
+        setAction(getActionFactory().newMoveAction(this, pos, getMovementDelay()));
     }
 
     @Override
@@ -237,17 +238,17 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public void traverseStairs(Stairs.Type type) {
-        setAction(actionFactory.newTraverseStairsAction(this, type));
+        setAction(getActionFactory().newTraverseStairsAction(this, type));
     }
 
     @Override
-    public void openDoor(PositionOnMap pos) {
-        this.setAction(actionFactory.newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN));
+    public void openDoor(Position pos) {
+        this.setAction(getActionFactory().newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.OPEN));
     }
 
     @Override
-    public void closeDoor(PositionOnMap pos) {
-        this.setAction(actionFactory.newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE));
+    public void closeDoor(Position pos) {
+        this.setAction(getActionFactory().newOpenCloseDoorAction(this, pos, OpenCloseDoorAction.Type.CLOSE));
     }
 
     @Override

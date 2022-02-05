@@ -17,34 +17,28 @@
 
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Preconditions;
 
 public class ActionFactory {
 
-    private GameInformation gameInformation;
-    private MapFactory mapFactory;
+    private GameState gameInformation;
 
-    public void setGameInformation(GameInformation gameInformation) {
+    public void setGameInformation(GameState gameInformation) {
         Preconditions.checkArgument(this.gameInformation == null, "Game information is already set!");
         this.gameInformation = gameInformation;
     }
 
-    public void setMapFactory(MapFactory mapFactory) {
-        Preconditions.checkArgument(this.mapFactory == null, "Map factory is already set!");
-        this.mapFactory = mapFactory;
-    }
-
-    public MoveToNextCellAction newMoveAction(GameCharacter subject, PositionOnMap position, int delay) {
+    public MoveToNextCellAction newMoveAction(GameCharacter subject, Position position, int delay) {
         return new MoveToNextCellAction(subject, position, gameInformation.getCurrentTime(), delay);
     }
 
-    public CastExplosionAction newCastExplosionAction(GameCharacter subject, PositionOnMap position) {
+    public CastExplosionAction newCastExplosionAction(GameCharacter subject, Position position) {
         return new CastExplosionAction(subject, position, gameInformation.getCurrentTime());
     }
 
@@ -56,7 +50,7 @@ public class ActionFactory {
         return new HitInMeleeAction(performer, target, gameInformation.getCurrentTime(), delay);
     }
 
-    public OpenCloseDoorAction newOpenCloseDoorAction(GameCharacter subject, PositionOnMap doorPosition, OpenCloseDoorAction.Type type) {
+    public OpenCloseDoorAction newOpenCloseDoorAction(GameCharacter subject, Position doorPosition, OpenCloseDoorAction.Type type) {
         return new OpenCloseDoorAction(subject, doorPosition, type, gameInformation.getCurrentTime());
     }
 
@@ -69,7 +63,7 @@ public class ActionFactory {
     }
 
     public TraverseStairsAction newTraverseStairsAction(GameCharacter subject, Stairs.Type type) {
-        return new TraverseStairsAction(subject, type, mapFactory, gameInformation.getCurrentTime());
+        return new TraverseStairsAction(subject, type, gameInformation, gameInformation.getCurrentTime());
     }
 
     public WieldItemAction newWieldItemAction(GameCharacter subject, Item item) {

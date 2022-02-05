@@ -19,7 +19,8 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -29,22 +30,22 @@ public class OpenCloseDoorAction extends AbstractAction {
         OPEN, CLOSE;
     }
 
-    private final PositionOnMap doorPosition;
+    private final Position doorPosition;
     private final Door door;
     private final Type type;
 
-    public OpenCloseDoorAction(GameCharacter subject, PositionOnMap doorPosition, Type type, int currentTime) {
+    public OpenCloseDoorAction(GameCharacter subject, Position doorPosition, Type type, int currentTime) {
         super(subject, currentTime, 100);
-        Preconditions.checkArgument(doorPosition.getMapCell() instanceof Door, "There's no door on the given position!");
+        final MapCell doorCell = subject.getMap().getCell(doorPosition);
+        Preconditions.checkArgument(doorCell instanceof Door, "There's no door on the given position!");
         this.doorPosition = doorPosition;
-        this.door = (Door) doorPosition.getMapCell();
+        this.door = (Door) doorCell;
         this.type = type;
     }
 
     @Override
     public Optional<String> failureReason() {
-        if (doorPosition.getMap() != getPerformer().getMap()
-                || doorPosition.getPosition().distanceTo(getPerformer().getPosition()) >= 2) {
+        if (doorPosition.distanceTo(getPerformer().getPosition()) >= 2) {
             return failure("No door there!");
         }
         if (type == Type.OPEN) {

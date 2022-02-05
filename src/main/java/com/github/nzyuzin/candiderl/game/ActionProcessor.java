@@ -35,12 +35,12 @@ public class ActionProcessor {
 
     private static final Logger log = LoggerFactory.getLogger(ActionProcessor.class);
 
-    private final GameInformation gameInformation;
+    private final GameState gameInformation;
     private final NpcController npcController;
     private final List<Event> events;
     private final TurnQueue turnQueue;
 
-    public ActionProcessor(GameInformation gameInformation) {
+    public ActionProcessor(GameState gameInformation) {
         this.gameInformation = gameInformation;
         int npcOperationalRange = 20; // arbitrary for now
         this.npcController = new NpcController(gameInformation.getPlayer(), npcOperationalRange, gameInformation);

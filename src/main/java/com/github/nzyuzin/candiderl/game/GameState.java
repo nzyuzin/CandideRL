@@ -18,24 +18,55 @@
 package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public final class GameInformation {
+public final class GameState implements Serializable {
 
+    private final GameFactories gameFactories;
+
+    private Player player;
     private int time;
-    private final Deque<String> gameMessages;
-    private final Player player;
+    private int nextMapId;
 
-    public GameInformation(final Player player) {
+    private final Deque<String> gameMessages;
+    private final List<Map> dungeon;
+
+    public GameState(final GameFactories gameFactories) {
+        this.gameFactories = gameFactories;
         this.time = 0;
+        this.nextMapId = 0;
         this.gameMessages = new ArrayDeque<>(10);
-        this.player = player;
+        this.dungeon = new ArrayList<>();
+    }
+
+    public GameFactories getGameFactories() {
+        return gameFactories;
+    }
+
+    public int getNextMapId() {
+        return nextMapId;
+    }
+
+    public void addMap(Map map) {
+        Preconditions.checkNotNull(map);
+        Preconditions.checkArgument(map.getId() == nextMapId);
+        dungeon.add(map);
+        this.nextMapId++;
+    }
+
+    public Map getMap(int id) {
+        Preconditions.checkArgument(id >= 0 && id < dungeon.size(),
+                "Map id is out of bounds: id = " + id + " not in [" + 0 + ", " + (dungeon.size() - 1) + ")");
+        return dungeon.get(id);
     }
 
     public void addMessage(String msg) {
@@ -63,5 +94,9 @@ public final class GameInformation {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

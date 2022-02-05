@@ -43,8 +43,8 @@ public class DungeonGenerator extends AbstractMapGenerator {
     }
 
     @Override
-    public Map generate(final String name, final int width, final int height) {
-        final Map map = emptyMapGenerator.generate(name, width, height);
+    public Map generate(final String name, int id, final int width, final int height) {
+        final Map map = emptyMapGenerator.generate(name, id, width, height);
         if (averageRoomWidth > width && averageRoomHeight > height) {
             return map;
         }

@@ -18,29 +18,31 @@
 package com.github.nzyuzin.candiderl.game.characters.actions;
 
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 public final class MoveToNextCellAction extends AbstractAction {
 
-    private final PositionOnMap position;
+    private final Position position;
 
-    public MoveToNextCellAction(GameCharacter subject, PositionOnMap position, int currentTime, int delay) {
+    public MoveToNextCellAction(GameCharacter subject, Position position, int currentTime, int delay) {
         super(subject, currentTime, delay, 70);
         Preconditions.checkNotNull(position);
         Preconditions.checkNotNull(subject);
         this.position = position;
     }
 
-    public PositionOnMap getPosition() {
+    public Position getPosition() {
         return position;
     }
 
     public Optional<String> failureReason() {
-        if (!getPerformer().isDead() && position.getMap().equals(getPerformer().getMap())
-                && getPerformer().getPosition().isAdjacentTo(position.getPosition())
-                && position.getMapCell().isPassable() && !position.getMapCell().getGameCharacter().isPresent()) {
+        final MapCell positionCell = getPerformer().getMap().getCell(position);
+        if (!getPerformer().isDead() && getPerformer().getPosition().isAdjacentTo(position)
+                && positionCell.isPassable() && !positionCell.getGameCharacter().isPresent()) {
             return none();
         } else {
             return failure();
@@ -48,7 +50,8 @@ public final class MoveToNextCellAction extends AbstractAction {
     }
 
     protected ActionResult doExecute() {
-        position.getMap().moveGameCharacter(getPerformer(), position);
+        final Map map = getPerformer().getMap();
+        map.moveGameCharacter(getPerformer(), position);
         return ActionResult.EMPTY;
     }
 }

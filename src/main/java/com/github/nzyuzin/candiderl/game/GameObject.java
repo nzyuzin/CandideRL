@@ -17,7 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game;
 
-public interface GameObject {
+import java.io.Serializable;
+
+public interface GameObject extends Serializable {
 
      String getName();
 

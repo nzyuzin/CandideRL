@@ -18,8 +18,9 @@
 package com.github.nzyuzin.candiderl.game.utility;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public final class ColoredChar {
+public final class ColoredChar implements Serializable {
 
     private final Color background;
     private final Color foreground;

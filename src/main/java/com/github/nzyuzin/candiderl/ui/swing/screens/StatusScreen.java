@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.characters.bodyparts.BodyPart;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
@@ -28,7 +28,7 @@ public class StatusScreen extends AbstractDisplayedScreen {
         super(gameWindow);
     }
 
-    public void show(final GameInformation gameInfo) {
+    public void show(final GameState gameInfo) {
         clearScreen();
         final Player player = gameInfo.getPlayer();
         writeBlackWhiteLine(player.getName() + "   HP: " + player.getCurrentHp() + "/" + player.getMaxHp());

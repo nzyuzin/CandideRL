@@ -26,7 +26,6 @@ import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.map.cells.effects.MapCellEffect;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -38,19 +37,21 @@ import java.util.function.Consumer;
 public class Map implements GameObject {
 
     private final String name;
+    private final int id;
 
     private final int mapWidth;
     private final int mapHeight;
     private final MapCell[][] map;
 
-    private PositionOnMap upwardsStairs;
-    private PositionOnMap downwardsStairs;
+    private Position upwardsStairs;
+    private Position downwardsStairs;
 
     private final List<GameCharacter> characters;
 
-    public Map(String name, int width, int height) {
+    public Map(String name, int id, int width, int height) {
         Preconditions.checkArgument(width > 0 && height > 0);
         this.name = name;
+        this.id = id;
         this.map = new MapCell[width][height];
         this.mapWidth = width;
         this.mapHeight = height;
@@ -62,17 +63,21 @@ public class Map implements GameObject {
         return this.name;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String getDescription() {
         return this.name;
     }
 
-    public PositionOnMap getUpwardsStairs() {
+    public Position getUpwardsStairs() {
         Preconditions.checkNotNull(upwardsStairs, "No upwards stairs on the map!");
         return upwardsStairs;
     }
 
-    public PositionOnMap getDownwardsStairs() {
+    public Position getDownwardsStairs() {
         Preconditions.checkNotNull(downwardsStairs, "No downwards stairs on the map!");
         return downwardsStairs;
     }
@@ -101,9 +106,9 @@ public class Map implements GameObject {
         if (cell instanceof Stairs) {
             final Stairs stairs = (Stairs) cell;
             if (stairs.getType() == Stairs.Type.DOWN) {
-                downwardsStairs = new PositionOnMap(Position.getInstance(x, y), this);
+                downwardsStairs = Position.getInstance(x, y);
             } else {
-                upwardsStairs = new PositionOnMap(Position.getInstance(x, y), this);
+                upwardsStairs = Position.getInstance(x, y);
             }
         }
         map[x][y] = cell;
@@ -113,13 +118,17 @@ public class Map implements GameObject {
         Preconditions.checkState(mob.getMap().equals(this), "Given character is not on this map!");
         MapCell cell = getCell(mob.getPosition());
         cell.setGameCharacter(null);
+        // FIXME: if we don't remove the map and position from the character when
+        // removing it, we will get desynchro between positions logged on map and on character.
         characters.remove(mob);
     }
 
     public void putGameCharacter(GameCharacter mob, Position pos) {
-        Preconditions.checkArgument(!getCell(pos).getGameCharacter().isPresent(), "The map cell already contains a character!");
+        Preconditions.checkArgument(!getCell(pos).getGameCharacter().isPresent(),
+                "The map cell already contains a character!");
         getCell(pos).setGameCharacter(mob);
-        mob.setPositionOnMap(new PositionOnMap(pos, this));
+        mob.setPosition(pos);
+        mob.setMap(this);
         characters.add(mob);
     }
 
@@ -127,9 +136,9 @@ public class Map implements GameObject {
         getCell(pos).putItem(item);
     }
 
-    public void moveGameCharacter(GameCharacter mob, PositionOnMap pos) {
+    public void moveGameCharacter(GameCharacter mob, Position pos) {
         removeGameCharacter(mob);
-        pos.getMap().putGameCharacter(mob, pos.getPosition());
+        putGameCharacter(mob, pos);
     }
 
     /**

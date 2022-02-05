@@ -18,7 +18,7 @@
 package com.github.nzyuzin.candiderl.game.events;
 
 import com.github.nzyuzin.candiderl.game.map.cells.effects.Explosion;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 public class ExplosionEvent extends AbstractEvent<PositionedEventContext> {
     private final int size;
@@ -32,7 +32,7 @@ public class ExplosionEvent extends AbstractEvent<PositionedEventContext> {
 
     @Override
     public void occur() {
-        final PositionOnMap pos = getContext().getPosition();
-        pos.getMap().addEffectsToArea(pos.getPosition(), size, size, new Explosion(damage));
+        final Position pos = getContext().getPosition();
+        getContext().getMap().addEffectsToArea(pos, size, size, new Explosion(damage));
     }
 }

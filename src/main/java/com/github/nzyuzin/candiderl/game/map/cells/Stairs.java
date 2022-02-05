@@ -17,8 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game.map.cells;
 
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
@@ -50,7 +51,8 @@ public class Stairs extends AbstractMapCell {
     }
 
     private final Type type;
-    private Optional<PositionOnMap> matchingPosition;
+    private Optional<Position> matchingPosition;
+    private Optional<Map> matchingMap;
 
     public Stairs(final Type type) {
         super("Stairs", "Stone stairs leading " + type, ColoredChar.getColoredChar(type.getChar()), true, true);
@@ -62,12 +64,17 @@ public class Stairs extends AbstractMapCell {
         return type;
     }
 
-    public Optional<PositionOnMap> getMatchingPosition() {
+    public Optional<Position> getMatchingPosition() {
         return matchingPosition;
     }
 
-    public void setMatchingStairs(final PositionOnMap matchingPosition) {
+    public Optional<Map> getMatchingMap() {
+        return matchingMap;
+    }
+
+    public void setMatchingStairs(final Map map, final Position matchingPosition) {
         Preconditions.checkArgument(!this.matchingPosition.isPresent(), "Matching position is already set!");
+        this.matchingMap = Optional.of(map);
         this.matchingPosition = Optional.of(matchingPosition);
     }
 }

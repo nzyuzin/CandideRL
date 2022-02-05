@@ -21,6 +21,7 @@ import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.characters.actions.WieldItemAction;
+import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.items.Weapon;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
@@ -39,20 +40,29 @@ public final class GameEngine {
     private final KeyProcessor keyProcessor;
     private final ActionProcessor actionProcessor;
 
-    private final GameInformation gameInformation;
+    private final GameState gameState;
 
     public GameEngine(GameUi gameUi, MapGenerator mapGenerator, String playerName) {
         this.gameUi = gameUi;
         final ActionFactory actionFactory = new ActionFactory();
-        final Player player = new Player(playerName, actionFactory);
-        this.gameInformation = new GameInformation(player);
-        actionFactory.setGameInformation(gameInformation);
-        this.keyProcessor = new KeyProcessor(gameUi, gameInformation);
-        this.actionProcessor = new ActionProcessor(gameInformation);
-        final MapFactory mapFactory = new MapFactory(mapGenerator, new NpcFactory(new Random(), actionFactory));
-        actionFactory.setMapFactory(mapFactory);
-        final Map map = mapFactory.build();
+        final NpcFactory npcFactory = new NpcFactory(new Random());
+        final MapFactory mapFactory =
+                new MapFactory(mapGenerator, npcFactory);
+        final FovFactory fovFactory = new FovFactory();
+        final GameFactories gameFactories = new GameFactories(actionFactory, fovFactory, mapFactory, npcFactory);
+
+        this.gameState = new GameState(gameFactories);
+        final Player player = new Player(this.gameState, playerName);
+        this.gameState.setPlayer(player);
+
+        actionFactory.setGameInformation(gameState);
+
+        final Map map = mapFactory.build(gameState);
         map.putGameCharacter(player, map.getRandomFreePosition());
+        gameState.addMap(map);
+
+        this.keyProcessor = new KeyProcessor(gameUi, gameState);
+        this.actionProcessor = new ActionProcessor(gameState);
 
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.TWO_HANDED, 10, 1, 1);
         player.addItem(broadsword);
@@ -60,18 +70,18 @@ public final class GameEngine {
     }
 
     private void applyMapEffects() {
-        gameInformation.getPlayer().getMap().applyEffects();
+        gameState.getPlayer().getMap().applyEffects();
     }
 
     private void advanceTime() {
         if (log.isTraceEnabled()) {
-            log.trace("advanceTime begin currentTurn = {}", gameInformation.getCurrentTime());
+            log.trace("advanceTime begin currentTurn = {}", gameState.getCurrentTime());
         }
         actionProcessor.scheduleActions();
         actionProcessor.processActions();
         actionProcessor.processEvents();
         applyMapEffects();
-        gameUi.drawGame(gameInformation);
+        gameUi.drawGame(gameState);
         if (log.isTraceEnabled()) {
             log.trace("advanceTime end");
         }
@@ -81,16 +91,16 @@ public final class GameEngine {
         if (log.isDebugEnabled()) {
             log.debug("Game starts");
         }
-        gameUi.showAnnouncement("Greetings " + gameInformation.getPlayer().getName() + ", your journey awaits!");
-        gameUi.drawGame(gameInformation);
+        gameUi.showAnnouncement("Greetings " + gameState.getPlayer().getName() + ", your journey awaits!");
+        gameUi.drawGame(gameState);
         try {
             while (true) {
                 keyProcessor.handleInput();
-                if (gameInformation.getPlayer().hasAction()) {
+                if (gameState.getPlayer().hasAction()) {
                     advanceTime();
                 } else {
-                    for (final String message : gameInformation.getPlayer().pollMessages()) {
-                        gameInformation.addMessage(message);
+                    for (final String message : gameState.getPlayer().pollMessages()) {
+                        gameState.addMessage(message);
                     }
                 }
             }

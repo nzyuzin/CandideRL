@@ -19,12 +19,13 @@ package com.github.nzyuzin.candiderl.game;
 
 import com.github.nzyuzin.candiderl.game.characters.Player;
 import com.github.nzyuzin.candiderl.game.items.Item;
+import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.Door;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,24 +37,24 @@ public class KeyProcessor {
     private static final Logger log = LoggerFactory.getLogger(KeyProcessor.class);
 
     private final GameUi ui;
-    private final GameInformation gameInformation;
+    private final GameState gameState;
 
-    public KeyProcessor(GameUi ui, GameInformation gameInformation) {
+    public KeyProcessor(GameUi ui, GameState gameInformation) {
         this.ui = ui;
-        this.gameInformation = gameInformation;
+        this.gameState = gameInformation;
     }
 
     public void handleInput() throws GameClosedException {
         final char input = getInput();
         if (KeyDefinitions.STATUS_KEY == input) {
-            ui.showStatus(gameInformation);
+            ui.showStatus(gameState);
             getInput(); // Skip one char to close the status screen
             drawGameScreen();
         } if (KeyDefinitions.INVENTORY_KEY == input ) {
             showInventory();
         } else if (KeyDefinitions.VIEW_MODE_KEY == input) {
             enterViewMode();
-        } else if (KeyDefinitions.isDirectionKey(input) && !gameInformation.getPlayer().isDead()) {
+        } else if (KeyDefinitions.isDirectionKey(input) && !gameState.getPlayer().isDead()) {
             processDirectionKey(input);
         } else if (KeyDefinitions.OPEN_DOOR_KEY == input) {
             openCloseDoor(true);
@@ -64,7 +65,7 @@ public class KeyProcessor {
         } else if (KeyDefinitions.STAIRS_UPWARDS_KEY == input || KeyDefinitions.STAIRS_DOWNWARDS_KEY == input) {
             processStairs(input);
         } else if (KeyDefinitions.isSkipTurnChar(input)) {
-            gameInformation.getPlayer().skipTurn();
+            gameState.getPlayer().skipTurn();
         } else if (KeyDefinitions.isExitChar(input)) {
             throw new GameClosedException();
         }
@@ -80,9 +81,9 @@ public class KeyProcessor {
 
     private void processDirectionKey(final char input) {
         final Direction direction = KeyDefinitions.getDirectionFromKey(input);
-        final Player player = gameInformation.getPlayer();
-        final PositionOnMap position = player.getPositionOnMap().apply(direction);
-        final MapCell mapCell = position.getMapCell();
+        final Player player = gameState.getPlayer();
+        final Position position = player.getPosition().apply(direction);
+        final MapCell mapCell = player.getMap().getCell(position);
         if (mapCell.isPassable()) {
             if (!mapCell.getGameCharacter().isPresent()) {
                 player.move(position);
@@ -97,20 +98,20 @@ public class KeyProcessor {
     }
 
     private void enterViewMode() {
-        PositionOnMap lastPosition = gameInformation.getPlayer().getPositionOnMap();
-        ui.drawMapView(lastPosition);
+        Position lastPosition = gameState.getPlayer().getPosition();
+        final Map map = gameState.getPlayer().getMap();
+        ui.drawMapView(map, lastPosition);
         char newInput = getInput();
         while (newInput != KeyDefinitions.ESCAPE_KEY) {
             if (KeyDefinitions.isDirectionKey(newInput)) {
                 final Direction direction = KeyDefinitions.getDirectionFromKey(newInput);
-                final PositionOnMap newPosition =
-                        new PositionOnMap(lastPosition.getPosition().apply(direction), lastPosition.getMap());
-                if (lastPosition.getMap().isInside(newPosition.getPosition())) {
+                final Position newPosition = lastPosition.apply(direction);
+                if (map.isInside(newPosition)) {
                     lastPosition = newPosition;
-                    ui.drawMapView(lastPosition);
+                    ui.drawMapView(map, lastPosition);
                 }
             } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
-                final MapCell cell = lastPosition.getMapCell();
+                final MapCell cell = map.getCell(lastPosition);
                 if (cell.getGameCharacter().isPresent()) {
                     ui.drawExamineScreen(cell.getGameCharacter().get());
                 } else if (!cell.getItems().isEmpty()) {
@@ -119,7 +120,7 @@ public class KeyProcessor {
                     ui.drawExamineScreen(cell);
                 }
                 getInput();
-                ui.drawMapView(lastPosition);
+                ui.drawMapView(map, lastPosition);
             }
             newInput = getInput();
         }
@@ -127,17 +128,18 @@ public class KeyProcessor {
     }
 
     private void openCloseDoor(boolean isOpen) {
-        final Player player = gameInformation.getPlayer();
+        final Player player = gameState.getPlayer();
         reportMessage((isOpen ? "Open" : "Close") + " in which direction?");
         char input = getInput();
         while (!KeyDefinitions.isDirectionKey(input)) {
             input = getInput();
         }
-        final PositionOnMap doorPosition = player.getPositionOnMap().apply(KeyDefinitions.getDirectionFromKey(input));
-        if (!(doorPosition.getMapCell() instanceof Door)) {
+        final Position doorPosition = player.getPosition().apply(KeyDefinitions.getDirectionFromKey(input));
+        final MapCell doorCell = player.getMap().getCell(doorPosition);
+        if (!(doorCell instanceof Door)) {
             reportMessage("There is no door here!");
         } else {
-            final Door door = (Door) doorPosition.getMapCell();
+            final Door door = (Door) doorCell;
             if (isOpen) {
                 if (door.isOpen()) {
                     reportMessage("This door is already opened!");
@@ -156,11 +158,11 @@ public class KeyProcessor {
 
     private void processStairs(final char direction) {
         final Stairs.Type type = direction == KeyDefinitions.STAIRS_DOWNWARDS_KEY ? Stairs.Type.DOWN : Stairs.Type.UP;
-        gameInformation.getPlayer().traverseStairs(type);
+        gameState.getPlayer().traverseStairs(type);
     }
 
     private void pickupItem() {
-        final Player player = gameInformation.getPlayer();
+        final Player player = gameState.getPlayer();
         final MapCell playerCell = player.getMapCell();
         if (!playerCell.getItems().isEmpty()) {
             final Item item = playerCell.getItems().get(0);
@@ -171,9 +173,9 @@ public class KeyProcessor {
     }
 
     private void showInventory() {
-        ui.showInventory(gameInformation);
+        ui.showInventory(gameState);
         char newInput = getInput();
-        final List<Item> playerItems = gameInformation.getPlayer().getItems();
+        final List<Item> playerItems = gameState.getPlayer().getItems();
         while (newInput != KeyDefinitions.ESCAPE_KEY) {
             final int inventoryItem = newInput - 'a';
             if (inventoryItem >= 0 && inventoryItem < 52 && inventoryItem < playerItems.size()) {
@@ -196,25 +198,25 @@ public class KeyProcessor {
         char input = getInput();
         while(input != KeyDefinitions.ESCAPE_KEY) {
             if (input == KeyDefinitions.DROP_ITEM_KEY) {
-                gameInformation.getPlayer().dropItem(item);
+                gameState.getPlayer().dropItem(item);
                 return true;
             } else if (input == KeyDefinitions.WIELD_ITEM_KEY) {
-                gameInformation.getPlayer().wieldItem(item);
+                gameState.getPlayer().wieldItem(item);
                 return true;
             }
 
             input = getInput();
         }
-        ui.showInventory(gameInformation);
+        ui.showInventory(gameState);
         return false;
     }
 
     private void reportMessage(final String msg) {
-        gameInformation.addMessage(msg);
+        gameState.addMessage(msg);
         drawGameScreen();
     }
 
     private void drawGameScreen() {
-        ui.drawGame(gameInformation);
+        ui.drawGame(gameState);
     }
 }

@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.ai;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.characters.actions.MoveToNextCellAction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -26,12 +26,12 @@ public class NpcController {
 
     private final GameCharacter target;
     private final int operationalRange;
-    private final GameInformation gameInformation;
+    private final GameState gameInformation;
 
-    public NpcController(GameCharacter target, int operationalRange, GameInformation gameInformation) {
+    public NpcController(GameCharacter target, int operationalRange, GameState gameState) {
         this.target = target;
         this.operationalRange = operationalRange;
-        this.gameInformation = gameInformation;
+        this.gameInformation = gameState;
     }
 
     public void act(GameCharacter mob) {
@@ -39,13 +39,13 @@ public class NpcController {
         if (target.getPosition().distanceTo(mob.getPosition()) < 2) {
             if (target.getAction().isPresent() && target.getAction().get() instanceof MoveToNextCellAction) {
                 final MoveToNextCellAction moveAction = (MoveToNextCellAction) target.getAction().get();
-                if (mob.getPositionOnMap().distanceTo(moveAction.getPosition()) >= 2
+                if (mob.getPosition().distanceTo(moveAction.getPosition()) >= 2
                         && moveAction.getExecutionTime() <= gameInformation.getCurrentTime() + mob.getAttackDelay()) {
-                    mob.move(target.getPositionOnMap());
+                    mob.move(target.getPosition());
                     return;
                 }
             }
-            mob.hit(target.getPositionOnMap());
+            mob.hit(target.getPosition());
         } else {
             moveToTarget(mob);
         }
@@ -58,7 +58,7 @@ public class NpcController {
                 new PathFinder(target.getPosition(), operationalRange, target.getMap());
         final Position newPosition = path.findNextMove(mob.getPosition());
         if (!newPosition.equals(mob.getPosition())) {
-            mob.move(mob.getPositionOnMap().newPosition(newPosition));
+            mob.move(newPosition);
         }
     }
 

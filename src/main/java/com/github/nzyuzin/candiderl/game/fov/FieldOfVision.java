@@ -17,12 +17,15 @@
 
 package com.github.nzyuzin.candiderl.game.fov;
 
+import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 
-public interface FieldOfVision {
+import java.io.Serializable;
+
+public interface FieldOfVision extends Serializable {
 
     boolean isSeen(Position p);
-    ColoredChar[][] getVisibleCells(int width, int height);
+    ColoredChar[][] getVisibleCells(int width, int height, GameCharacter watcher, int viewDistance);
 
 }

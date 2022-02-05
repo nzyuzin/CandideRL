@@ -27,21 +27,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class FieldOfVisionImpl implements FieldOfVision {
-    private final GameCharacter watcher;
-    private int viewDistance;
     private FovStrategy strategy;
 
     private static final Logger log = LoggerFactory.getLogger(FieldOfVisionImpl.class);
 
     /**
-     * Builds field of view using GameCharacter as watcher for whom field of view is calculated
+     * Builds field of view using specified strategy
      *
-     * @param watcher GameCharacter for whom field of view is calculated
-     * @param viewDistance watcher won't be able to see tiles further than this distance
+     * @param implementation FovStrategy to use, i.e. shadow casting
      */
-    public FieldOfVisionImpl(GameCharacter watcher, int viewDistance, FovStrategy implementation) {
-        this.viewDistance = viewDistance;
-        this.watcher = watcher;
+    public FieldOfVisionImpl(FovStrategy implementation) {
         this.strategy = implementation;
     }
 
@@ -49,20 +44,19 @@ final class FieldOfVisionImpl implements FieldOfVision {
         throw new UnsupportedOperationException();
     }
 
-
     /**
      * Method converts field of view into printable array calculating it in process
      *
      * @return array of printable chars corresponding to watchers field of view
      */
     @Override
-    public ColoredChar[][] getVisibleCells(int width, int height) {
+    public ColoredChar[][] getVisibleCells(int width, int height, GameCharacter watcher, int viewDistance) {
         long startTime = 0;
         if (log.isTraceEnabled()) {
             startTime = System.currentTimeMillis();
             log.trace("toColoredCharArray start");
         }
-        Map map = watcher.getPositionOnMap().getMap();
+        Map map = watcher.getMap();
         if (!GameConfig.CALCULATE_FIELD_OF_VIEW) {
             return map.getVisibleChars(watcher.getPosition(), width, height);
         }

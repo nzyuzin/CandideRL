@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.map;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameConstants;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.NpcFactory;
 import com.github.nzyuzin.candiderl.game.map.generator.MapGenerator;
 import com.google.common.io.LineReader;
@@ -35,40 +36,38 @@ public class MapFactory {
     private final MapGenerator mapGenerator;
     private final NpcFactory npcFactory;
 
-    private int mapCounter;
-
     public MapFactory(int width, int height, MapGenerator mapGenerator, NpcFactory npcFactory) {
         this.width = width;
         this.height = height;
         this.mapGenerator = mapGenerator;
         this.npcFactory = npcFactory;
-        this.mapCounter = 0;
     }
 
     public MapFactory(MapGenerator mapGenerator, NpcFactory npcFactory) {
         this(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, mapGenerator, npcFactory);
     }
 
-    public Map build() {
+    public Map build(final GameState gameState) {
         final Map result;
+        final int id = gameState.getNextMapId();;
         if (GameConfig.BUILD_MAP_FROM_FILE) {
             try {
-                result = mapGenerator.generate(getMapName(), readMapFile());
+                result = mapGenerator.generate(getMapName(id), id, readMapFile());
             } catch (IOException e) {
                 throw new RuntimeException("Failed to read map file", e);
             }
         } else {
-            result = mapGenerator.generate(getMapName(), width, height);
+            result = mapGenerator.generate(getMapName(id), id, width, height);
         }
         if (GameConfig.SPAWN_MOBS) {
-            spawnMobs(result, 2);
+            spawnMobs(gameState, result, 2);
         }
         return result;
     }
 
-    private void spawnMobs(final Map map, final int number) {
+    private void spawnMobs(final GameState gameState, final Map map, final int number) {
         for (int i = 0; i < number; i++) {
-            map.putGameCharacter(npcFactory.getNpc(), map.getRandomFreePosition());
+            map.putGameCharacter(npcFactory.getNpc(gameState), map.getRandomFreePosition());
         }
     }
 
@@ -86,8 +85,8 @@ public class MapFactory {
         return result.toArray(new char[result.size()][]);
     }
 
-    private String getMapName() {
-        return "D:" + mapCounter++;
+    private String getMapName(int id) {
+        return "D:" + id;
     }
 
 }

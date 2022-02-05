@@ -17,26 +17,16 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.actions.Action;
-import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
-import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
-import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.google.common.base.Optional;
 
 public final class Player extends AbstractGameCharacter {
 
-    private FieldOfVision fov = null;
-
-    public Player(final String name, final ActionFactory actionFactory) {
-        super(name, "Yet another wanderer in forgotten land", Races.HUMAN.get(), actionFactory);
+    public Player(GameState gameState, final String name) {
+        super(gameState, name, "Yet another wanderer in forgotten land", Races.HUMAN.get());
         this.charOnMap = ColoredChar .getColoredChar('@');
-        fov = FovFactory.getInstance().getFOV(this, GameConfig.VIEW_DISTANCE_LIMIT);
-    }
-
-    public ColoredChar[][] getVisibleMap(int width, int height) {
-        return fov.getVisibleCells(width, height);
     }
 
     public void skipTurn() {

@@ -20,13 +20,13 @@ package com.github.nzyuzin.candiderl.game.characters.actions;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.events.ExplosionEvent;
 import com.github.nzyuzin.candiderl.game.events.PositionedEventContext;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Optional;
 
 public class CastExplosionAction extends AbstractAction {
-    private final PositionOnMap position;
+    private final Position position;
 
-    public CastExplosionAction(GameCharacter subject, PositionOnMap position, int currentTime) {
+    public CastExplosionAction(GameCharacter subject, Position position, int currentTime) {
         super(subject, currentTime, 100);
         this.position = position;
     }
@@ -38,7 +38,7 @@ public class CastExplosionAction extends AbstractAction {
 
     @Override
     protected ActionResult doExecute() {
-        PositionedEventContext context = new PositionedEventContext(position);
+        PositionedEventContext context = new PositionedEventContext(position, getPerformer().getMap());
         return new ActionResult(new ExplosionEvent(context, 3, 10));
     }
 }

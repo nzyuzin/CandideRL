@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.ui.swing.TextWindow;
 import com.google.common.collect.ImmutableList;
@@ -28,7 +28,7 @@ public class InventoryScreen extends AbstractDisplayedScreen {
         super(gameWindow);
     }
 
-    public void draw(final GameInformation gameInfo) {
+    public void draw(final GameState gameInfo) {
         final ImmutableList<Item> items = gameInfo.getPlayer().getItems();
         int remainingItems = items.size();
         while (remainingItems > 0) {

@@ -17,16 +17,23 @@
 
 package com.github.nzyuzin.candiderl.game.events;
 
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 
 public class PositionedEventContext extends AbstractEventContext {
-    PositionOnMap position;
+    final Position position;
+    final Map map;
 
-    public PositionedEventContext(PositionOnMap position) {
+    public PositionedEventContext(Position position, Map map) {
         this.position = position;
+        this.map = map;
     }
 
-    public PositionOnMap getPosition() {
+    public Position getPosition() {
         return position;
+    }
+
+    public Map getMap() {
+        return map;
     }
 }

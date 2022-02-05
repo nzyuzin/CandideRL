@@ -17,7 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 import java.awt.Color;
@@ -26,24 +26,25 @@ import java.util.Random;
 public class NpcFactory {
 
     private final Random random;
-    private final ActionFactory actionFactory;
 
-    public NpcFactory(Random random, ActionFactory actionFactory) {
+    public NpcFactory(Random random) {
         this.random = random;
-        this.actionFactory = actionFactory;
     }
 
-    public Npc getNpc() {
+    public Npc getNpc(GameState gameState) {
         final int roll = random.nextInt(2);
         if (roll == 0) {
-            return new Npc("Troll", "A furious beast with sharp claws.", Races.TROLL.get(),
-                    ColoredChar.getColoredChar('t', ColoredChar.YELLOW), actionFactory);
+            return new Npc(gameState, "Troll",
+                    "A furious beast with sharp claws.", Races.TROLL.get(),
+                    ColoredChar.getColoredChar('t', ColoredChar.YELLOW));
         } else if (roll == 1) {
-            return new Npc("Goblin", "A small green humanoid. Apparently not very strong.", Races.GOBLIN.get(),
-                    ColoredChar.getColoredChar('g', ColoredChar.GREEN), actionFactory);
+            return new Npc(gameState,"Goblin",
+                    "A small green humanoid. Apparently not very strong.", Races.GOBLIN.get(),
+                    ColoredChar.getColoredChar('g', ColoredChar.GREEN));
         } else {
-            return new Npc("Rat", "A small rodent. It doesn't seem to like you.", Races.RODENT.get(),
-                    ColoredChar.getColoredChar('r', Color.ORANGE), actionFactory);
+            return new Npc(gameState, "Rat",
+                    "A small rodent. It doesn't seem to like you.", Races.RODENT.get(),
+                    ColoredChar.getColoredChar('r', Color.ORANGE));
         }
     }
 

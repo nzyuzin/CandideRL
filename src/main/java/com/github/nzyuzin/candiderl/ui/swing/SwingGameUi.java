@@ -18,10 +18,11 @@
 package com.github.nzyuzin.candiderl.ui.swing;
 
 import com.github.nzyuzin.candiderl.game.GameConfig;
-import com.github.nzyuzin.candiderl.game.GameInformation;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.github.nzyuzin.candiderl.game.utility.PositionOnMap;
+import com.github.nzyuzin.candiderl.game.map.Map;
+import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.github.nzyuzin.candiderl.ui.GameUi;
 import com.github.nzyuzin.candiderl.ui.swing.screens.AnnouncementScreen;
 import com.github.nzyuzin.candiderl.ui.swing.screens.ExamineScreen;
@@ -104,14 +105,14 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void drawGame(final GameInformation gameInfo) {
+    public void drawGame(final GameState gameInfo) {
         gameScreen.draw(gameInfo);
         gameWindow.repaint();
     }
 
     @Override
-    public void drawMapView(PositionOnMap position) {
-        viewMapScreen.draw(position);
+    public void drawMapView(Map map, Position position) {
+        viewMapScreen.draw(map, position);
         gameWindow.repaint();
     }
 
@@ -122,13 +123,13 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void showStatus(final GameInformation gameInfo) {
+    public void showStatus(final GameState gameInfo) {
         statusScreen.show(gameInfo);
         gameWindow.repaint();
     }
 
     @Override
-    public void showInventory(GameInformation gameInfo) {
+    public void showInventory(GameState gameInfo) {
         inventoryScreen.draw(gameInfo);
         gameWindow.repaint();
     }
