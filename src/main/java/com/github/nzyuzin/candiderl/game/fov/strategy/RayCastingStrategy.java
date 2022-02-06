@@ -19,16 +19,15 @@ package com.github.nzyuzin.candiderl.game.fov.strategy;
 
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-public class ShadowCastingStrategy implements FovStrategy {
+public class RayCastingStrategy implements FovStrategy {
 
-    public ShadowCastingStrategy() {
+    public RayCastingStrategy() {
     }
 
     private boolean[][] seen;

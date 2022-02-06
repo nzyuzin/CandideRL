@@ -17,14 +17,13 @@
 
 package com.github.nzyuzin.candiderl.game.fov;
 
-import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.fov.strategy.FovStrategy;
-import com.github.nzyuzin.candiderl.game.fov.strategy.ShadowCastingStrategy;
+import com.github.nzyuzin.candiderl.game.fov.strategy.RayCastingStrategy;
 
 public class FovFactory {
 
     public enum Strategies {
-        SHADOW_CASTING(new ShadowCastingStrategy());
+        SHADOW_CASTING(new RayCastingStrategy());
 
         private FovStrategy implementation;
 
