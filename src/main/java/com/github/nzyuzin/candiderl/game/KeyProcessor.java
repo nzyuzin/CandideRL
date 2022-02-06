@@ -100,7 +100,7 @@ public class KeyProcessor {
     private void enterViewMode() {
         Position lastPosition = gameState.getPlayer().getPosition();
         final Map map = gameState.getPlayer().getMap();
-        ui.drawMapView(map, lastPosition);
+        ui.drawMapView(gameState, map, lastPosition);
         char newInput = getInput();
         while (newInput != KeyDefinitions.ESCAPE_KEY) {
             if (KeyDefinitions.isDirectionKey(newInput)) {
@@ -108,7 +108,7 @@ public class KeyProcessor {
                 final Position newPosition = lastPosition.apply(direction);
                 if (map.isInside(newPosition)) {
                     lastPosition = newPosition;
-                    ui.drawMapView(map, lastPosition);
+                    ui.drawMapView(gameState, map, lastPosition);
                 }
             } else if (KeyDefinitions.EXAMINE_KEY == newInput) {
                 final MapCell cell = map.getCell(lastPosition);
@@ -120,7 +120,7 @@ public class KeyProcessor {
                     ui.drawExamineScreen(cell);
                 }
                 getInput();
-                ui.drawMapView(map, lastPosition);
+                ui.drawMapView(gameState, map, lastPosition);
             }
             newInput = getInput();
         }

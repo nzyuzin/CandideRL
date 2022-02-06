@@ -17,6 +17,10 @@
 
 package com.github.nzyuzin.candiderl.ui.swing.screens;
 
+import com.github.nzyuzin.candiderl.game.GameConfig;
+import com.github.nzyuzin.candiderl.game.GameState;
+import com.github.nzyuzin.candiderl.game.characters.Player;
+import com.github.nzyuzin.candiderl.game.fov.FieldOfVision;
 import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
@@ -30,11 +34,24 @@ public class ViewMapScreen extends AbstractDisplayedScreen {
         super(gameWindow);
     }
 
-    public void draw(final Map map, final Position viewPoint) {
+    public void draw(final GameState gameState, final Map map, final Position viewPoint) {
         clearScreen();
         final int mapViewWidth = getGameWindow().getColumns();
         final int mapViewHeight = getGameWindow().getRows() - 1;
-        final ColoredChar[][] visibleMap = map.getVisibleChars(viewPoint, mapViewWidth, mapViewHeight);
+        final Player player = gameState.getPlayer();
+        final ColoredChar[][] visibleMap;
+        if (player.getMap().getId() == map.getId()) {
+            // We are on the same map with player, so we need to include his
+            // field of vision into view
+            final FieldOfVision fov = gameState.getGameFactories().getFovFactory().getFov();
+            final boolean[][] seenByPlayer =
+                    fov.calculateSeenMask(player, GameConfig.VIEW_DISTANCE_LIMIT);
+            visibleMap = map.getVisibleChars(viewPoint, mapViewWidth, mapViewHeight,
+                    seenByPlayer, player.getPosition());
+        } else {
+            // Can simply display previously seen cells
+            visibleMap = map.getVisibleChars(viewPoint, mapViewWidth, mapViewHeight);
+        }
         // drawing begins in upper left corner of screen
         // map passed as argument has (0, 0) as lower left point
         for (int i = mapViewHeight - 1; i >= 0; i--) {

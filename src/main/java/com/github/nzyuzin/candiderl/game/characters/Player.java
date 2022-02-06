@@ -19,6 +19,7 @@ package com.github.nzyuzin.candiderl.game.characters;
 
 import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.characters.actions.Action;
+import com.github.nzyuzin.candiderl.game.items.Item;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.google.common.base.Optional;
 
@@ -41,5 +42,12 @@ public final class Player extends AbstractGameCharacter {
         } else {
             addMessage(errorMessage.get());
         }
+    }
+
+    @Override
+    public Item die() {
+        final Item result = super.die();
+        addMessage("YOU DIED");
+        return result;
     }
 }

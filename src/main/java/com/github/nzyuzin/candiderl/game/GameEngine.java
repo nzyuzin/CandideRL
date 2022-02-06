@@ -30,6 +30,7 @@ import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Random;
 
 public final class GameEngine {
@@ -99,8 +100,12 @@ public final class GameEngine {
                 if (gameState.getPlayer().hasAction()) {
                     advanceTime();
                 } else {
-                    for (final String message : gameState.getPlayer().pollMessages()) {
-                        gameState.addMessage(message);
+                    final List<String> messages = gameState.getPlayer().pollMessages();
+                    if (messages.size() > 0) {
+                        for (final String message : messages) {
+                            gameState.addMessage(message);
+                        }
+                        gameUi.drawMessages(gameState);
                     }
                 }
             }

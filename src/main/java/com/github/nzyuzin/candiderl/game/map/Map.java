@@ -201,26 +201,26 @@ public class Map implements GameObject {
         return array;
     }
 
-    public ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
-        MapCell[][] partOfMap = getPartOfMap(pos, width, height);
-        ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
-        for (int y = 0, i = 0; y < partOfMap[0].length; y++, i++) {
-            for (int x = 0, j = 0; x < partOfMap.length; x++, j++) {
-                if (partOfMap[x][y] != null)
-                    result[j][i] = partOfMap[x][y].getChar();
-                else
-                    result[j][i] = ColoredChar.NIHIL;
-            }
-        }
-        return result;
-    }
-
-    public ColoredChar[][] getVisibleChars(Position pos, int width, int height, boolean[][] seen) {
-        MapCell[][] partOfMap = getPartOfMap(pos, width, height);
+    /**
+     * Returns visible part of the map centered on {@param pos} with given
+     * dimensions and according to current field of vision {@param seen} with its center
+     * @param viewCenter center position of the view
+     * @param width width of the view
+     * @param height height of the view
+     * @param seen boolean mask centered in pos which determines radius directly seen from it
+     * @param seenCenter center of the seen array on the map
+     * @return an array of visible characters, with those not seen right now grayed out if they were seen before
+     */
+    public ColoredChar[][] getVisibleChars(Position viewCenter, int width, int height,
+                                           boolean[][] seen, Position seenCenter) {
+        MapCell[][] partOfMap = getPartOfMap(viewCenter, width, height);
         ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
 
-        int xSeenOffset = result.length / 2 - seen.length / 2;
-        int ySeenOffset = result[0].length / 2 - seen[0].length / 2;
+        int xCenterDiff = viewCenter.getX() - seenCenter.getX();
+        int yCenterDiff = viewCenter.getY() - seenCenter.getY();
+
+        int xSeenOffset = result.length / 2 - seen.length / 2 - xCenterDiff;
+        int ySeenOffset = result[0].length / 2 - (seen.length > 0 ? seen[0].length : 0) / 2 - yCenterDiff;
         int xInSeen;
         int yInSeen;
 
@@ -232,7 +232,7 @@ public class Map implements GameObject {
                     xInSeen = x - xSeenOffset;
                     yInSeen = y - ySeenOffset;
                     final Position xyOnMap =
-                            Position.getInstance(pos, x - partOfMap.length / 2, y - partOfMap[0].length / 2);
+                            Position.getInstance(viewCenter, x - partOfMap.length / 2, y - partOfMap[0].length / 2);
                     if (isInsideBoolArray(seen, xInSeen, yInSeen) && seen[xInSeen][yInSeen]) {
                         result[x][y] = partOfMap[x][y].getChar();
                         markSeen(xyOnMap);
@@ -247,6 +247,14 @@ public class Map implements GameObject {
         }
 
         return result;
+    }
+
+    public ColoredChar[][] getVisibleChars(Position pos, int width, int height, boolean[][] seen) {
+        return getVisibleChars(pos, width, height, seen, pos);
+    }
+
+    public ColoredChar[][] getVisibleChars(Position pos, int width, int height) {
+        return getVisibleChars(pos, width, height, new boolean[0][0], pos);
     }
 
     private boolean  isInsideBoolArray(boolean[][] array, int x, int y) {

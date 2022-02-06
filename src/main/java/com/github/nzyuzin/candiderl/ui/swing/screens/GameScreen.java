@@ -52,11 +52,16 @@ public class GameScreen extends AbstractDisplayedScreen {
         final Position playerPosition = player.getPosition();
         final ColoredChar[][] visibleMap;
         if (!player.isDead()) {
-            final FieldOfVision fov = gameInfo.getGameFactories().getFovFactory().getFov();
-            visibleMap = fov.getVisibleCells(mapWidth, mapHeight, player, GameConfig.VIEW_DISTANCE_LIMIT);
+            if (GameConfig.CALCULATE_FIELD_OF_VIEW) {
+                final FieldOfVision fov = gameInfo.getGameFactories().getFovFactory().getFov();
+                boolean[][] seen =
+                        fov.calculateSeenMask(player, GameConfig.VIEW_DISTANCE_LIMIT);
+                visibleMap = player.getMap().getVisibleChars(playerPosition, mapWidth, mapHeight, seen);
+            } else {
+                visibleMap = player.getMap().getVisibleChars(playerPosition, mapWidth, mapHeight);
+            }
         } else {
-            visibleMap = player.getMap().getVisibleChars(
-                    playerPosition, mapWidth, mapHeight);
+            visibleMap = player.getMap().getVisibleChars(playerPosition, mapWidth, mapHeight);
         }
         final int screenHeight = mapHeight + messagesHeight;
         final List<String> messages = gameInfo.getMessages();

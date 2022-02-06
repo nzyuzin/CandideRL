@@ -111,8 +111,13 @@ public class SwingGameUi implements GameUi {
     }
 
     @Override
-    public void drawMapView(Map map, Position position) {
-        viewMapScreen.draw(map, position);
+    public void drawMessages(final GameState gameState) {
+        drawGame(gameState);
+    }
+
+    @Override
+    public void drawMapView(GameState gameState, Map map, Position position) {
+        viewMapScreen.draw(gameState, map, position);
         gameWindow.repaint();
     }
 

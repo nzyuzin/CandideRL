@@ -29,7 +29,8 @@ public interface GameUi extends AutoCloseable {
     void init();
     char getInputChar();
     void drawGame(GameState gameInfo);
-    void drawMapView(Map map, Position position);
+    void drawMessages(GameState gameState);
+    void drawMapView(GameState gameState, Map map, Position position);
     void drawExamineScreen(GameObject object);
     void showStatus(GameState gameInfo);
     void showInventory(GameState gameInfo);

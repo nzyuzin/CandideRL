@@ -93,10 +93,10 @@ public class ActionProcessor {
                 + " at " + gameInformation.getCurrentTime());
         final ActionResult actionResult = gameCharacter.performAction();
         events.addAll(actionResult.getEvents());
+        gameInformation.addMessage(actionResult.getMessage());
         for (final String message : gameCharacter.pollMessages()) {
             gameInformation.addMessage(message);
         }
-        gameInformation.addMessage(actionResult.getMessage());
     }
 
     public void processEvents() {

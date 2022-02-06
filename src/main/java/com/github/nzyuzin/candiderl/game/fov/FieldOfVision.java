@@ -23,9 +23,6 @@ import com.github.nzyuzin.candiderl.game.utility.Position;
 
 import java.io.Serializable;
 
-public interface FieldOfVision extends Serializable {
-
-    boolean isSeen(Position p);
-    ColoredChar[][] getVisibleCells(int width, int height, GameCharacter watcher, int viewDistance);
-
+public interface FieldOfVision {
+    boolean[][] calculateSeenMask(GameCharacter watcher, int viewDistance);
 }
