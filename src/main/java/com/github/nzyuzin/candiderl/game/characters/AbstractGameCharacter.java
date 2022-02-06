@@ -285,7 +285,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public Item die() {
-        return new MiscItem("Corpse of " + this.getName(), "A corpse",
+        return new MiscItem("Corpse of " + this.getName(), "A corpse. It definitely has shuffled off this mortal coil.",
                 ColoredChar.getColoredChar('?', this.charOnMap.getForeground(), ColoredChar.RED), 50, 50);
     }
 
