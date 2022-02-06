@@ -84,7 +84,7 @@ public class DungeonGenerator extends AbstractMapGenerator {
     private void placeRoom(int column, int row, int width, int height) {
         for (int i = row / 2; i < row / 2 + height; i++) {
             for (int j = column / 2; j < column / 2 + width; j++) {
-                map.setCell(i, j, Floor.getFloor());
+                map.setCell(i, j, new Floor());
             }
         }
     }
@@ -100,7 +100,7 @@ public class DungeonGenerator extends AbstractMapGenerator {
     private void drawPassage(final Map map, final Position pos1, final Position pos2) {
         Position closest = pos1.nextInLine(pos2);
         while (!closest.equals(pos2)) {
-            map.setCell(closest, Floor.getFloor());
+            map.setCell(closest, new Floor());
             closest = closest.nextInLine(pos2);
         }
     }

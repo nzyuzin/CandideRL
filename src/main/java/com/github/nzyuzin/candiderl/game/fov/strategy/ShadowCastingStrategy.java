@@ -19,8 +19,11 @@ package com.github.nzyuzin.candiderl.game.fov.strategy;
 
 import com.github.nzyuzin.candiderl.game.utility.Direction;
 import com.github.nzyuzin.candiderl.game.utility.Position;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 public class ShadowCastingStrategy implements FovStrategy {
@@ -28,15 +31,13 @@ public class ShadowCastingStrategy implements FovStrategy {
     public ShadowCastingStrategy() {
     }
 
-    private Boolean[][] seen;
+    private boolean[][] seen;
 
-    public Boolean[][] calculateFOV(boolean[][] transparent, int viewDistance) {
-
+    public boolean[][] calculateFov(boolean[][] transparent, int viewDistance) {
         Queue<Position> positionsQueue = new ArrayDeque<>();
+        Queue<Direction> directionsQueue = new ArrayDeque<>();
 
-        Position pos;
-
-        seen = new Boolean[transparent.length][transparent[0].length];
+        seen = new boolean[transparent.length][transparent[0].length];
         boolean[][] marked = new boolean[transparent.length][transparent[0].length];
         Direction[] directions = Direction.values();
 
@@ -45,52 +46,52 @@ public class ShadowCastingStrategy implements FovStrategy {
 
         seen[watcherPos.getX()][watcherPos.getY()] = true;
 
-        for (int i = 0; i < directions.length; i++) {
-            positionsQueue.add(watcherPos.apply(directions[i]));
+        for (Direction direction : directions) {
+            positionsQueue.add(watcherPos.apply(direction));
+            directionsQueue.add(direction);
+        }
 
-            while (!positionsQueue.isEmpty()) {
-                pos = positionsQueue.poll();
+        while (!positionsQueue.isEmpty()) {
+            final Position pos = positionsQueue.poll();
+            final Direction dir = directionsQueue.poll();
+            final int x = pos.getX();
+            final int y = pos.getY();
 
-                if (!isInsideSeenArray(pos)
-                        || watcherPos.distanceTo(pos) > viewDistance
-                        || marked[pos.getX()][pos.getY()])
-                    continue;
+            if (!isInsideSeenArray(pos)
+                    || watcherPos.distanceTo(pos) > viewDistance
+                    || marked[x][y])
+                continue;
 
-                marked[pos.getX()][pos.getY()] = true;
-                Position cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
-                seen[pos.getX()][pos.getY()] = !(seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
-                        && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
-                        && !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]);
+            marked[x][y] = true;
+            Position cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
+            seen[x][y] = seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
+                    && transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()];
 
-                if (transparent[pos.getX()][pos.getY()]) {
-                    for (int j = i - 1 + directions.length; j <= i + 1 + directions.length; j++) {
-                        Position newPosition = pos.apply(directions[j % directions.length]);
-                        if (newPosition != null) {
-                            positionsQueue.add(newPosition);
-                        }
-                    }
-                } else {
-                    while (true) {
-                        pos = pos.apply(watcherPos.directionTo(pos));
-                        if (pos == null) {
-                            break;
-                        }
-                        if (!isInsideSeenArray(pos)) {
-                            break;
-                        }
-                        cellBetweenWatcher = pos.apply(pos.directionTo(watcherPos));
-                        if (seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()] != null
-                                && !seen[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]
-                                || !transparent[cellBetweenWatcher.getX()][cellBetweenWatcher.getY()]) {
-                            seen[pos.getX()][pos.getY()] = false;
-                        }
-                        marked[pos.getX()][pos.getY()] = true;
+            if (seen[x][y] && transparent[x][y]) {
+                for (final Direction newDir : getAdjacentDirections(dir)) {
+                    Position newPosition = pos.apply(newDir);
+                    if (newPosition != null) {
+                        positionsQueue.add(newPosition);
+                        directionsQueue.add(newDir);
                     }
                 }
             }
         }
-
         return seen;
+    }
+
+    List<Direction> getAdjacentDirections(Direction dir) {
+        switch (dir) {
+            case NORTH: return Lists.newArrayList(Direction.NORTHWEST, Direction.NORTH, Direction.NORTHEAST);
+            case NORTHEAST: return Lists.newArrayList(Direction.NORTH, Direction.NORTHEAST, Direction.EAST);
+            case EAST: return Lists.newArrayList(Direction.NORTHEAST, Direction.EAST, Direction.SOUTHEAST);
+            case SOUTHEAST: return Lists.newArrayList(Direction.EAST, Direction.SOUTHEAST, Direction.SOUTH);
+            case SOUTH: return Lists.newArrayList(Direction.SOUTHEAST, Direction.SOUTH, Direction.SOUTHWEST);
+            case SOUTHWEST: return Lists.newArrayList(Direction.SOUTH, Direction.SOUTHWEST, Direction.WEST);
+            case WEST: return Lists.newArrayList(Direction.SOUTHWEST, Direction.WEST, Direction.NORTHWEST);
+            case NORTHWEST: return Lists.newArrayList(Direction.WEST, Direction.NORTHWEST, Direction.NORTH);
+        }
+        throw new RuntimeException("Exhausted switch statement unexpected");
     }
 
     private boolean isInsideSeenArray(Position pos) {

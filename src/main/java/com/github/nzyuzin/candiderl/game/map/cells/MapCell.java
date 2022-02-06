@@ -32,6 +32,9 @@ public interface MapCell extends GameObject, Visible {
 
     boolean isPassable();
 
+    boolean isSeenByPlayer();
+    void markSeenByPlayer();
+
     MapCell setGameCharacter(GameCharacter mob);
 
     Optional<GameCharacter> getGameCharacter();

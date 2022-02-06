@@ -32,7 +32,7 @@ public interface MapGenerator {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[0].length; j++) {
                 final char c = array[i][j];
-                final MapCell cell = c == '#' ? Wall.getWall() : (c == '+' ? Door.getDoor() : Floor.getFloor());
+                final MapCell cell = c == '#' ? new Wall() : (c == '+' ? new Door() : new Floor());
                 map.setCell(j, array.length - 1 - i, cell);
             }
         }

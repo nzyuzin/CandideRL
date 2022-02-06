@@ -59,6 +59,8 @@ public class GameConfig {
             Integer.parseInt(ConfigHelper.DEFAULT_MESSAGES_PANEL_HEIGHT.getValue());
     public static final boolean CALCULATE_FIELD_OF_VIEW =
             Boolean.parseBoolean(ConfigHelper.CALCULATE_FIELD_OF_VIEW.getValue());
+    public static final boolean KEEP_SEEN_CELLS =
+            Boolean.parseBoolean(ConfigHelper.KEEP_SEEN_CELLS.getValue());
     public static final boolean RANDOM_MAP = Boolean.parseBoolean(ConfigHelper.RANDOM_MAP.getValue());
     public static final boolean BUILD_MAP_FROM_FILE = Boolean.parseBoolean(ConfigHelper.BUILD_MAP_FROM_FILE.getValue());
     public static final boolean SPAWN_MOBS = Boolean.parseBoolean(ConfigHelper.SPAWN_MOBS.getValue());
@@ -79,6 +81,7 @@ public class GameConfig {
         DEFAULT_STATS_PANEL_WIDTH("default_stats_panel_width", "20"),
         DEFAULT_MESSAGES_PANEL_HEIGHT("default_messages_panel_height", "11"),
         CALCULATE_FIELD_OF_VIEW("calculate_field_of_view", "true"),
+        KEEP_SEEN_CELLS("keep_seen_cells", "true"),
         RANDOM_MAP("random_map", "true"),
         BUILD_MAP_FROM_FILE("build_map_from_file", "false"),
         SPAWN_MOBS("spawn_mobs", "true");

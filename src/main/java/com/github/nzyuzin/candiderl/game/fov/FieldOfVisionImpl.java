@@ -56,42 +56,25 @@ final class FieldOfVisionImpl implements FieldOfVision {
             startTime = System.currentTimeMillis();
             log.trace("toColoredCharArray start");
         }
-        Map map = watcher.getMap();
+        final Position watcherPos = watcher.getPosition();
+        final Map map = watcher.getMap();
         if (!GameConfig.CALCULATE_FIELD_OF_VIEW) {
-            return map.getVisibleChars(watcher.getPosition(), width, height);
+            return map.getVisibleChars(watcherPos, width, height);
         }
         // viewDistance * 2 + 1 stands here because view distance calculates
         // from watchers tile in every direction not including tile he's standing on
         // so we multiply by two for each side and add one for the watcher himself
-        Boolean[][] seen = strategy.calculateFOV(map.getTransparentCells(
-                watcher.getPosition(),
+        boolean[][] seen = strategy.calculateFov(map.getTransparentCells(
+                watcherPos,
                 viewDistance * 2 + 1,
                 viewDistance * 2 + 1
         ), viewDistance);
         ColoredChar[][] resultMap =
-                map.getVisibleChars(watcher.getPosition(), width, height);
-        int xSeenOffset = resultMap.length / 2 - seen.length / 2;
-        int ySeenOffset = resultMap[0].length / 2 - seen[0].length / 2;
-        int xInSeen;
-        int yInSeen;
-        for (int x = 0; x < resultMap.length; x++) {
-            for (int y = 0; y < resultMap[0].length; y++) {
-                xInSeen = x - xSeenOffset;
-                yInSeen = y - ySeenOffset;
-                if (!isInsideArray(seen, xInSeen, yInSeen)
-                        || seen[xInSeen][yInSeen] == null
-                        || !seen[xInSeen][yInSeen])
-                    resultMap[x][y] = ColoredChar.NIHIL;
-            }
-        }
+                map.getVisibleChars(watcherPos, width, height, seen);
         if (log.isTraceEnabled()) {
             log.trace(String.format("toColoredCharArray end :: %dms", System.currentTimeMillis() - startTime));
         }
         return resultMap;
-    }
-
-    private <T> boolean  isInsideArray(T[][] array, int x, int y) {
-        return x >= 0 && y >= 0 && x < array.length && y < array[0].length;
     }
 
 }

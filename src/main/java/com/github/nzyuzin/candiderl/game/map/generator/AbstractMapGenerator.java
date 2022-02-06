@@ -30,12 +30,12 @@ public abstract class AbstractMapGenerator implements MapGenerator {
 
     protected void placeBorder(final Map map) {
         for (int i = 0; i < map.getHeight(); i++) {
-            map.setCell(0, i, Wall.getWall());
-            map.setCell(map.getWidth() - 1, i, Wall.getWall());
+            map.setCell(0, i, new Wall());
+            map.setCell(map.getWidth() - 1, i, new Wall());
         }
         for (int i = 0; i < map.getWidth(); i++) {
-            map.setCell(i, 0, Wall.getWall());
-            map.setCell(i, map.getHeight() - 1, Wall.getWall());
+            map.setCell(i, 0, new Wall());
+            map.setCell(i, map.getHeight() - 1, new Wall());
         }
     }
 

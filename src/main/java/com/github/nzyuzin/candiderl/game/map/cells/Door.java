@@ -33,8 +33,8 @@ public class Door extends AbstractMapCell {
         this.isOpen = isOpen;
     }
 
-    public static Door getDoor() {
-        return new Door("Door", "A regular wooden door", CLOSED_CHAR, false, false, false);
+    public Door() {
+        this("Door", "A regular wooden door", CLOSED_CHAR, false, false, false);
     }
 
     public boolean isOpen() {

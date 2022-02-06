@@ -48,6 +48,10 @@ public class Position {
     return new Position(x, y);
   }
 
+  public static Position getInstance(Position pos, int xoffset, int yoffset) {
+    return getInstance(pos.getX() + xoffset, pos.getY() + yoffset);
+  }
+
   public int getX() {
     return x;
   }

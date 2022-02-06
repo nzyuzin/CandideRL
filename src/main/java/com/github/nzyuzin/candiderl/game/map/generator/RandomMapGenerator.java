@@ -37,7 +37,7 @@ public class RandomMapGenerator extends AbstractMapGenerator {
         Preconditions.checkArgument(filledCells < 1 && filledCells > 0);
         final Map map = emptyMapGenerator.generate(name, id, width, height);
         for (int i = 0; i < height * width * filledCells; i++) {
-            map.setCell(map.getRandomFreePosition(), Wall.getWall());
+            map.setCell(map.getRandomFreePosition(), new Wall());
         }
         map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.DOWN));
         map.setCell(map.getRandomFreePosition(), new Stairs(Stairs.Type.UP));

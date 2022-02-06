@@ -32,6 +32,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     protected ColoredChar charOnMap;
     protected boolean transparent;
     protected boolean isPassable;
+    protected boolean seenByPlayer;
 
     protected Optional<GameCharacter> gameCharacter = Optional.empty();
     protected List<Item> items = null;
@@ -39,11 +40,12 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     protected AbstractMapCell(String name, String desc, ColoredChar onMap, boolean transp, boolean isPassable) {
         super(name, desc);
-        this.isPassable = isPassable;
         this.charOnMap = onMap;
+        this.isPassable = isPassable;
+        this.transparent = transp;
+        this.seenByPlayer = false;
         this.items = Lists.newArrayList();
         this.effects = Lists.newArrayList();
-        this.transparent = transp;
     }
 
     @Override
@@ -64,6 +66,16 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     @Override
     public boolean isPassable() {
         return this.isPassable;
+    }
+
+    @Override
+    public boolean isSeenByPlayer() {
+        return seenByPlayer;
+    }
+
+    @Override
+    public void markSeenByPlayer() {
+        this.seenByPlayer = true;
     }
 
     @Override

@@ -19,6 +19,6 @@ package com.github.nzyuzin.candiderl.game.fov.strategy;
 
 public interface FovStrategy {
 
-    Boolean[][] calculateFOV(boolean[][] transparentCells, int viewDistance);
+    boolean[][] calculateFov(boolean[][] transparentCells, int viewDistance);
 
 }

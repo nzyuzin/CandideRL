@@ -17,6 +17,7 @@
 
 package com.github.nzyuzin.candiderl.game.map;
 
+import com.github.nzyuzin.candiderl.game.GameConfig;
 import com.github.nzyuzin.candiderl.game.GameObject;
 import com.github.nzyuzin.candiderl.game.characters.GameCharacter;
 import com.github.nzyuzin.candiderl.game.items.Item;
@@ -114,6 +115,14 @@ public class Map implements GameObject {
         map[x][y] = cell;
     }
 
+    public boolean isSeen(Position pos) {
+        return getCell(pos).isSeenByPlayer();
+    }
+
+    public void markSeen(Position pos) {
+        getCell(pos).markSeenByPlayer();
+    }
+
     public void removeGameCharacter(GameCharacter mob) {
         Preconditions.checkState(mob.getMap().equals(this), "Given character is not on this map!");
         MapCell cell = getCell(mob.getPosition());
@@ -204,6 +213,44 @@ public class Map implements GameObject {
             }
         }
         return result;
+    }
+
+    public ColoredChar[][] getVisibleChars(Position pos, int width, int height, boolean[][] seen) {
+        MapCell[][] partOfMap = getPartOfMap(pos, width, height);
+        ColoredChar[][] result = new ColoredChar[partOfMap.length][partOfMap[0].length];
+
+        int xSeenOffset = result.length / 2 - seen.length / 2;
+        int ySeenOffset = result[0].length / 2 - seen[0].length / 2;
+        int xInSeen;
+        int yInSeen;
+
+        for (int y = 0; y < partOfMap[0].length; y++) {
+            for (int x = 0; x < partOfMap.length; x++) {
+                if (partOfMap[x][y] == null) {
+                    result[x][y] = ColoredChar.NIHIL;
+                } else {
+                    xInSeen = x - xSeenOffset;
+                    yInSeen = y - ySeenOffset;
+                    final Position xyOnMap =
+                            Position.getInstance(pos, x - partOfMap.length / 2, y - partOfMap[0].length / 2);
+                    if (isInsideBoolArray(seen, xInSeen, yInSeen) && seen[xInSeen][yInSeen]) {
+                        result[x][y] = partOfMap[x][y].getChar();
+                        markSeen(xyOnMap);
+                    } else if (isSeen(xyOnMap) && GameConfig.KEEP_SEEN_CELLS) {
+                        final ColoredChar mapChar = partOfMap[x][y].getChar();
+                        result[x][y] = ColoredChar.getColoredChar(mapChar.getChar(), ColoredChar.GRAY);
+                    } else {
+                        result[x][y] = ColoredChar.NIHIL;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private boolean  isInsideBoolArray(boolean[][] array, int x, int y) {
+        return x >= 0 && y >= 0 && x < array.length && y < array[0].length;
     }
 
     public void addEffectsToArea(Position pos, int width, int height, MapCellEffect effect) {
