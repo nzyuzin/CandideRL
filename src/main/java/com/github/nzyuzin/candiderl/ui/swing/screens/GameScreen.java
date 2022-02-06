@@ -58,6 +58,7 @@ public class GameScreen extends AbstractDisplayedScreen {
                         fov.calculateSeenMask(player, GameConfig.VIEW_DISTANCE_LIMIT);
                 visibleMap = player.getMap().getVisibleChars(playerPosition, mapWidth, mapHeight, seen);
             } else {
+                // FIXME: must provide a filled with true seen array -- right now we show memory map
                 visibleMap = player.getMap().getVisibleChars(playerPosition, mapWidth, mapHeight);
             }
         } else {
