@@ -31,7 +31,7 @@ import java.util.List;
 
 public final class GameState implements Serializable {
 
-    private GameFactories gameFactories;
+    private final GameFactories gameFactories;
 
     private Player player;
     private int time;
