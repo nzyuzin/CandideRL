@@ -65,7 +65,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         this.attributes = new MutableAttributes(race.getAttributes());
         this.bodyParts = race.getBodyParts();
         this.canTakeDamage = true;
-        this.items = Lists.newArrayListWithCapacity(52);
+        this.items = Lists.newArrayList();
         this.action = null;
         this.gameMessages = new ArrayDeque<>();
     }
