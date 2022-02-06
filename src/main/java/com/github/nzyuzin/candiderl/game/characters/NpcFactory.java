@@ -32,7 +32,7 @@ public class NpcFactory {
     }
 
     public Npc getNpc(GameState gameState) {
-        final int roll = random.nextInt(2);
+        final int roll = random.nextInt(3);
         if (roll == 0) {
             return new Npc(gameState, "Troll",
                     "A furious beast with sharp claws.", Races.TROLL.get(),
