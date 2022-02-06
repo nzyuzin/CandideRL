@@ -30,6 +30,9 @@ import com.github.nzyuzin.candiderl.ui.GameUi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Random;
 
@@ -68,6 +71,13 @@ public final class GameEngine {
         final Weapon broadsword = new Weapon("broadsword", "A regular sword", Weapon.Type.TWO_HANDED, 10, 1, 1);
         player.addItem(broadsword);
         new WieldItemAction(player, broadsword, 0).execute();
+    }
+
+    public GameEngine(GameUi gameUi, GameState gameState) {
+        this.gameUi = gameUi;
+        this.gameState = gameState;
+        this.keyProcessor = new KeyProcessor(gameUi, gameState);
+        this.actionProcessor = new ActionProcessor(gameState);
     }
 
     private void applyMapEffects() {
@@ -110,12 +120,25 @@ public final class GameEngine {
                 }
             }
         } catch (GameClosedException gameClosedException) {
-            gameUi.showAnnouncement("You are leaving the game.");
+            saveGame();
+            gameUi.showAnnouncement("Game saved");
         } finally {
             GameConfig.write();
         }
         if (log.isDebugEnabled()) {
             log.debug("Game ends");
+        }
+    }
+
+    private void saveGame() {
+        try {
+            final String saveFilename = gameState.getPlayer().getName() + ".save";
+            final FileOutputStream fileOutputStream = new FileOutputStream(saveFilename);
+            final ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(gameState);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

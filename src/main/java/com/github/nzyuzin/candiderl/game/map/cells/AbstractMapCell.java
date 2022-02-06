@@ -34,7 +34,7 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
     protected boolean isPassable;
     protected boolean seenByPlayer;
 
-    protected Optional<GameCharacter> gameCharacter = Optional.empty();
+    protected GameCharacter gameCharacter = null;
     protected List<Item> items = null;
     protected List<MapCellEffect> effects = null;
 
@@ -50,8 +50,8 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public ColoredChar getChar() {
-        if (gameCharacter.isPresent())
-            return gameCharacter.get().getChar();
+        if (gameCharacter != null)
+            return gameCharacter.getChar();
         else if (!items.isEmpty())
             return items.get(0).getChar();
         else
@@ -80,13 +80,13 @@ public abstract class AbstractMapCell extends AbstractGameObject implements MapC
 
     @Override
     public MapCell setGameCharacter(GameCharacter mob) {
-        this.gameCharacter = Optional.ofNullable(mob);
+        this.gameCharacter = mob;
         return this;
     }
 
     @Override
     public Optional<GameCharacter> getGameCharacter() {
-        return gameCharacter;
+        return Optional.ofNullable(gameCharacter);
     }
 
     @Override

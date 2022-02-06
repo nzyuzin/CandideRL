@@ -29,9 +29,10 @@ import com.github.nzyuzin.candiderl.game.map.Map;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
+import java.util.Optional;
 
 public interface GameCharacter extends GameObject, HasAttributes, Movable, Damageable, Visible {
 

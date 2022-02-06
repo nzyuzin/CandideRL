@@ -18,6 +18,7 @@
 package com.github.nzyuzin.candiderl;
 
 import com.github.nzyuzin.candiderl.game.GameEngine;
+import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.map.generator.SquidDungeonGenerator;
 import com.github.nzyuzin.candiderl.game.utility.KeyDefinitions;
 import com.github.nzyuzin.candiderl.ui.GameUi;
@@ -25,26 +26,33 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Menu {
 
     private static final Logger log = LoggerFactory.getLogger(Menu.class);
 
+    private static final String RETURN_TO_MAIN_MENU_OPTION = "Return to main menu";
+
     private enum StartMenuOption {
-        START_GAME,
+        NEW_GAME,
+        LOAD_GAME,
         QUIT;
 
         @Override
         public String toString() {
-            if (this == START_GAME) return "Start game";
+            if (this == NEW_GAME) return "Start a new game";
+            else if (this == LOAD_GAME) return "Load game";
             else return "Quit";
         }
     }
 
     private static final List<StartMenuOption> startScreenOptions =
-            Lists.newArrayList(StartMenuOption.START_GAME, StartMenuOption.QUIT);
+            Lists.newArrayList(StartMenuOption.NEW_GAME, StartMenuOption.LOAD_GAME, StartMenuOption.QUIT);
 
     private final GameUi gameUi;
 
@@ -54,18 +62,25 @@ public class Menu {
 
     public void start() {
         gameUi.init();
-        gameUi.displayMenu(startScreenOptions);
-        char input = gameUi.getInputChar();
-        Optional<Object> chosenOption = getOption(input, startScreenOptions);
-        while (!chosenOption.isPresent()) {
-            input = gameUi.getInputChar();
-            chosenOption = getOption(input, startScreenOptions);
-        }
-        if (chosenOption.get() == StartMenuOption.START_GAME) {
-            final String playerName = askPlayerName();
-            startGame(playerName);
-        } else {
-            quit();
+        showMainMenu();
+    }
+
+    private void showMainMenu() {
+        while (true) {
+            final StartMenuOption chosenOption = pollOptions(startScreenOptions);
+            if (chosenOption == StartMenuOption.NEW_GAME) {
+                final String playerName = askPlayerName();
+                startNewGame(playerName);
+            } else if (chosenOption == StartMenuOption.LOAD_GAME) {
+                final String savefileName = askGameToLoad();
+                if (!savefileName.equals(RETURN_TO_MAIN_MENU_OPTION)) {
+                    final GameState gameState = loadGameState(savefileName);
+                    continueGame(gameState);
+                } // else continue
+            } else {
+                quit();
+                break;
+            }
         }
     }
 
@@ -87,14 +102,54 @@ public class Menu {
         return name;
     }
 
-    private void startGame(final String playerName) {
+    private String askGameToLoad() {
+        final File currentDir = new File(".");
+        File[] saveFiles = currentDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".save");
+            }
+        });
+        if (saveFiles == null) {
+            return pollOptions(Lists.newArrayList(RETURN_TO_MAIN_MENU_OPTION));
+        } else {
+            List<String> saveFileNames =
+                    Arrays.stream(saveFiles).map(File::getName).collect(Collectors.toList());
+            saveFileNames.add(RETURN_TO_MAIN_MENU_OPTION);
+            return pollOptions(saveFileNames);
+        }
+    }
+
+    private void startNewGame(final String playerName) {
         try {
             GameEngine engine = new GameEngine(gameUi, new SquidDungeonGenerator(), playerName);
             engine.startGame();
-            quit();
         } catch (Exception ex) {
             log.error("Error during the game", ex);
             throw ex;
+        }
+    }
+
+    private void continueGame(GameState gameState) {
+        try {
+            GameEngine engine = new GameEngine(gameUi, gameState);
+            engine.startGame();
+        } catch (Exception ex) {
+            log.error("Error during the game", ex);
+            throw ex;
+        }
+    }
+
+    private GameState loadGameState(String filename) {
+        GameState gameState;
+        try {
+            final FileInputStream fileInputStream = new FileInputStream(filename);
+            final ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            gameState = (GameState) objectInputStream.readObject();
+            objectInputStream.close();
+            return gameState;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -106,9 +161,19 @@ public class Menu {
         }
     }
 
-    private Optional<Object> getOption(final char input, final List<? extends Object> options) {
-        final int code = (int) input;
-        final int index = code - ((int) 'a');
+    private <T> T pollOptions(List<T> options) {
+        gameUi.displayMenu(options);
+        char input = gameUi.getInputChar();
+        Optional<T> chosenOption = getOption(input, options);
+        while (!chosenOption.isPresent()) {
+            input = gameUi.getInputChar();
+            chosenOption = getOption(input, options);
+        }
+        return chosenOption.get();
+    }
+
+    private <T> Optional<T> getOption(final char input, final List<T> options) {
+        final int index = input - ((int) 'a');
         if (index < 0 || index >= options.size()) {
             return Optional.empty();
         } else {

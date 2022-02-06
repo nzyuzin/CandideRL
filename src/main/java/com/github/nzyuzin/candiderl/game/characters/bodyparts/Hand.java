@@ -18,17 +18,18 @@
 package com.github.nzyuzin.candiderl.game.characters.bodyparts;
 
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class Hand extends BodyPart {
 
-    private Optional<Item> ring;
+    private Item ring;
 
     public Hand(String name) {
         super(name, Type.HAND);
-        this.ring = Optional.absent();
+        this.ring = null;
     }
 
     public Hand() {
@@ -36,14 +37,15 @@ public class Hand extends BodyPart {
     }
 
     public Optional<Item> getRing() {
-        return ring;
+        return Optional.ofNullable(ring);
     }
 
     public void setRing(@Nonnull Item ring) {
-        this.ring = Optional.of(ring);
+        Preconditions.checkNotNull(ring);
+        this.ring = ring;
     }
 
     public void removeRing() {
-        this.ring = Optional.absent();
+        this.ring = null;
     }
 }

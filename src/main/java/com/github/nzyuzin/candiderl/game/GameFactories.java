@@ -5,7 +5,9 @@ import com.github.nzyuzin.candiderl.game.characters.actions.ActionFactory;
 import com.github.nzyuzin.candiderl.game.fov.FovFactory;
 import com.github.nzyuzin.candiderl.game.map.MapFactory;
 
-public class GameFactories {
+import java.io.Serializable;
+
+public class GameFactories implements Serializable {
     private final ActionFactory actionFactory;
     private final FovFactory fovFactory;
     private final MapFactory mapFactory;

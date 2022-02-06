@@ -23,7 +23,9 @@ import com.github.nzyuzin.candiderl.game.map.cells.Floor;
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Wall;
 
-public interface MapGenerator {
+import java.io.Serializable;
+
+public interface MapGenerator extends Serializable {
 
     Map generate(String name, int id, int width, int height);
 

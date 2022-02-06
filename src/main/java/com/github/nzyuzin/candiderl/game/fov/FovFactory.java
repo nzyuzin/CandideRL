@@ -20,10 +20,12 @@ package com.github.nzyuzin.candiderl.game.fov;
 import com.github.nzyuzin.candiderl.game.fov.strategy.FovStrategy;
 import com.github.nzyuzin.candiderl.game.fov.strategy.RayCastingStrategy;
 
-public class FovFactory {
+import java.io.Serializable;
+
+public class FovFactory implements Serializable {
 
     public enum Strategies {
-        SHADOW_CASTING(new RayCastingStrategy());
+        RAY_CASTING(new RayCastingStrategy());
 
         private FovStrategy implementation;
 
@@ -40,7 +42,7 @@ public class FovFactory {
     }
 
     public FieldOfVision getFov() {
-        return new FieldOfVisionImpl(Strategies.SHADOW_CASTING.getImplementation());
+        return new FieldOfVisionImpl(Strategies.RAY_CASTING.getImplementation());
     }
 
 }

@@ -21,9 +21,10 @@ import com.github.nzyuzin.candiderl.game.GameState;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Random;
 
-public class NpcFactory {
+public class NpcFactory implements Serializable {
 
     private final Random random;
 

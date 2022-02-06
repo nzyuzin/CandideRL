@@ -32,16 +32,12 @@ import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.ColoredChar;
 import com.github.nzyuzin.candiderl.game.utility.Position;
-import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Queue;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 abstract class AbstractGameCharacter extends AbstractGameObject implements GameCharacter {
 
@@ -54,7 +50,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     protected int currentHp;
 
-    protected Optional<Action> action;
+    protected Action action;
 
     protected List<Item> items;
     protected List<BodyPart> bodyParts;
@@ -70,7 +66,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
         this.bodyParts = race.getBodyParts();
         this.canTakeDamage = true;
         this.items = Lists.newArrayListWithCapacity(52);
-        this.action = Optional.absent();
+        this.action = null;
         this.gameMessages = new ArrayDeque<>();
     }
 
@@ -96,28 +92,29 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public boolean hasAction() {
-        return action.isPresent();
+        return action != null;
     }
 
     @Override
     public Optional<Action> getAction() {
-        return action;
+        return Optional.ofNullable(action);
     }
 
     @Override
     public void setAction(Action action) {
+        Preconditions.checkNotNull(action);
         if (!this.isDead()) {
-            this.action = Optional.of(action);
+            this.action = action;
         }
     }
 
     @Override
     public ActionResult performAction() {
-        if (!action.isPresent()) {
+        if (!hasAction()) {
             return ActionResult.EMPTY;
         }
-        final Action action = this.action.get();
-        this.action = Optional.absent();
+        final Action action = this.action;
+        this.action = null;
         if (action.failureReason().isPresent()) {
             return new ActionResult(action.failureReason().get());
         } else {
@@ -127,7 +124,7 @@ abstract class AbstractGameCharacter extends AbstractGameObject implements GameC
 
     @Override
     public int getActionDelay() {
-        return action.isPresent() ? action.get().getDelay() : 0;
+        return hasAction() ? action.getDelay() : 0;
     }
 
     @Override

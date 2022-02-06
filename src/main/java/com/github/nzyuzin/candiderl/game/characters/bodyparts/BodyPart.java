@@ -19,9 +19,10 @@ package com.github.nzyuzin.candiderl.game.characters.bodyparts;
 
 import com.github.nzyuzin.candiderl.game.AbstractGameObject;
 import com.github.nzyuzin.candiderl.game.items.Item;
-import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class BodyPart extends AbstractGameObject {
 
@@ -29,7 +30,7 @@ public class BodyPart extends AbstractGameObject {
         HEAD, NECK, CHEST, ARM, HAND, LEG, FOOT
     }
 
-    private Optional<Item> gameItem = Optional.absent();
+    private Item gameItem = null;
     private final Type type;
 
     public BodyPart(String name, Type type) {
@@ -42,15 +43,16 @@ public class BodyPart extends AbstractGameObject {
     }
 
     public Optional<Item> getItem() {
-        return gameItem;
+        return Optional.ofNullable(gameItem);
     }
 
     public void setItem(@Nonnull final Item item) {
-        this.gameItem = Optional.of(item);
+        Preconditions.checkNotNull(item);
+        this.gameItem = item;
     }
 
     public void removeItem() {
-        this.gameItem = Optional.absent();
+        this.gameItem = null;
     }
 
 }

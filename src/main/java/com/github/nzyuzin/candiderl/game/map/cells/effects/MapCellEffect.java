@@ -19,7 +19,9 @@ package com.github.nzyuzin.candiderl.game.map.cells.effects;
 
 import com.github.nzyuzin.candiderl.game.map.cells.MapCell;
 
-public interface MapCellEffect {
+import java.io.Serializable;
+
+public interface MapCellEffect extends Serializable {
     void apply(MapCell cell);
     int getDuration();
 }

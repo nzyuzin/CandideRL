@@ -17,7 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game.characters;
 
-public class Attributes {
+import java.io.Serializable;
+
+public class Attributes implements Serializable {
 
     protected int maxHp;
     protected int strength;

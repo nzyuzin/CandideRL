@@ -17,7 +17,9 @@
 
 package com.github.nzyuzin.candiderl.game.fov.strategy;
 
-public interface FovStrategy {
+import java.io.Serializable;
+
+public interface FovStrategy extends Serializable {
 
     boolean[][] calculateFov(boolean[][] transparentCells, int viewDistance);
 

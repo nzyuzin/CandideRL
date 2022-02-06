@@ -25,7 +25,9 @@ import com.github.nzyuzin.candiderl.game.map.cells.Stairs;
 import com.github.nzyuzin.candiderl.game.utility.Position;
 import com.google.common.base.Preconditions;
 
-public class ActionFactory {
+import java.io.Serializable;
+
+public class ActionFactory implements Serializable  {
 
     private GameState gameInformation;
 

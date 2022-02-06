@@ -4,6 +4,7 @@
 bin
 *.iml
 *.xml
+*.save
 config.properties
 build
 .gradle

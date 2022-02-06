@@ -27,9 +27,10 @@ import com.google.common.io.LineReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MapFactory {
+public class MapFactory implements Serializable {
 
     private final int width;
     private final int height;
